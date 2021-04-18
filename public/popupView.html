@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <link type="text/css" rel="stylesheet" href="/popupView.css">
+        <!-- <link type="text/css" rel="stylesheet" href="./index.css"> -->
+        <link type="text/css" rel="stylesheet" href="/fonts/windows-font.css">
+        <script src="popupView.js"></script>
+        <script src="data.js"></script>
+        <script src="main.js"></script>
+    </head>
+    <body onload="LoadData(); loadSchema();">
+        <button onclick="a();">Set cookie</button>
+        <div id="popup-hover" class="hidden">
+            <div id="hover-wrapper" class="cf">
+                <p id="hover-name">Microsoft Antivirus</p>
+                <div id="hover-cost-img">5</div>
+            </div>
+            <p id="hover-unlock-type">(UNLOCKED)</p>
+            <p id="hover-points"></p>
+            <p id="hover-special"></p>
+            <p id="hover-cost"></p>
+            <p id="hover-description">An omen of what to come.</p>
+        </div>
+        <div id="popup-schema">
+            <div class="popup-container hidden" id="popup-template">
+                <div class="popup-unit">
+                    <img class="popup-icon">
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

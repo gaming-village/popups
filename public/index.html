@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8"/>
+        <title>Lorem Ipsum Generator</title>
+
+        <link type="text/css" rel="stylesheet" href="index.css">
+        <link type="text/css" rel="stylesheet" href="fonts/windows-font.css">
+        <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+        <script src="index.js"></script>
+        <script src="data.js"></script>
+        <script src="main.js"></script>
+        <script src="popups.js"></script>
+        <script src="javascript/semi-popups.js"></script>
+        <script src="javascript/applications.js"></script>
+    </head>
+    <body onload="LoadData(); load();">
+        <div id="info-bar">
+            <div id="header">
+                <h1 class="xp-font">Lorem Ipsum Generator</h1>
+                <h2 class="xp-font">The most trusted generator on the web!</h2>
+            </div>
+
+            <div id="nav" class="xp-font">
+                <div id="nav-formatter">
+                    <div class="nav-element selected">Generator</div>
+                    <div class="nav-element">About</div>
+                    <div class="nav-element">Server Status</div>
+                </div>
+            </div>
+        </div>
+
+        <div id="computer">
+            <div id="computer-nav">
+                <img id="computer-home-icon" src="images/xp-icons/home-icon.png" alt="Home icon">
+                <div class="application hidden closed" id="application-template">
+                    <img class="application-icon" src="images/changelog-icon.png" alt="Application icon">
+                </div>
+            </div>
+
+            <div id="changelog" class="xp-font" onclick="goToChangelog();">
+                <img src="images/changelog-icon.png" alt="Changelog icon">
+                Go to changelog
+            </div>
+
+            <div id="loremController">
+                <button onclick="generateLorumIpsum();" id="a" class="xp-font xp-button">
+                    Generate the Lorem Ipsum
+                </button>
+            </div>
+
+            <div id="lorem-app" class="popup-container-3 hidden">
+                <div class="top-bar" id="lorem-app-top">
+                    <div class="display-bar">
+                        <img src="images/xp-icons/home-icon.png" alt="Home icon">
+                        <i class="fas fa-caret-up"></i>
+                        Lorem Controller
+                    </div>
+                </div>
+                <div class="display-container">
+                    <h4 class="popup-header">Mining</h4>
+                    <table>
+                        <tr>
+                            <td>Generation status:</td>
+                            <td id="lorem-status">Stopped.</td>
+                        </tr>
+                        <tr>
+                            <td>Total lorem mined:</td>
+                            <td id="total-lorem-mined">0</td>
+                        </tr>
+                        <!-- <tr>
+                            <td class="center" id="mining-feed-open">> View mining feed <</td>
+                        </tr> -->
+                    </table>
+                    <div class="xp-button xp-font center" id="mining-feed-open">View mining feed</div>
+                    <div id="mining-feed">
+
+                    </div>
+                    <h4 class="popup-header">Stats</h4>
+                    <h4 class="popup-header">Diagnostics</h4>
+                    <p>Stability: 100%</p>
+                    <p>Estimated salary: $0.00001</p>
+                </div>
+            </div>
+
+            <div id="blackmarket" class="popup-container-3 hidden">
+                <div class="top-bar" id="blackmarket-top">
+                    <div class="display-bar">
+                        <img src="images/xp-icons/home-icon.png" alt="Home icon">
+                        <i class="fas fa-caret-up"></i>
+                        Black Market
+                    </div>
+                </div>
+                <div class="display-container">
+                    <h4 class="popup-header">Black Market</h4>
+                    <table>
+                        <tr>
+                            <td>> Go to Black Market. <</td> <!-- Center and js to remove arrows-->
+                        </tr>
+                        <tr>
+                            <td>$HitCoin Value:</td>
+                            <td>1.3x</td>
+                        </tr>
+                    </table>
+                    <h4 class="popup-header">Popups</h4>
+                </div>
+            </div>
+            
+
+            <!-- Devtools -->
+            <div class="popup-container-2 xp-font" id="devtools">
+                <h3 class="popup-title" id="devtools-title">
+                    Devtools
+                </h3>
+                <div class="display-container">
+                    <div class="devtool-unit xp-button" id="devtools-summon">Summon popups</div>
+                    <div class="devtool-unit xp-button" id="devtools-misc">Miscellaneous</div>
+                </div>
+            </div>
+            <div class="popup-container-2 xp-font hidden" id="summon-popup">
+                <h3 class="popup-title" id="summon-popup-title">
+                    Summon popups
+                </h3>
+                <div class="display-container" id="summon-popup-display">
+                    <div id="summon-popup-unit-container">
+                        <div class="summon-popup-unit hidden" id="summon-popup-base">
+                            <input type="checkbox" class="summon-popup-input">
+                            <label class="summon-popup-text"></label>
+                        </div>
+                    </div>
+                    <div class="devtool-unit xp-button" id="summon-popup-submit">Summon</div>
+                    <div class="devtool-unit xp-button" id="summon-popup-all">Summon All</div>
+                </div>
+            </div>
+            <div class="popup-container-2 xp-font hidden" id="misc-tools">
+                <h3 class="popup-title" id="misc-tools-title">
+                    Miscellaneous
+                </h3>
+                <div class="display-container" id="misc-tools-display">
+                    <div class="devtool-unit xp-button" id="summon-chunky">Run Chunky</div>
+                </div>
+            </div>
+
+
+            <div id="loremContainer" class="canLorem xp-font">
+                <span id="current-lorem-text"></span>
+            </div>
+            <div class="popup-container-1 hidden xp-font" id="lurem-impsir">
+                <h3 class="popup-title" id="lurem-impsir-title">Lurem Impsir</h3>
+                <div class="display-container">
+                    <div class="popup-content">
+                        <div class="popup-subtitle cf">
+                            <img src="images/warning-icon.png" class="warning" alt="Warning!">
+                            <h3>Oops!</h3>
+                        </div>
+                        <p>Looks like you're trying to lore impsus! Unfortunatly due to sadness you cannot lorm ismup.</p>
+                        <p>No lorme can be done until you are close?</p>
+                        <p>Try agian in the 5 seconds.</p>
+                    </div>
+                    <div class="button-container">
+                        <button id="loremTimeRemaining">continue (5)</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="popup-container-2 hidden xp-font" id="pointCounterContainer">
+                <h3 class="popup-title" id="point-counter-title">
+                    ...
+                </h3>
+                <div class="display-container">
+                    <div id="pointIncrementTextContainer"></div>
+                    <p id="pointCounter"></p>
+                </div>
+            </div>
+
+            <div class="popup-container-2 hidde xp-font" id="popupViewer" onclick="moveToPopupView();">
+                    <h3 class="popup-title">
+                        ...
+                    </h3>
+                    <div class="display-container">
+                        <p>View current popups.</p>
+                    </div>
+                </div>
+            <div class="popup-container-1 hidden xp-font" id="loremButtonClick">
+                <h3 class="popup-title" id="loremButtonClickTitle">big gaming</h3>
+                <div class="display-container">
+                    <div class="popup-content">
+                        <div class="popup-subtitle cf">
+                            <img src="images/warning-icon.png" class="warning" alt="Warning!">
+                            <h3>Uh oh1!</h3>
+                        </div>
+                        <p>Uh oh1! Looks like you clicked the Button! unless You pay the &euro;2 you are thing</p>
+                    </div>
+                    <div class="button-container">
+                        <button>Send money</button>
+                        <button onclick="hidePrompt();" class="close">
+                            <img src="images/close.png" alt="Close">
+                            Ok.
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="popup-container-1 hidden xp-font" id="free-iPhone">
+                <h3 class="popup-title" id="free-iPhone-title">Free an-Droid</h3>
+                <div class="rainbow">
+                    <div class="display-container">
+                        <div class="popup-content">
+                            <div class="popup-subtitle cf">
+                                <img src="images/warning-icon.png" class="warning" alt="Warning!">
+                                <h3>An Congratulation! You just win a new microsoft Iphone!</h3>
+                            </div>
+                            <p>Reclaim your $2.8 trillions before it DIES!</p>
+                            <p class="hidden closePopup" id="iphonePopupMoveText">Looks like you tried to close this popup!</p>
+                        </div>
+                        <div class="button-container">
+                            <button class="close" id="free-iPhone-close">
+                                <img src="images/close.png" alt="Close">
+                                <span>close down.</span>
+                            </button>
+                            <button>purchese!</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="popup-container-1 hidden xp-font" id="adblock-blocker">
+                <h3 class="popup-title" id="adblock-blocker-title">Adblock blocker</h3>
+                <div class="display-container">
+                    <div class="popup-content">
+                        <div class="popup-subtitle cf">
+                            <img src="images/warning-icon.png" class="warning" alt="Warning!">
+                            <h3>Hello their!</h3>
+                        </div>
+                        <p>website Works very hard to maintain the band's width. Pleas consider assassinating your adblock,</p>
+                    </div>
+                    <div class="button-container">
+                        <button id="adblock-blocker-close">kill adblock</button>
+                        <button id="adblockExit" class="close">
+                            <img src="images/close.png" alt="Close">
+                            close .
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="popup-container-1 hidden xp-font" id="microsoft-antivirus">
+                <h3 class="popup-title" id="microsoft-antivirus-title">
+                    <img class="popup-icon" src="images/popup-icons/about.png" alt="Popup icon">
+                    Macrosoft Antivrus
+                </h3>
+                <div class="display-container">
+                    <div class="popup-content">
+                        <div class="popup-subtitle cf">
+                            <img src="images/warning-icon.png" class="warning" alt="Warning!">
+                            <h3>BIG warning!</h3>
+                        </div>
+                        <p>Microsoft has descovered several of the vulnerbilities inside computer.</p>
+                        <p>To fix them, you must upgrade your mainframe to System 32!</p>
+                    </div>
+                    <div class="button-container">
+                        <button id="microsoft-antivirus-upgrade">upgrade System</button>
+                        <button id="microsoft-antivirus-close" class="close">
+                            <img src="images/close.png" alt="Close">
+                            <span>go away!</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="popup-container-2 hidden xp-font" id="microsoft-antivirus-clicked">
+                <h3 class="popup-title" id="microsoft-antivirus-clicked-title">
+                    <img class="popup-icon" src="images/popup-icons/about.png" alt="Popup icon">
+                    Not Megasoft
+                    <img src="images/close.png" class="close-icon" id="microsoft-antivirus-clicked-close-button" alt="Close">
+                </h3>
+                <div class="display-container">
+                    <p>Thanks for using ScreenCapture! Your download will begin shortly.</p>
+                </div>
+            </div>
+
+            <div class="popup-container-2 hidden xp-font" id="rain">
+                <h3 class="popup-title" id="rain-title">
+                    Rain
+                    <img src="images/close.png" class="close-icon" id="rain-close-button" alt="Close">
+                </h3>
+                <div class="display-container">
+                    <p>It's raining! <span id="rainCode">^&$%)&@)#*&$!)(*&</span></p>
+                </div>
+            </div>
+            <div class="popup-container-2 hidden xp-font" id="browser-error">
+                <h3 class="popup-title" id="browser-error-title">Error</h3>
+                <div class="display-container">
+                    <p>WARNING</p>
+                    <p>Your browser has occurred!. In order to prevented this, He has appeared.</p>
+                    <div class="button-container">
+                        <button id="browser-error-close">close down.</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="popup-container-2 hidden xp-font" id="ad1">
+                <h3 class="popup-title" id="ad1-title">
+                    Ad
+                    <img src="images/close.png" class="close-icon" alt="Close">
+                </h3>
+                <div class="display-container">
+                    <p>The new Macbook Air1!</p>
+                    <br><br><br><br><br><br><br>
+                </div>
+            </div>
+
+            <div class="popup-container-2 hidden xp-font" id="ad2">
+                <h3 class="popup-title" id="ad2-title">
+                    Ad
+                    <img src="images/close.png" class="close-icon" alt="Close">
+                </h3>
+                <div class="display-container">
+                    <p>Doctors HATE him! watch this mann EAT several layers of CEMENT!</p>
+                    <img src="images/flamethrower.jpeg" alt="Flamethrower">
+                </div>
+            </div>
+
+            <div class="popup-container-2 hidden xp-font" id="ad3">
+                <h3 class="popup-title" id="ad3-title">
+                    Ad
+                    <img src="images/close.png" class="close-icon" alt="Close">
+                </h3>
+                <div class="display-container">
+                    <p>TOP TEN TOP TEN LISTS!1</p>
+                    <img src="images/meatter.jpeg" alt="Person eating meat">
+                </div>
+            </div>
+
+            <div class="popup-container-2 hidden xp-font" id="ad4">
+                <h3 class="popup-title" id="ad4-title">
+                    Ad
+                    <img src="images/close.png" class="close-icon" alt="Close">
+                </h3>
+                <div class="display-container">
+                    <p>INSANE! WATCH how he EFFORTLESSLY combusts!</p>
+                    <img src="images/shrek.png" alt="Shrek">
+                </div>
+            </div>
+
+            <div class="popup-container-2 hidden xp-font" id="ad5">
+                <h3 class="popup-title" id="ad5-title">
+                    Ad
+                    <img src="images/close.png" class="close-icon" alt="Close">
+                </h3>
+                <div class="display-container">
+                    <p>TOP TEN NOODLES science CAN"T ANWSER!</p>
+                    <img src="images/personr.jpeg" alt="Person">
+                </div>
+            </div>
+
+            <div class="popup-container-1 hidden xp-font" id="chunky">
+                <h3 class="popup-title" id="chunky-title">Chunky</h3>
+                <div class="display-container">
+                    <div class="popup-content">
+                        <div class="popup-subtitle cf">
+                            <img src="images/warning-icon.png" class="warning" alt="Warning!">
+                            <h3>Looks like Chunky found a virus!</h3>
+                        </div>
+                        <img src="images/bigchunky.png" id="chunkyImg" alt="Chunky">
+                        <p id="chunky-status" class="hidden"></p>
+                        <p id="chunky-reward">+20% points. (0 points)</p>
+                        <div id="chunky-rage-meter">
+                            <div id="chunky-progress-bar"></div>
+                            <div id="chunky-progress-text">0%</div>
+                        </div>
+                    </div>
+                    <div class="button-container" id="chunky-button-container">
+                        <button onclick="engageChunky();">Remove virus</button>
+                        <button class="close" id="chunky-close">
+                            <img src="images/close.png" alt="Close">
+                            <span>go away!</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="popup-container-1 hidden xp-font" id="annual-survey">
+                <h3 class="popup-title" id="annual-survey-title">2018 Annual Survey</h3>
+                <div class="display-container">
+                    <div class="popup-content">
+                        <div class="popup-subtitle cf survey-hidden">
+                            <img src="images/warning-icon.png" class="warning" alt="Warning!">
+                            <h3>Dear Chroium user,</h3>
+                        </div>
+                        <p class="survey-hidden">You are todays lucky Visitor! <i>(June)</i></p>
+                        <p class="survey-hidden">Please complete this short survey and to say "Thanks You" we would offer the <b>50 dollers!</b></p>
+                        <div class="survey-visible hidden">
+                            <p>Answer these simepl questions to complete the it!</p>
+                            <label for="surveyQ1">What is your favourite colour?</label>
+                            <input type="text" placeholder="e.g. apple" id="surveyQ1">
+                            <label for="surveyQ2">When is it happening</label>
+                            <input type="text" placeholder="e.g. 2/7/2022" id="surveyQ2">
+                            <label for="surveyQ3">HOW</label>
+                            <input type="text" placeholder="e.g eight" id="surveyQ3">
+                            <label for="surveyQ4">sadfea</label>
+                            <input type="range" id="surveyQ4" min="9" max="12">
+                        </div>
+                    </div>
+                    <div class="button-container">
+                        <button class="survey-hidden" id="survey-start">Start survey</button>
+                        <button class="survey-visible hidden" id="survey-submit">Submit survey</button>
+                    </div>
+                </div>
+            </div>
+            <div class="popup-container-2 hidden xp-font" id="incorrectOG">
+                <h3 class="popup-title">
+                    Error
+                    <img src="images/close.png" class="close-icon" alt="Close">
+                </h3>
+                <div class="display-container">
+                    <p class="incorrect-text">INCORRECT</p>
+                </div>
+            </div>
+            <div id="chunky1" class="hidden">
+                <h3>Uh oh! Looks like Chunky did an oopsie!</h3>
+                <div id="gaming"></div>
+                <p>You, the lesser chimp, have been outsmarted by Chunky once again.</p>
+            </div>
+            <div id="chunky2" class="hidden">
+                <img src="images/uhoh.jpeg" alt="Chonkers">
+            </div>
+
+            <div class="popup-container-2 hidden xp-font chunky-virus-copy" id="chunky-virus">
+                <h3 class="popup-title" id="chunky-virus-title">
+                    <img src="images/close.png" class="close-icon" id="chunky-virus-close" alt="Close">
+                    Chunky
+                    <span class="chunky-invisible">10</span>
+                </h3>
+                <div class="display-container">
+                    <p class="megaheftychonker">Chunky has appeared</p>
+                </div>
+            </div>
+
+            <div class="popup-container-1 hidden xp-font" id="visitor">
+                <h3 class="popup-title" id="visitor-title">1,000,000th Visitor!</h3>
+                <div class="display-container">
+                    <div class="popup-content">
+                        <div class="popup-subtitle cf">
+                            <img src="images/warning-icon.png" class="warning" alt="Warning!">
+                            <h3>Congratulations!</h3>
+                        </div>
+                        <p>You are our 1,000,0000th visitor!</p>
+                        <p>As reward, we give you free thing!</p>
+                        <div id="visitor-box" class="rainbow">
+                            <div id="visitor-box-content">
+                                <div id="visitor-value">??</div>
+                            </div>
+                        </div>
+                        <p id="visitor-status"></p>
+                    </div>
+                    <div class="button-container">
+                        <button id="visitor-open-button">Open</button>
+                        <button id="visitor-close-button" class="hidden">Close</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="popup-container-1 hidden xp-font" id="chunky-plantation" style="left: 50%;">
+                <h3 class="popup-title" id="chunky-plantation-title">Banana Overload</h3>
+                <div class="display-container">
+                    <div class="popup-content">
+                        <div class="popup-subtitle cf">
+                            <img src="images/warning-icon.png" class="warning" alt="Warning!">
+                            <h3>Uh oh!</h3>
+                        </div>
+                        <p>Chunky's bananas have fallen off the tree! Save them before they disappear!</p>
+                        <div class="chunky-tree">
+                            <img src="images/tree.png" alt="Chunky's Banana Tree">
+                        </div>
+                        <p id="chunky-plantation-count">10</p>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Chunky negatives -->
+            <div class="popup-container-2 hidden xp-font chunky-debuff dark-popup" id="plague-of-chunky">
+                <h3 class="popup-title" id="plague-of-chunky-title">
+                    <img src="images/xp-icons/close-gray.png" class="close-icon close-gray" id="plague-of-chunky-close" alt="Close">
+                    plague_of_chunky
+                </h3>
+                <div class="display-container">
+                    <p>As a result of your blasphemous actions, Chunky has instructed a tax of 35% of your Lorem.</p>
+                    <p class="chunky-praise">- Praise Chunk.</p>
+                </div>
+            </div>
+            <div class="popup-container-2 hidden xp-font chunky-debuff dark-popup" id="scourge-of-chunky">
+                <h3 class="popup-title" id="scourge-of-chunky-title">
+                    <img src="images/xp-icons/close-gray.png" class="close-icon close-gray" id="scourge-of-chunky-close" alt="Close">
+                    scourge_of_chunky
+                </h3>
+                <div class="display-container">
+                    <p>Chunky has ceased the production of Lorem for 20 seconds.</p>
+                    <p class="chunky-praise">- Praise Chunk.</p>
+                </div>
+            </div>
+            <div class="popup-container-2 hidden xp-font chunky-debuff dark-popup" id="wrath-of-chunky">
+                <h3 class="popup-title" id="wrath-of-chunky-title">
+                    <img src="images/xp-icons/close-gray.png" class="close-icon close-gray" id="wrath-of-chunky-close" alt="Close">
+                    wrath_of_chunky
+                </h3>
+                <div class="display-container">
+                    <p>Your popups have become restless.</p>
+                    <p class="chunky-praise">- Praise Chunk.</p>
+                </div>
+            </div>
+            <div class="popup-container-2 hidden xp-font chunky-debuff dark-popup" id="hex-of-chunky">
+                <h3 class="popup-title" id="hex-of-chunky-title">
+                    <img src="images/xp-icons/close-gray.png" class="close-icon close-gray" id="hex-of-chunky-close" alt="Close">
+                    hex_of_chunky
+                </h3>
+                <div class="display-container">
+                    <p>Chunky's accomplices have invaded the computer. Expect to see some performance issues.</p>
+                    <p class="chunky-praise">- Praise Chunk.</p>
+                </div>
+            </div>
+            <div class="popup-container-2 hidden xp-font chunky-debuff dark-popup" id="chunky-message">
+                    <h3 class="popup-title" id="chunky-message-title">
+                        <img src="images/xp-icons/close-gray.png" class="close-icon close-gray" id="chunky-message-close" alt="Close">
+                        message_from_chunky
+                    </h3>
+                    <div class="display-container">
+                        <p>Dear user. Chunky has investigated your activities, and has decided to counterract your suspicious projects by temporarily decreasing your productivity.</p>
+                        <p>Do better.</p>
+                        <p>- The Chunk.</p>
+                    </div>
+                </div>
+        </div>
+    </body>
+</html>

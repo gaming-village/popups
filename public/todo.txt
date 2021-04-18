@@ -1,0 +1,88 @@
+* ONLY SHOW NOT VISIBLE POPUPS
+
+
++-------------------------+
+I         ROADMAP         I
++-------------------------+
+1) Migrate all popups to the new class system.
+2) Balance popup reappear times.
+3) Theme index.html to match popupView.html
+4) Add 5 new popups.
+5) Add debug mode.
+6) Fully automate tech tree - add img path and positions to data, generate cells based on img and position
+
+
+
+
+
+
+
+
+
+
+* (Hard) Changelog
+* (Hard) Deteriorate screen the more popups you have unlocked
+
+Popups
+* (easy) Rick roll popup (png, not gif)
+* (medium) Black/inverted popup + Rapid moving virus which moves anywhere on the screen at extremely fast intervals + randomly stops in order to be clicked + changes bg color/theme randomly black/red
+* Free storage/ download more ram
+* Clippy
+* More Chunky popups
+* Cxlvxn flushed face
+* Bank account details
+* Popup that duplicates unless clicked in a time limit
+* Reshow chunky base popup at some point
+* Wheel of chance
+
+* Microsoft Antivirus (1)
+* Browser Error (2)[1], Rain (3)[1], Chunky (4)[1]
+* Free iPhone (5)[2], Adblock Blocker (6)[2], Survey (7)[3] (called when (2) closed), Lurem Opsur (8)[3], Chunky Virus (9)[4]
+
+* Upgrades are smaller popup units
+
+* Fix Chunky virus
+
+* Link from tech tree to game and back
+
+* Integrate image url's into the data object.
+
+* Convert free version text to virus
+
+* In/Out animation when hovering on a cell (transparent, move up)
+
+* Backstory, lorem ipsum employee.
+* Receive letter
+
+
+* Organise file tree
+
+* Packet icon on the packet counter
+
+* Achievement for closing browser error before it can move.
+
+* Upgrade which creates an autocloser which closes a popup every 10 seconds.
+
+* Popup file system, have to search for a file named "free_virus.exe"
+
+* Rain: when upgraded, sometimes show red text
+
+* Lorem ipsum upgrades:
+* Give random point amount (0.3-0.5) every 3rd increment
+
+* Popup that fades in
+
+
+
+
+
+
+
+
+Congratulations on your admission to Lorem Ipsum Studios!
+
+As a new employee, we suggest you look at our "About" page.
+
+We have designated you one Windows XP computer for the cause.
+
+Dear Employees, it has come to our attention that a new currency has been 

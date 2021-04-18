@@ -1,0 +1,12 @@
+{
+    "1.0": {
+        "1": {
+            "title": "Basic infrastructure",
+            "description": "Added a nav bar.\nCreated the lorem generator.\nAdded a title and subtitle."
+        },
+        "2": {
+            "title": "First popups",
+            "description": "Added the iPhone popup.\nAdded the lorem blocker poup.\nAdded the adblock popup.\nAdded a virus popup.\nAdded an irremovable virus popup.\nAdded Chunky."
+        }
+    }
+}
