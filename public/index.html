@@ -44,10 +44,12 @@
                 Go to changelog
             </div>
 
-            <div id="loremController">
-                <button onclick="generateLorumIpsum();" id="a" class="xp-font xp-button">
-                    Generate the Lorem Ipsum
-                </button>
+            <button onclick="generateLorumIpsum();" id="a" class="xp-font xp-button">
+                Generate the Lorem Ipsum
+            </button>
+
+            <div id="loremContainer" class="canLorem xp-font center">
+                <span id="current-lorem-text"></span>
             </div>
 
             <div id="lorem-app" class="popup-container-3 hidden">
@@ -69,9 +71,6 @@
                             <td>Total lorem mined:</td>
                             <td id="total-lorem-mined">0</td>
                         </tr>
-                        <!-- <tr>
-                            <td class="center" id="mining-feed-open">> View mining feed <</td>
-                        </tr> -->
                     </table>
                     <div class="xp-button xp-font center" id="mining-feed-open">View mining feed</div>
                     <div id="mining-feed">
@@ -140,11 +139,6 @@
                 <div class="display-container" id="misc-tools-display">
                     <div class="devtool-unit xp-button" id="summon-chunky">Run Chunky</div>
                 </div>
-            </div>
-
-
-            <div id="loremContainer" class="canLorem xp-font">
-                <span id="current-lorem-text"></span>
             </div>
             <div class="popup-container-1 hidden xp-font" id="lurem-impsir">
                 <h3 class="popup-title" id="lurem-impsir-title">Lurem Impsir</h3>

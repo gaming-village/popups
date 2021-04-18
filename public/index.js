@@ -120,7 +120,7 @@ function changeComputerHeight() {
 
 var loremTemplate = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores, aliquid! Officia amet adipisci porro repellat deserunt vero quos ad id sint dolore iure odio reprehenderit dolores sed, molestias vitae dicta!";
 var iterationCount = 0;
-var nextText = 100;
+var nextText = 400;
 var loremLength = loremTemplate.split("").length;
 
 const adTexts = [" Full version costs $204967.235 ", " Go to www.this.is.a.site for free viruses! "];
@@ -138,7 +138,7 @@ function ipsumStep() {
         }
         if (iterationCount > nextText) {
             // Create an ad.
-            nextText = iterationCount + randomInt(30, 50);
+            nextText += randomInt(80, 120);
             let ad = document.createElement("div");
             document.querySelector("#loremContainer").appendChild(ad);
             ad.classList.add("loremAd");
