@@ -338,6 +338,10 @@ input[type=checkbox] {
 .center {
     text-align: center;
 }
+.centered {
+    margin-left: 50%;
+    transform: translateX(-50%);
+}
 
 #loremButtonClick {
     width: 20em;
@@ -353,8 +357,6 @@ input[type=checkbox] {
 .hidden {
     display: none !important;
 }
-
-
 /* Popup Type 1 */
 .popup-container-1, .popup-container-2{
     border-top-left-radius: 7px;
@@ -552,7 +554,19 @@ input[type=checkbox] {
     margin-left: 50%;
     transform: translateX(-50%);
 }
-#chunky-rage-meter {
+/* #chunky-rage-meter {
+    width: 90%;
+    height: 1em;
+    border: 1px solid #333;
+    border-radius: 0.25em;
+    padding: 2px;
+    margin-top: 0.5em;
+    margin-left: 50%;
+    transform: translateX(-50%);
+    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.3) inset;
+    position: relative;
+} */
+.progress-bar-container {
     width: 90%;
     height: 1em;
     border: 1px solid #333;
@@ -564,17 +578,7 @@ input[type=checkbox] {
     box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.3) inset;
     position: relative;
 }
-#chunky-status {
-    text-align: center;
-}
-#chunky-status {
-    color: rgb(255, 0, 0);
-}
-#chunky-reward {
-    color: rgb(0, 255, 0);
-    text-align: center;
-}
-#chunky-progress-bar {
+.progress-bar {
     width: 0%;
     height: 100%;
     border-radius: 0.25em;
@@ -592,6 +596,43 @@ input[type=checkbox] {
     );
     animation: stripe-transform 3s forwards infinite linear;
 }
+.progress-bar-text {
+    color: #000;
+    font-size: 1em;
+    text-shadow: 0 0 5px #fff;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+#chunky-status {
+    text-align: center;
+}
+#chunky-status {
+    color: rgb(255, 0, 0);
+}
+#chunky-reward {
+    color: rgb(0, 255, 0);
+    text-align: center;
+}
+/* #chunky-progress-bar {
+    width: 0%;
+    height: 100%;
+    border-radius: 0.25em;
+    background-color: rgb(43, 82, 255);
+    background-size: 30px 30px;
+    background-image: linear-gradient(
+        135deg,
+        #fff 25%,
+        transparent 25%,
+        transparent 50%,
+        #fff 50%,
+        #fff 75%,
+        transparent 75%,
+        transparent
+    );
+    animation: stripe-transform 3s forwards infinite linear;
+} */
 #chunky-progress-bar.changed {
     animation: stripe-transform 3s forwards infinite linear,
         changeChunkyProgress 1s forwards ease;
@@ -604,7 +645,7 @@ input[type=checkbox] {
         background-color: rgb(43, 82, 255);
     }
 }
-#chunky-progress-text {
+/* #chunky-progress-text {
     color: #000;
     font-size: 1em;
     text-shadow: 0 0 5px #fff;
@@ -612,7 +653,7 @@ input[type=checkbox] {
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-}
+} */
 #chunky-progress-text.red {
     color: rgb(255, 0, 0);
 }
@@ -674,6 +715,21 @@ input[type=checkbox] {
     height: 256px;
     background-image: url(images/uhoh.jpeg);
     animation: bananaRoll 0.4s linear infinite;
+}
+
+#lorem-status.generating {
+    color: #0066cf;
+}
+#lorem-status:not(.generating) {
+    color: rgb(158, 1, 1);
+}
+
+
+#ram-download {
+    width: 20em;
+}
+#ram-download-button {
+    margin-top: 0.5em;
 }
 
 
@@ -755,6 +811,9 @@ input[type=checkbox] {
     left: 80%;
     top: 75%;
     transform: translate(-50%, -50%);
+}
+#ad2 div.display-container img {
+    max-width: 30vw;
 }
 #ad3 {
     left: 70%;

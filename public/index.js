@@ -1,6 +1,8 @@
 // Helping functions
-function randomInt(min, max) {
-    let randomInt = Math.floor(Math.random() * (max - min)) + min;
+function randomInt(min, max, inclusive) {
+    inclusive = inclusive || false;
+    const add = inclusive ? 1 : 0;
+    let randomInt = Math.floor(Math.random() * (max - min + add)) + min;
     return randomInt;
 }
 function randomFloat(min, max) {
@@ -38,6 +40,8 @@ function generatePopups() {
     popups.chunkyVirus = new ChunkyVirus("chunkyVirus");
     popups.visitor = new Visitor("visitor");
     popups.chunkyPlantation = new ChunkyPlantation("chunkyPlantation");
+    popups.ramDownload = new RamDownload("ramDownload");
+    popups.bankDetails = new BankDetails("bankDetails");
 }
 
 function generateSemiPopups() {
@@ -167,8 +171,14 @@ function ipsumStep() {
             case 200:
                 popups.freeIPhone.showPopup();
                 break;
+            case 225:
+                popups.bankDetails.showPopup();
+                break;
             case 250:
                 popups.chunky.showPopup();
+                break;
+            case 275:
+                popups.ramDownload.showPopup();
                 break;
             case 300:
                 popups.rain.showPopup();
@@ -264,7 +274,7 @@ function createMiningEntry(amount, description) {
                 entryIndex = i;
             }
         }
-        console.log(entryIndex);
+
         // Remove the entry.
         newEntry.remove();
         if (entryIndex != -1) {

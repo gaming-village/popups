@@ -43,11 +43,14 @@ class Popup extends BaseStructure {
     }
     hidePopup(givePoints) {
         if (this.displayed) {
+            this.displayed = false;
+
             console.log("User closed " + this.displayName + ".");
             this.displayObj.classList.add("hidden");
+
             let points = data[this.popupDataName].stats.points;
+            givePoints = givePoints || true;
             if (typeof points != "object" && givePoints != false) addPoints(points);
-            this.displayed = false;
     
             let redisplayTime = data[this.popupDataName].stats.redisplayTime;
             if (typeof redisplayTime == "undefined") {
@@ -810,15 +813,210 @@ class ChunkyPlantationText {
         }
     }
     randomiseText() {
-        let symbols = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")"];
+        const symbols = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")"];
         this.displayObj.innerHTML = symbols[randomInt(0, symbols.length)];
     }
     getRandomVel() {
-        let rand = Math.random() * 2 - 1;
-        let result = Math.sin((rand * Math.PI + Math.PI) / 2);
+        const rand = Math.random() * 2 - 1;
+        const result = Math.sin((rand * Math.PI + Math.PI) / 2);
         return result;
     }
     getRandomSign() {
         return randomInt(0, 2) * 2 - 1;
+    }
+}
+
+class RamDownload extends Popup {
+    constructor(popupDataName) {
+        super(popupDataName);
+        this.running = false;
+
+        getElement("ram-download-button").addEventListener("click", () => {
+            if (!this.running) this.startRamDownload();
+        });
+    }
+    startRamDownload() {
+        this.running = true;
+
+        const ramDownloadButton = getElement("ram-download-button");
+        ramDownloadButton.innerHTML = "Working...";
+
+        let progress = 0;
+        const finishProgress = randomInt(5, 11);
+        this.ramDownload = setInterval(() => {
+            progress += 0.1;
+            if (progress >= finishProgress) {
+                clearInterval(this.ramDownload);
+                getElement("ram-download-button").innerHTML = "Done!"
+
+                setTimeout(() => {
+                    this.fadeOut();
+                }, 2000);
+            } else {
+                const displayProgress = progress / finishProgress * 100;
+                getElement("ram-download-progress-bar").style.width = displayProgress + "%";
+                getElement("ram-download-progress-text").innerHTML = formatFloat(displayProgress) + "%";
+            }
+        }, 100);
+    }
+    fadeOut() {
+        let displayOpacity = 1;
+        this.fadeInterval = setInterval(() => {
+            displayOpacity -= 0.05;
+            if (displayOpacity <= 0) {
+                clearInterval(this.fadeInterval);
+                this.hidePopup();
+            } else {
+                this.displayObj.style.opacity = displayOpacity;
+            }
+        }, 50);
+    }
+    showPopup() {
+        super.showPopup();
+        this.displayObj.style.opacity = 1;
+        getElement("ram-download-button").innerHTML = "Download";
+        getElement("ram-download-progress-bar").style.width = "0px";
+    }
+    hidePopup() {
+        super.hidePopup();
+        this.running = false;
+    }
+}
+
+class BankDetails extends Popup {
+    constructor(popupDataName) {
+        super(popupDataName);
+
+        getElement("bank-details-submit").addEventListener("click", () => this.submit());
+    }
+    submit() {
+        const valid = this.checkDetails();
+        if (valid != true) {
+            getElement("bank-details-error").innerHTML = valid;
+        } else {
+            getElement("bank-details-error").innerHTML = "Accepted.";
+        }
+
+        setTimeout(() => {
+            this.hidePopup();
+            getElement("bank-details-error").innerHTML = "";
+        }, 2000);
+    }
+    checkDetails() {
+        const userInput = getElement("bank-details-input").value;
+        const inputChars = userInput.split("");
+
+        const numbers = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+        let numberCount = 0;
+        for (let i = 0; i < inputChars.length; i++) {
+            if (numbers.indexOf(parseInt(inputChars[i])) >= 0) numberCount++;
+        }
+
+        if (this.checkType == 1) {
+            if (!userInput.includes("pass")) {
+                return "Must contain the word 'pass'.";
+            }
+
+            const specialCharacters = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")"];
+            let containsSpecial = false;
+            for (let i = 0; i < specialCharacters.length; i++) {
+                if (userInput.includes(specialCharacters[i])) {
+                    containsSpecial = true;
+                    break;
+                }
+            }
+            if (!containsSpecial) {
+                return "Must contain a special character.";
+            }
+            if (numberCount < 3) {
+                return "Must contain at least 3 numbers.";
+            }
+
+            if (inputChars[2] != "_") {
+                return "Third character must be an underscore.";
+            }
+
+            if (inputChars[inputChars.length - 1] != "?") {
+                return "Last character must be a question mark.";
+            }
+        } else if (this.checkType == 2) {
+            if (inputChars[0] != "(") {
+                return "Must start with opening bracket.";
+            }
+
+            if (numberCount != 4) {
+                return "Must have exactly 4 numbers.";
+            }
+
+            let characterIsNumber = false;
+            for (let i = 0; i < inputChars.length; i++) {
+                if (numbers.indexOf(parseInt(inputChars[i])) >= 0) {
+                    if (characterIsNumber) {
+                        return "All numbers must be separated.";
+                    }
+                    characterIsNumber = true;
+                } else {
+                    characterIsNumber = false;
+                }
+            }
+
+            let equalsCount = 0;
+            for (let i = 0; i < inputChars.length; i++) {
+                if (inputChars[i] == "=") {
+                    equalsCount++;
+                }
+            }
+            if (equalsCount != 2) {
+                return "Must contain exactly 2 equals signs.";
+            }
+
+            let lastIsDot = true;
+            for (let i = 0; i < inputChars.length; i++) {
+                if (inputChars[i] != ".") {
+                    if (!lastIsDot) {
+                        return "All characters must be separated by dots.";
+                    }
+                    lastIsDot = false;
+                } else {
+                    lastIsDot = true;
+                }
+            }
+        } else {
+            if (inputChars.length < 10) {
+                return "Must be at least 10 characters long.";
+            }
+
+            let usedCharacters = [];
+            for (let i = 0; i < inputChars.length; i++) {
+                if (usedCharacters.indexOf(inputChars[i]) != -1) {
+                    return "Must not contain any of the same characters.";
+                }
+                usedCharacters.push(inputChars[i]);
+            }
+
+            if (numberCount < 2) {
+                return "Must contain at least 2 numbers.";
+            }
+
+            let sum = 0;
+            for (let i = 0; i < inputChars.length; i++) {
+                if (numbers.indexOf(parseInt(inputChars[i])) >= 0) {
+                    sum += parseInt(inputChars[i]);
+                }
+            }
+            if (sum != 20) {
+                return "The sum of the numbers must be 20.";
+            }
+
+            if (inputChars.length > 12) {
+                return "Must contain at most 12 characters.";
+            }
+        }
+        return true;
+    }
+    showPopup() {
+        super.showPopup();
+        // this.checkType = randomInt(1, 3, true);
+        this.checkType = 1;
     }
 }

@@ -359,9 +359,9 @@
                         <img src="images/bigchunky.png" id="chunkyImg" alt="Chunky">
                         <p id="chunky-status" class="hidden"></p>
                         <p id="chunky-reward">+20% points. (0 points)</p>
-                        <div id="chunky-rage-meter">
-                            <div id="chunky-progress-bar"></div>
-                            <div id="chunky-progress-text">0%</div>
+                        <div id="chunky-rage-meter" class="progress-bar-container">
+                            <div id="chunky-progress-bar" class="progress-bar"></div>
+                            <div id="chunky-progress-text" class="progress-bar-text">0%</div>
                         </div>
                     </div>
                     <div class="button-container" id="chunky-button-container">
@@ -463,7 +463,7 @@
                             <img src="images/warning-icon.png" class="warning" alt="Warning!">
                             <h3>Uh oh!</h3>
                         </div>
-                        <p>Chunky's bananas have fallen off the tree! Save them before they disappear!</p>
+                        <p>Chunky's bananas have fallen off his tree! Save them before they disappear!</p>
                         <div class="chunky-tree">
                             <img src="images/tree.png" alt="Chunky's Banana Tree">
                         </div>
@@ -515,16 +515,50 @@
                 </div>
             </div>
             <div class="popup-container-2 hidden xp-font chunky-debuff dark-popup" id="chunky-message">
-                    <h3 class="popup-title" id="chunky-message-title">
-                        <img src="images/xp-icons/close-gray.png" class="close-icon close-gray" id="chunky-message-close" alt="Close">
-                        message_from_chunky
-                    </h3>
-                    <div class="display-container">
-                        <p>Dear user. Chunky has investigated your activities, and has decided to counterract your suspicious projects by temporarily decreasing your productivity.</p>
-                        <p>Do better.</p>
-                        <p>- The Chunk.</p>
+                <h3 class="popup-title" id="chunky-message-title">
+                    <img src="images/xp-icons/close-gray.png" class="close-icon close-gray" id="chunky-message-close" alt="Close">
+                    message_from_chunky
+                </h3>
+                <div class="display-container">
+                    <p>Dear user. Chunky has investigated your activities, and has decided to counterract your suspicious projects by temporarily decreasing your productivity.</p>
+                    <p>Do better.</p>
+                    <p>- The Chunk.</p>
+                </div>
+            </div>
+
+            <div class="popup-container-1 hidden xp-font" id="ram-download">
+                <h3 class="popup-title" id="ram-download-title">Free RAM Download</h3>
+                <div class="display-container">
+                    <div class="popup-content">
+                        <div class="popup-subtitle cf">
+                            <img src="images/warning-icon.png" class="warning" alt="Warning!">
+                            <h3>Limited timed offer!</h3>
+                        </div>
+                        <p>Download several 32 RAM's into your Laptop for free viruse!</p>
+                        <div id="ram-download-progress" class="progress-bar-container">
+                            <div id="ram-download-progress-bar" class="progress-bar"></div>
+                            <div id="ram-download-progress-text" class="progress-bar-text">0%</div>
+                        </div>
+                        <div id="ram-download-button" class="xp-button centered">Download</div>
                     </div>
                 </div>
+            </div>
+
+            <div class="popup-container-1 hidden xp-font" id="bank-details">
+                <h3 class="popup-title" id="bank-details-title">Shipping compeny</h3>
+                <div class="display-container">
+                    <div class="popup-content">
+                        <div class="popup-subtitle cf">
+                            <img src="images/warning-icon.png" class="warning" alt="Warning!">
+                            <h3>In order to proces your purchase, we requre the Details.</h3>
+                        </div>
+                        <p>Insert bank acount details below!</p>
+                        <input id="bank-details-input" type="text">
+                        <div id="bank-details-error"></div>
+                        <div id="bank-details-submit" class="xp-button centered">Submit</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </html>

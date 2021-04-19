@@ -55,10 +55,3 @@
         margin-top: 0em;
     }
 }
-
-#lorem-status.generating {
-    color: #0066cf;
-}
-#lorem-status:not(.generating) {
-    color: rgb(158, 1, 1);
-}

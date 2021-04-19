@@ -86,3 +86,5 @@ As a new employee, we suggest you look at our "About" page.
 We have designated you one Windows XP computer for the cause.
 
 Dear Employees, it has come to our attention that a new currency has been 
+
+If you see any suspicious popups, just close them. It shouldn't be that hard...

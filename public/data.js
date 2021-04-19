@@ -213,5 +213,43 @@ const data = {
         unlocked: false,
         id: 11,
         from: 4
+    },
+    ramDownload: {
+        name: "ram-download",
+        stats: {
+            description: "The first implementation of digital RAM download. Viruses not sold seperately.",
+            special: "",
+            points: 8,
+            redisplayTime: 30000,
+            cost: 350
+        },
+        display: {
+            top: "8em",
+            left: "80%",
+            transform: "translateX(-50%)",
+            imgSrc: "images/popup-schema-icons/rain-icon.png"
+        },
+        unlocked: false,
+        id: 12,
+        from: 5
+    },
+    bankDetails: {
+        name: "bank-details",
+        stats: {
+            description: "",
+            special: "",
+            points: 20,
+            redisplayTime: 45000,
+            cost: 500
+        },
+        display: {
+            top: "8em",
+            left: "20%",
+            transform: "translateX(-50%)",
+            imgSrc: "images/popup-schema-icons/rain-icon.png"
+        },
+        unlocked: false,
+        id: 13,
+        from: 6
     }
 }
