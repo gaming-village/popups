@@ -2,19 +2,19 @@
 function randomInt(min, max, inclusive) {
     inclusive = inclusive || false;
     const add = inclusive ? 1 : 0;
-    let randomInt = Math.floor(Math.random() * (max - min + add)) + min;
+    const randomInt = Math.floor(Math.random() * (max - min + add)) + min;
     return randomInt;
 }
 function randomFloat(min, max) {
-    let randomFloat = Math.random() * (max - min) + min;
+    const randomFloat = Math.random() * (max - min) + min;
     return randomFloat;
 }
 function getElement(elementName) {
-    let element = document.querySelector("#" + elementName);
+    const element = document.querySelector("#" + elementName);
     return element;
 }
 function formatFloat(input) {
-    let formattedFloat = Math.round((input + Number.EPSILON) * 100) / 100;
+    const formattedFloat = Math.round((input + Number.EPSILON) * 100) / 100;
     return formattedFloat;
 }
 
@@ -42,6 +42,7 @@ function generatePopups() {
     popups.chunkyPlantation = new ChunkyPlantation("chunkyPlantation");
     popups.ramDownload = new RamDownload("ramDownload");
     popups.bankDetails = new BankDetails("bankDetails");
+    popups.expandinator = new Expandinator("expandinator");
 }
 
 function generateSemiPopups() {
@@ -88,9 +89,8 @@ function multiplyPoints(mult, force) {
 function displayPoints() {
     getElement("total-lorem-mined").innerHTML = formatFloat(Game.stats.totalLoremMined);
 
-    let displayPoints = Math.round(points * 100) / 100;
-    document.querySelector("#pointCounter").innerHTML = displayPoints;
-    document.querySelector("#pointCounterContainer").classList.remove("hidden");
+    getElement("pointCounter").innerHTML = formatFloat(points);
+    getElement("pointCounterContainer").classList.remove("hidden");
 }
 
 function goToChangelog() {
@@ -105,27 +105,26 @@ function load() {
     generateSemiPopups();
     generateApplications();
 
-    dragElement(document.querySelector("#pointCounterContainer"), document.querySelector("#point-counter-title"));
+    dragElement(getElement("pointCounterContainer"), getElement("point-counter-title"));
 
     changeComputerHeight();
 
-    window.addEventListener("resize", () => {
-        changeComputerHeight();
-    });
+    window.addEventListener("resize", () => changeComputerHeight());
 
     setupDevtools();
+
+    getElement("header-title").addEventListener("click", () => getElement("devtools").classList.remove("hidden"));
 }
 
 function changeComputerHeight() {
-    let mainHeight = document.querySelector("#info-bar").getBoundingClientRect().height;
-    let windowHeight = window.innerHeight;
-    document.querySelector("#computer").style.height = windowHeight - mainHeight + "px";
+    const mainHeight = getElement("info-bar").getBoundingClientRect().height;
+    getElement("computer").style.height = window.innerHeight - mainHeight + "px";
 }
 
-var loremTemplate = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores, aliquid! Officia amet adipisci porro repellat deserunt vero quos ad id sint dolore iure odio reprehenderit dolores sed, molestias vitae dicta!";
+const loremTemplate = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores, aliquid! Officia amet adipisci porro repellat deserunt vero quos ad id sint dolore iure odio reprehenderit dolores sed, molestias vitae dicta!";
+const loremLength = loremTemplate.split("").length;
 var iterationCount = 0;
 var nextText = 400;
-var loremLength = loremTemplate.split("").length;
 
 const adTexts = [" Full version costs $204967.235 ", " Go to www.this.is.a.site for free viruses! "];
 
@@ -134,7 +133,7 @@ const adTexts = [" Full version costs $204967.235 ", " Go to www.this.is.a.site 
 function ipsumStep() {
     if (popups.luremImpsir.canLorem) {
         let currentCharacter = iterationCount % loremLength;
-        document.querySelector("#current-lorem-text").innerHTML += loremTemplate.split("")[currentCharacter];
+        getElement("current-lorem-text").innerHTML += loremTemplate.split("")[currentCharacter];
         currentCharacter++;
         iterationCount++;
         if (currentCharacter > loremLength) {
@@ -144,7 +143,7 @@ function ipsumStep() {
             // Create an ad.
             nextText += randomInt(80, 120);
             let ad = document.createElement("div");
-            document.querySelector("#loremContainer").appendChild(ad);
+            getElement("loremContainer").appendChild(ad);
             ad.classList.add("loremAd");
             ad.innerHTML = adTexts[randomInt(0, adTexts.length)];
             ad.addEventListener("click", () => {
@@ -152,9 +151,9 @@ function ipsumStep() {
             });
             
             // Update the current lorem text container.
-            document.querySelector("#current-lorem-text").id = "";
+            getElement("current-lorem-text").id = "";
             let newLoremContainer = document.createElement("span");
-            document.querySelector("#loremContainer").appendChild(newLoremContainer);
+            getElement("loremContainer").appendChild(newLoremContainer);
             newLoremContainer.id = "current-lorem-text";
         }
 
@@ -218,13 +217,14 @@ function generateLorumIpsum() {
     } else if (continued) {
         // When the button is clicked while active
         generating = !generating;
+        const loremStatus = getElement("lorem-status");
         if (generating) {
-            getElement("lorem-status").innerHTML =  "Generating...";
-            getElement("lorem-status").classList.add("generating");
+            loremStatus.innerHTML =  "Generating...";
+            loremStatus.classList.add("generating");
             loremInterval = setInterval(ipsumStep, 80);
         } else {
-            getElement("lorem-status").innerHTML =  "Stopped.";
-            getElement("lorem-status").classList.remove("generating");
+            loremStatus.innerHTML =  "Stopped.";
+            loremStatus.classList.remove("generating");
             clearInterval(loremInterval);
         }
     }
@@ -265,7 +265,7 @@ function createMiningEntry(amount, description) {
     }
 
     // Automatically remove the entry after some time.
-    const lastTime = 5000;
+    const lastTime = 7500;
     setTimeout(() => {
         // Find the index of the created entry.
         let entryIndex = -1;
@@ -285,18 +285,17 @@ function createMiningEntry(amount, description) {
 
 function hidePrompt() {
     continued = true;
-    document.querySelector("#loremButtonClick").classList.add("hidden");
+    getElement("loremButtonClick").classList.add("hidden");
 
-    document.querySelector("#a").classList.remove("unclickable");
+    getElement("a").classList.remove("unclickable");
 }
 
 function showCostPrompt() {
-    let costPrompt = document.querySelector("#loremButtonClick");
+    let costPrompt = getElement("loremButtonClick");
     costPrompt.classList.add("selected");
     costPrompt.classList.remove("hidden");
 
-    let loremButton = document.querySelector("#a");
-    loremButton.classList.add("unclickable");
+    getElement("a").classList.add("unclickable");
 }
 
 function engageChunky() {
@@ -305,10 +304,10 @@ function engageChunky() {
 }
 
 function chunky1() {
-    document.querySelector("#chunky1").classList.remove("hidden");
+    getElement("chunky1").classList.remove("hidden");
 }
 function chunky2() {
-    document.querySelector("#chunky2").classList.remove("hidden");
+    getElement("chunky2").classList.remove("hidden");
 }
 
 function dragElement(elmnt, start) {
@@ -340,7 +339,7 @@ function dragElement(elmnt, start) {
 
         // Stop the popup from being dragged outside
         let bounds = elmnt.getBoundingClientRect();
-        let containingBounds = document.querySelector("#computer").getBoundingClientRect();
+        let containingBounds = getElement("computer").getBoundingClientRect();
         if (bounds.x + bounds.width > containingBounds.width) {
             elmnt.style.left = containingBounds.width - bounds.width + "px";
         } else if (bounds.x < 0) {
@@ -385,26 +384,24 @@ function switchVisibility(elem) {
 function miscToolsSetup() {
     getElement("devtools-misc").addEventListener("click", () => {
         switchVisibility("misc-tools");
+        appendToDevtools(getElement("misc-tools"));
     });
-
-    appendToDevtools(getElement("misc-tools"));
 
     getElement("summon-chunky").addEventListener("click", () => {
         popups.chunky.activateChunky();
     });
 }
 function summonPopupSetup() {
-    document.querySelector("#devtools-summon").addEventListener("click", () => {
+    getElement("devtools-summon").addEventListener("click", () => {
         switchVisibility("summon-popup");
+        appendToDevtools(getElement("summon-popup"));
     });
-
-    appendToDevtools(document.querySelector("#summon-popup"));
 
     // Update the summon popup display
     let selectedPopups = {};
     let popupNames = Object.keys(popups);
     for (let i = 0; i < popupNames.length; i++) {
-        let newOption = document.querySelector("#summon-popup-base").cloneNode(true);
+        let newOption = getElement("summon-popup-base").cloneNode(true);
         newOption.id = "";
         newOption.classList.remove("hidden");
         getElement("summon-popup-unit-container").appendChild(newOption);
@@ -423,7 +420,7 @@ function summonPopupSetup() {
     }
 
     // Add the submit button functionality.
-    const submitButton = document.querySelector("#summon-popup-submit");
+    const submitButton = getElement("summon-popup-submit");
     submitButton.addEventListener("click", () => {
         for (let i = 0; i < popupNames.length; i++) {
             if (selectedPopups[popupNames[i]]) {
@@ -441,11 +438,11 @@ function summonPopupSetup() {
     });
 }
 function showSummonPopup() {
-    let summonPopup = document.querySelector("#summon-popup");
+    let summonPopup = getElement("summon-popup");
     summonPopup.classList.remove("hidden");
 }
 function appendToDevtools(element) {
-    let devBounds = document.querySelector("#devtools").getBoundingClientRect();
+    let devBounds = getElement("devtools").getBoundingClientRect();
     element.style.left = devBounds.x + devBounds.width + "px";
-    element.style.top = devBounds.y - document.querySelector("#computer").offsetTop + "px";
+    element.style.top = devBounds.y - getElement("computer").offsetTop + "px";
 }

@@ -251,5 +251,24 @@ const data = {
         unlocked: false,
         id: 13,
         from: 6
+    },
+    expandinator: {
+        name: "expandinator",
+        stats: {
+            description: "",
+            special: "",
+            points: 30,
+            redisplayTime: 40000,
+            cost: 550
+        },
+        display: {
+            top: "9em",
+            left: "40%",
+            transform: "translateX(-50%)",
+            imgSrc: "images/popup-schema-icons/rain-icon.png"
+        },
+        unlocked: false,
+        id: 14,
+        from: 7
     }
 }

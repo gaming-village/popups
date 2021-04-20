@@ -6,6 +6,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500&display=swap');
 
+/**  POPUPS  **/
+@import url(css/popups/other.css);
+
 html, body {
     width: 100%;
     height: 100%;
@@ -176,16 +179,6 @@ div#changelog {
     top: 2em;
     transform: translateX(-50%);
 }
-/* #loremContainer::before { /* The container's caption *
-    content: "Generate your lorem here.";
-    color: #222;
-    background-color: rgba(198, 220, 235, 0.6);
-    padding: 0 0.25em;
-    position: absolute;
-    left: 50%;
-    top: -0.65em;
-    transform: translateX(-50%);
-} */
 #computer #loremContainer::before { /* The container's caption */
     content: "Generate your lorem here.";
     font-size: 1em;
@@ -420,22 +413,38 @@ input[type=checkbox] {
     text-align: center;
     margin: 0.5em 0 0 0;
 }
-.popup-container-1 .button-container button, .popup-container-2 .button-container button {
+.button-container button {
+    color: #1c1c1c;
+    min-width: 6.5em;
+    text-align: left;
     font-family: "Windows"; /* Needed for some reason */
     font-size: 1em;
-    border: 1px solid black;
+    border: 1px solid rgba(0, 0, 0, 0.9);
     border-radius: 3px;
-    background-color: #fff;
+    background-image: linear-gradient(to bottom, rgb(255, 255, 240) 0%, rgba(255, 255, 240, 0.1) 100%);
     cursor: pointer;
+    box-shadow: -1px -1px 5px 0px rgba(30, 30, 30, 0.3) inset;
 }
-.popup-container-1 .close img {
-    height: 20px;
+.button-container button:hover {
+    color: #000;
+    background-color: rgba(255, 255, 255, 1);
+}
+.button-container button:active {
+    color: #555;
+    background-color: rgba(0, 0, 0, 0.05);
+}
+button.close-button {
+    padding: 1px 8px 1px 4px;
+    box-shadow: 0px -1px 3px 1px rgba(212, 12, 12, 0.6) inset, 0px 0px 2px 1px rgba(0, 0, 0, 0.6) inset;
+}
+.close-button::before {
+    content: "";
     width: 20px;
+    height: 20px;
+    background-image: url(images/close.png);
+    background-size: 20px 20px;
+    margin-right: 4px;
     float: left;
-}
-.popup-container-1 .close span {
-    display: inline-block;
-    margin: 0 0 0 0.1em;
 }
 
 
@@ -571,6 +580,7 @@ input[type=checkbox] {
     height: 1em;
     border: 1px solid #333;
     border-radius: 0.25em;
+    background-color: #fff;
     padding: 2px;
     margin-top: 0.5em;
     margin-left: 50%;
@@ -606,33 +616,12 @@ input[type=checkbox] {
     transform: translate(-50%, -50%);
 }
 #chunky-status {
-    text-align: center;
-}
-#chunky-status {
     color: rgb(255, 0, 0);
 }
 #chunky-reward {
     color: rgb(0, 255, 0);
-    text-align: center;
+    text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
 }
-/* #chunky-progress-bar {
-    width: 0%;
-    height: 100%;
-    border-radius: 0.25em;
-    background-color: rgb(43, 82, 255);
-    background-size: 30px 30px;
-    background-image: linear-gradient(
-        135deg,
-        #fff 25%,
-        transparent 25%,
-        transparent 50%,
-        #fff 50%,
-        #fff 75%,
-        transparent 75%,
-        transparent
-    );
-    animation: stripe-transform 3s forwards infinite linear;
-} */
 #chunky-progress-bar.changed {
     animation: stripe-transform 3s forwards infinite linear,
         changeChunkyProgress 1s forwards ease;
@@ -645,15 +634,6 @@ input[type=checkbox] {
         background-color: rgb(43, 82, 255);
     }
 }
-/* #chunky-progress-text {
-    color: #000;
-    font-size: 1em;
-    text-shadow: 0 0 5px #fff;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-} */
 #chunky-progress-text.red {
     color: rgb(255, 0, 0);
 }
@@ -724,119 +704,27 @@ input[type=checkbox] {
     color: rgb(158, 1, 1);
 }
 
-
-#ram-download {
-    width: 20em;
-}
-#ram-download-button {
-    margin-top: 0.5em;
-}
-
-
-#microsoft-antivirus {
-    width: 20em;
-}
-#browser-error {
-    width: 25em;
-}
-#microsoft-antivirus-clicked {
-    max-width: 15em;
-}
-
-/* Virus popup 3 */
-#rain {
-    width: 8em;
-    left: 25%;
-    top: 10%;
-}
-#rainCode {
-    color: rgb(0, 255, 0);
-}
-.popup-container-2 .close-icon {
+.close-icon {
     float: right;
     opacity: 0.75;
     margin-top: -0.1em;
     margin-right: -0.2em;
     cursor: pointer;
 }
-.popup-container-2 .close-icon:not(.close-gray):hover {
+.close-icon:not(.close-gray):hover {
     opacity: 1;
 }
-#computer .close-gray {
+.close-icon:active {
+    opacity: 0.75;
+}
+.close-gray {
     cursor: default;
-}
-
-/* Survey popup */
-#annual-survey {
-    width: 20em;
-    top: 1em;
-    left: 1em;
-}
-#annual-survey input {
-    font-family: "Windows";
-    font-size: 1em;
-    display: block;
-    padding: 0.1em 0.3em;
-    border: 1px solid black;
-    border-radius: 3px;
-    margin-bottom: 0.6em;
-}
-#annual-survey input::placeholder {
-    font-style: italic;
-}
-
-
-/* Adblock blocker */
-#adblock-blocker {
-    width: 25em;
-}
-#adblockExit.invisible {
-    opacity: 0;
-    cursor: default !important;
 }
 
 #pointCounterContainer {
     top: 11em;
     left: 70%;
     transform: translateX(-50%);
-}
-
-/* Ads */
-#ad1 {
-    left: 25%;
-    top: 75%;
-    transform: translate(-50%, -50%);
-}
-#ad2 {
-    left: 80%;
-    top: 75%;
-    transform: translate(-50%, -50%);
-}
-#ad2 div.display-container img {
-    max-width: 30vw;
-}
-#ad3 {
-    left: 70%;
-    top: 10%;
-    transform: translate(-50%, -50%);
-}
-#ad3 div.display-container img {
-    width: 12em;
-}
-#ad4 {
-    left: 45%;
-    top: 55%;
-    transform: translate(-50%, -50%);
-}
-#ad4 div.display-container img {
-    width: 17em;
-}
-#ad5 {
-    left: 2em;
-    top: 2em;
-}
-#ad5 div.display-container img {
-    width: 23em;
 }
 
 
@@ -891,41 +779,6 @@ input[type=checkbox] {
     cursor: pointer;
     display: inline-block;
     text-shadow: 0px 0px 2px white;
-}
-
-#chunky1 {
-    width: 15em;
-    height: 15em;
-    background-color: wheat;
-    border: 8px dashed khaki;
-    position: absolute;
-    bottom: 0;
-    left: 1em;
-}
-
-#chunky1 img {
-    width: 13em;
-}
-
-#chunky2 {
-    position: absolute;
-    top: 0;
-    left: 0;
-}
-
-#chunky2 img {
-    width: 8em;
-    animation: roll 2s;
-    animation-iteration-count: infinite;
-}
-
-#gaming {
-    width: 100%;
-    height: 10em;
-    background-image: url(images/chunky2.jpeg);
-    background-position: center;
-    animation: slide 0.5s;
-    animation-iteration-count: infinite;
 }
 
 #visitor {

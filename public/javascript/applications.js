@@ -9,7 +9,7 @@ class Application {
         dragElement(getElement(name), getElement(name + "-top"));
     }
     createNavPresence() {
-        this.navObject = document.querySelector("#application-template").cloneNode(true);
+        this.navObject = getElement("application-template").cloneNode(true);
         this.navObject.id = "";
         this.navObject.classList.remove("hidden");
         getElement("computer-nav").appendChild(this.navObject);

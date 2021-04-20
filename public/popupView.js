@@ -4,13 +4,13 @@ function loadSchema() {
     // Update display objects
     for (let i = 0; i < popups.length; i++) {
         // Create the popup unit.
-        const copy = document.querySelector("#popup-template").cloneNode(true);
+        const copy = getElement("popup-template").cloneNode(true);
         copy.id = data[popups[i]].name;
         copy.style.left = data[popups[i]].display.left;
         copy.style.top = data[popups[i]].display.top;
         copy.style.transform = data[popups[i]].display.transform;
 
-        document.querySelector("#popup-schema").appendChild(copy);
+        getElement("popup-schema").appendChild(copy);
         copy.classList.remove("hidden");
 
         copy.querySelector(".popup-icon").src = data[popups[i]].display.imgSrc;
@@ -29,8 +29,8 @@ function loadSchema() {
                 if (data[popups[i]].from == data[popups[k]].id && !data[popups[k]].unlocked && !data[popups[i]].unlocked) {
                     console.log("did game:");
                     console.log(data[popups[i]].name);
-                    document.querySelector("#" + data[popups[i]].name).classList.add("hidden");
-                    // console.log(document.querySelector("#" + data[popups[i]].name));
+                    getElement("" + data[popups[i]].name).classList.add("hidden");
+                    // console.log(getElement("" + data[popups[i]].name));
                 }
             }
         }
@@ -45,8 +45,8 @@ function loadSchema() {
             for (let k = 0; k < popups.length; k++) {
                 if (data[popups[k]].id == currentPopup.from && data[popups[k]].unlocked) {
                     parentPopup = data[popups[k]];
-                    let currentPopupObj = document.querySelector("#" + currentPopup.name);
-                    let parentPopupObj = document.querySelector("#" + parentPopup.name);
+                    let currentPopupObj = getElement("" + currentPopup.name);
+                    let parentPopupObj = getElement("" + parentPopup.name);
                     drawLine(currentPopupObj, parentPopupObj, currentPopup.unlocked);
                 }
             }
@@ -61,7 +61,7 @@ function loadSchema() {
 
             // Display the hover box above the unit.
             let unitRect = popupUnits[i].getBoundingClientRect();
-            let popupHover = document.querySelector("#popup-hover");
+            let popupHover = getElement("popup-hover");
             popupHover.classList.remove("hidden");
             popupHover.style.bottom = document.documentElement.clientHeight - unitRect.y + 7.5 + "px"; // Aka distance to cell from bottom + styling
             popupHover.style.left = unitRect.left + unitRect.width / 2 + "px";
@@ -71,34 +71,34 @@ function loadSchema() {
                 let unitInfo = data[Object.keys(data)[k]];
                 if (popupUnits[i].id == unitInfo.name) {
                     if (unitInfo.unlocked) {
-                        document.querySelector("#popup-hover").classList.add("selected");
-                        document.querySelector("#hover-cost-img").classList.add("hidden");
+                        getElement("popup-hover").classList.add("selected");
+                        getElement("hover-cost-img").classList.add("hidden");
                     } else {
-                        document.querySelector("#popup-hover").classList.remove("selected");
-                        document.querySelector("#hover-cost-img").classList.remove("hidden");
-                        document.querySelector("#hover-cost-img").innerHTML = unitInfo.stats.cost;
+                        getElement("popup-hover").classList.remove("selected");
+                        getElement("hover-cost-img").classList.remove("hidden");
+                        getElement("hover-cost-img").innerHTML = unitInfo.stats.cost;
                     }
-                    document.querySelector("#hover-name").innerHTML = unitInfo.name;
-                    document.querySelector("#hover-unlock-type").innerHTML = unitInfo.unlocked ? "(UNLOCKED)" : "(LOCKED)";
+                    getElement("hover-name").innerHTML = unitInfo.name;
+                    getElement("hover-unlock-type").innerHTML = unitInfo.unlocked ? "(UNLOCKED)" : "(LOCKED)";
                     // NOTE TO FUTURE SELF: MOVE TO HIGHER UP IF FUNCTION.
                     // NOTE TO FUTURE SELF: MOVE TO HIGHER UP IF FUNCTION.
                     if (unitInfo.unlocked) {
                         if (typeof unitInfo.stats.points == "object") {
-                            document.querySelector("#hover-points").innerHTML = "+" + unitInfo.stats.points.min + "-" + unitInfo.stats.points.max + " points";
+                            getElement("hover-points").innerHTML = "+" + unitInfo.stats.points.min + "-" + unitInfo.stats.points.max + " points";
                         } else {
-                            document.querySelector("#hover-points").innerHTML = "+" + unitInfo.stats.points + " point" + (unitInfo.stats.points == 1 ? "" : "s");
+                            getElement("hover-points").innerHTML = "+" + unitInfo.stats.points + " point" + (unitInfo.stats.points == 1 ? "" : "s");
                         }
                     } else {
-                        document.querySelector("#hover-points").innerHTML = "";
+                        getElement("hover-points").innerHTML = "";
                     }
-                    document.querySelector("#hover-special").innerHTML = unitInfo.stats.special;
-                    document.querySelector("#hover-description").innerHTML = unitInfo.stats.description;
+                    getElement("hover-special").innerHTML = unitInfo.stats.special;
+                    getElement("hover-description").innerHTML = unitInfo.stats.description;
                 }
             }
         });
         popupUnits[i].addEventListener("mouseout", function() {
             document.body.classList.remove("unitFocused");
-            let popupHover = document.querySelector("#popup-hover");
+            let popupHover = getElement("popup-hover");
             popupHover.classList.add("hidden");
         });
     }
@@ -119,7 +119,7 @@ function drawLine(startObj, endObj, unlocked) {
 
     let angle = Math.atan2(lastObj[1] - firstObj[1], lastObj[0] - firstObj[0]) * 180 / Math.PI;
 
-    let schemaObj = document.querySelector("#popup-schema");
+    let schemaObj = getElement("popup-schema");
     let lineObj = document.createElement("div");
     lineObj.classList.add("schema-line");
     schemaObj.appendChild(lineObj);

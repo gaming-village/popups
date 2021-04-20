@@ -18,7 +18,7 @@
     <body onload="LoadData(); load();">
         <div id="info-bar">
             <div id="header">
-                <h1 class="xp-font">Lorem Ipsum Generator</h1>
+                <h1 class="xp-font" id="header-title">Lorem Ipsum Generator</h1>
                 <h2 class="xp-font">The most trusted generator on the web!</h2>
             </div>
 
@@ -108,7 +108,7 @@
             
 
             <!-- Devtools -->
-            <div class="popup-container-2 xp-font" id="devtools">
+            <div class="popup-container-2 xp-font hidden" id="devtools">
                 <h3 class="popup-title" id="devtools-title">
                     Devtools
                 </h3>
@@ -188,8 +188,7 @@
                     </div>
                     <div class="button-container">
                         <button>Send money</button>
-                        <button onclick="hidePrompt();" class="close">
-                            <img src="images/close.png" alt="Close">
+                        <button onclick="hidePrompt();" class="close-button">
                             Ok.
                         </button>
                     </div>
@@ -209,9 +208,8 @@
                             <p class="hidden closePopup" id="iphonePopupMoveText">Looks like you tried to close this popup!</p>
                         </div>
                         <div class="button-container">
-                            <button class="close" id="free-iPhone-close">
-                                <img src="images/close.png" alt="Close">
-                                <span>close down.</span>
+                            <button class="close-button" id="free-iPhone-close">
+                                close down.
                             </button>
                             <button>purchese!</button>
                         </div>
@@ -231,8 +229,7 @@
                     </div>
                     <div class="button-container">
                         <button id="adblock-blocker-close">kill adblock</button>
-                        <button id="adblockExit" class="close">
-                            <img src="images/close.png" alt="Close">
+                        <button id="adblockExit" class="close-button">
                             close .
                         </button>
                     </div>
@@ -255,9 +252,8 @@
                     </div>
                     <div class="button-container">
                         <button id="microsoft-antivirus-upgrade">upgrade System</button>
-                        <button id="microsoft-antivirus-close" class="close">
-                            <img src="images/close.png" alt="Close">
-                            <span>go away!</span>
+                        <button id="microsoft-antivirus-close" class="close-button">
+                            Go away!
                         </button>
                     </div>
                 </div>
@@ -357,8 +353,8 @@
                             <h3>Looks like Chunky found a virus!</h3>
                         </div>
                         <img src="images/bigchunky.png" id="chunkyImg" alt="Chunky">
-                        <p id="chunky-status" class="hidden"></p>
-                        <p id="chunky-reward">+20% points. (0 points)</p>
+                        <p id="chunky-status" class="hidden center"></p>
+                        <p id="chunky-reward" class="center">+20% points. (0 points)</p>
                         <div id="chunky-rage-meter" class="progress-bar-container">
                             <div id="chunky-progress-bar" class="progress-bar"></div>
                             <div id="chunky-progress-text" class="progress-bar-text">0%</div>
@@ -366,9 +362,8 @@
                     </div>
                     <div class="button-container" id="chunky-button-container">
                         <button onclick="engageChunky();">Remove virus</button>
-                        <button class="close" id="chunky-close">
-                            <img src="images/close.png" alt="Close">
-                            <span>go away!</span>
+                        <button class="close-button" id="chunky-close">
+                            go away!
                         </button>
                     </div>
                 </div>
@@ -410,14 +405,6 @@
                 <div class="display-container">
                     <p class="incorrect-text">INCORRECT</p>
                 </div>
-            </div>
-            <div id="chunky1" class="hidden">
-                <h3>Uh oh! Looks like Chunky did an oopsie!</h3>
-                <div id="gaming"></div>
-                <p>You, the lesser chimp, have been outsmarted by Chunky once again.</p>
-            </div>
-            <div id="chunky2" class="hidden">
-                <img src="images/uhoh.jpeg" alt="Chonkers">
             </div>
 
             <div class="popup-container-2 hidden xp-font chunky-virus-copy" id="chunky-virus">
@@ -556,6 +543,24 @@
                         <input id="bank-details-input" type="text">
                         <div id="bank-details-error"></div>
                         <div id="bank-details-submit" class="xp-button centered">Submit</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="popup-container-1 hidden xp-font" id="expandinator">
+                <h3 class="popup-title" id="expandinator-title">The Expandinator</h3>
+                <div class="display-container">
+                    <div class="popup-content">
+                        <div class="popup-subtitle cf">
+                            <img src="images/warning-icon.png" class="warning" alt="Warning!">
+                            <h3 class="center">He expanding .</h3>
+                        </div>
+                        <p id="expandinator-timer" class="center"></p>
+                    </div>
+                    <div class="button-container">
+                        <button id="expandinator-close" class="close-button">
+                            Begone
+                        </button>
                     </div>
                 </div>
             </div>

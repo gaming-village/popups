@@ -14,8 +14,8 @@ class BaseStructure {
 class Popup extends BaseStructure {
     constructor(popupDataName) {
         super();
-        this.displayObj = document.querySelector("#" + data[popupDataName].name);
-        dragElement(this.displayObj, document.querySelector("#" + this.displayObj.id + "-title"));
+        this.displayObj = getElement("" + data[popupDataName].name);
+        dragElement(this.displayObj, getElement("" + this.displayObj.id + "-title"));
         this.popupDataName = popupDataName;
         this.displayName = this.getDisplayName();
         this.displayed = false;
@@ -75,16 +75,16 @@ class MicrosoftAntivirus extends Popup {
         super(popupDataName);
 
         // Close button
-        document.querySelector("#microsoft-antivirus-close").addEventListener("click", () => {
+        getElement("microsoft-antivirus-close").addEventListener("click", () => {
             this.hidePopup();
         });
         // Upgrade system button
-        document.querySelector("#microsoft-antivirus-upgrade").addEventListener("click", () => {
+        getElement("microsoft-antivirus-upgrade").addEventListener("click", () => {
             // Show the clicked popup
-            let clicked = document.querySelector("#microsoft-antivirus-clicked");
+            let clicked = getElement("microsoft-antivirus-clicked");
             clicked.classList.remove("hidden");
             let bounds = this.displayObj.getBoundingClientRect();
-            let computerBounds = document.querySelector("#computer").getBoundingClientRect();
+            let computerBounds = getElement("computer").getBoundingClientRect();
             let xPos = bounds.x + bounds.width/2;
             clicked.style.left = xPos / computerBounds.width * 100 + "%";
             let yPos = bounds.y;
@@ -100,19 +100,19 @@ class LuremImpsir extends Popup {
         this.canLorem = true;
         this.loremTime = 5;
 
-        document.querySelector("#loremTimeRemaining").addEventListener("click", () => {
+        getElement("loremTimeRemaining").addEventListener("click", () => {
             this.hidePopup();
         });
     }
     showPopup() {
         super.showPopup();
         this.canLorem = false;
-        document.querySelector("#loremContainer").classList.remove("canLorem");
+        getElement("loremContainer").classList.remove("canLorem");
         this.displayObj.classList.remove("hidden");
         let updateLoremText = setInterval(() => {
             // Update lorem time.
             let displayTime = Math.round((this.loremTime + Number.EPSILON) * 100) / 100;
-            let timeObject = document.querySelector("#loremTimeRemaining");
+            let timeObject = getElement("loremTimeRemaining");
             timeObject.innerHTML = "continue (" + displayTime + ")";
 
             this.loremTime -= 0.01;
@@ -124,10 +124,10 @@ class LuremImpsir extends Popup {
         }, 10);
     }
     hidePopup() {
-        if (document.querySelector("#loremTimeRemaining").classList.contains("clickable")) {
+        if (getElement("loremTimeRemaining").classList.contains("clickable")) {
             super.hidePopup();
-            document.querySelector("#loremContainer").classList.add("canLorem");
-            document.querySelector("#loremTimeRemaining").classList.remove("clickable");
+            getElement("loremContainer").classList.add("canLorem");
+            getElement("loremTimeRemaining").classList.remove("clickable");
             this.canLorem = true;
             this.loremTime = 5;
             this.displayObj.classList.add("hidden");
@@ -138,7 +138,7 @@ class BrowserError extends Popup {
     constructor(popupDataName) {
         super(popupDataName);
         this.moveInterval;
-        document.querySelector("#browser-error-close").addEventListener("click", () => {
+        getElement("browser-error-close").addEventListener("click", () => {
             this.hidePopup();
         });
     }
@@ -156,23 +156,23 @@ class BrowserError extends Popup {
 class FreeIPhone extends Popup {
     constructor(popupDataName) {
         super(popupDataName);
-        document.querySelector("#free-iPhone-close").addEventListener("click", () => {
+        getElement("free-iPhone-close").addEventListener("click", () => {
             this.hidePopup();
         });
-        document.querySelector("#free-iPhone-close").addEventListener("mouseenter", () => {
+        getElement("free-iPhone-close").addEventListener("mouseenter", () => {
             this.popupHover();
         });
     }
     showPopup() {
         super.showPopup();
-        document.querySelector("#iphonePopupMoveText").classList.add("hidden");
+        getElement("iphonePopupMoveText").classList.add("hidden");
         this.moveToRandomPosition(3); // Needed due to the hover movement
     }
     popupHover() {
         setTimeout(() => {
             if (!this.displayObj.classList.contains("hidden")) {
                 this.moveToRandomPosition(3);
-                document.querySelector("#iphonePopupMoveText").classList.remove("hidden");
+                getElement("iphonePopupMoveText").classList.remove("hidden");
             }
         }, Math.random() * 200 + 75);
     }
@@ -187,7 +187,7 @@ class Rain extends Popup {
         this.letters = [];
         this.totalSapAmount = 0;
 
-        document.querySelector("#rain-close-button").addEventListener("click", () => {
+        getElement("rain-close-button").addEventListener("click", () => {
             this.hidePopup();
         })
     }
@@ -226,13 +226,13 @@ class Rain extends Popup {
         for (let i = 0; i < 17; i++) {
             result += symbols[randomInt(0, symbols.length)];
         }
-        document.querySelector("#rainCode").innerHTML = result;
+        getElement("rainCode").innerHTML = result;
     }
 }
 class RainText {
     constructor() {
         this.displayObj = document.createElement("div");
-        document.querySelector("#computer").appendChild(this.displayObj);
+        getElement("computer").appendChild(this.displayObj);
         this.displayObj.classList.add("letter");
         this.displayObj.style.left = Math.random() * 100 + "vw";
         let letterCharacters = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")"];
@@ -271,7 +271,7 @@ class Visitor extends Popup {
                 2: "3x points (5s)"
             }
         };
-        document.querySelector("#visitor-open-button").addEventListener("click", () => {
+        getElement("visitor-open-button").addEventListener("click", () => {
             this.spinBox();
             setTimeout(() => {
                 this.openBox();
@@ -279,16 +279,16 @@ class Visitor extends Popup {
         });
     }
     spinBox() {
-        document.querySelector("#visitor-open-button").style.pointerEvents = "none";
-        document.querySelector("#visitor-status").innerHTML = "Spinning...";
-        document.querySelector("#visitor-status").classList.remove("specialReward");
+        getElement("visitor-open-button").style.pointerEvents = "none";
+        getElement("visitor-status").innerHTML = "Spinning...";
+        getElement("visitor-status").classList.remove("specialReward");
         this.visitorStatusType = 0;
         this.updateStatusInterval = setInterval(() => {
             this.visitorStatusType = this.visitorStatusType == 0 ? 1 : 0;
             if (this.visitorStatusType == 0) {
-                document.querySelector("#visitor-status").innerHTML = "Spinning..";
+                getElement("visitor-status").innerHTML = "Spinning..";
             } else {
-                document.querySelector("#visitor-status").innerHTML = "Spinning...";
+                getElement("visitor-status").innerHTML = "Spinning...";
             }
         }, 200);
 
@@ -305,9 +305,9 @@ class Visitor extends Popup {
             if (typeof randomReward == "number") {
                 let prefix = randomReward > 0 ? "+" : "";
                 let suffix = randomReward == -1 ? "" : "s";
-                document.querySelector("#visitor-value").innerHTML = prefix + randomReward + " point" + suffix;
+                getElement("visitor-value").innerHTML = prefix + randomReward + " point" + suffix;
             } else {
-                document.querySelector("#visitor-value").innerHTML = randomReward;
+                getElement("visitor-value").innerHTML = randomReward;
             }
 
             // Respin
@@ -329,17 +329,17 @@ class Visitor extends Popup {
             let s = "s";
             if ((this.currentReward == 1) || (this.currentReward == -1)) s = "";
             if (this.currentReward > 0) {
-                document.querySelector("#visitor-value").innerHTML = "+" + this.currentReward + " point" + s + "!";
-                document.querySelector("#visitor-status").innerHTML = "Yay!";
+                getElement("visitor-value").innerHTML = "+" + this.currentReward + " point" + s + "!";
+                getElement("visitor-status").innerHTML = "Yay!";
             } else {
-                document.querySelector("#visitor-value").innerHTML = this.currentReward + " point" + s;
-                document.querySelector("#visitor-value").classList.add("negativeViewerReward");
-                document.querySelector("#visitor-status").innerHTML = "Aww...";
+                getElement("visitor-value").innerHTML = this.currentReward + " point" + s;
+                getElement("visitor-value").classList.add("negativeViewerReward");
+                getElement("visitor-status").innerHTML = "Aww...";
             }
         } else {
             // Special
-            document.querySelector("#visitor-status").innerHTML = "Special!";
-            document.querySelector("#visitor-status").classList.add("specialReward");
+            getElement("visitor-status").innerHTML = "Special!";
+            getElement("visitor-status").classList.add("specialReward");
             
             // Show 3 random popups
             if (this.currentReward == "Popup wave") {
@@ -387,10 +387,10 @@ class Visitor extends Popup {
     showPopup() {
         super.showPopup();
         this.displayObj.style.opacity = 1;
-        document.querySelector("#visitor-open-button").style.pointerEvents = "visible";
-        document.querySelector("#visitor-value").innerHTML = "??";
-        document.querySelector("#visitor-value").classList.remove("negativeViewerReward");
-        document.querySelector("#visitor-status").innerHTML = "";
+        getElement("visitor-open-button").style.pointerEvents = "visible";
+        getElement("visitor-value").innerHTML = "??";
+        getElement("visitor-value").classList.remove("negativeViewerReward");
+        getElement("visitor-status").innerHTML = "";
     }
     hidePopup() {
         this.displayOpacity = 1;
@@ -409,7 +409,7 @@ class PointIncrementText {
     constructor(pointIncrement) {
         this.displayObj = document.createElement("div");
         this.displayObj.innerHTML = Math.round(pointIncrement * 100) / 100;
-        document.querySelector("#pointIncrementTextContainer").appendChild(this.displayObj);
+        getElement("pointIncrementTextContainer").appendChild(this.displayObj);
         this.displayObj.classList.add("pointIncrementText");
         if (pointIncrement < 0) this.displayObj.classList.add("negativePointIncrement");
         this.topPos = 0;
@@ -432,7 +432,7 @@ class Chunky extends Popup {
         super(popupDataName);
         this.chunkyRage = 0;
 
-        document.querySelector("#chunky-close").addEventListener("click", () => {
+        getElement("chunky-close").addEventListener("click", () => {
             this.hidePopup();
         });
     }
@@ -440,23 +440,23 @@ class Chunky extends Popup {
         super.showPopup();
 
         // Reset the progress bar text colour.
-        document.querySelector("#chunky-progress-text").classList.remove("red");
+        getElement("chunky-progress-text").classList.remove("red");
         // Make the buttons clickable.
         this.displayObj.querySelector(".button-container").classList.add("clickable");
-        document.querySelector("#chunky-reward").classList.add("hidden");
+        getElement("chunky-reward").classList.add("hidden");
         getElement("chunky-button-container").classList.remove("hidden");
     }
     hidePopup() {
         this.chunkyRage += 34 + randomInt(0, 11);
         let displayText = Math.round((this.chunkyRage + Number.EPSILON) * 100) / 100;
-        document.querySelector("#chunky-progress-text").innerHTML = displayText + "%";
+        getElement("chunky-progress-text").innerHTML = displayText + "%";
 
-        let progressBar = document.querySelector("#chunky-progress-bar");
+        let progressBar = getElement("chunky-progress-bar");
         progressBar.style.width = displayText + "%";
         progressBar.classList.add("changed");
 
         // Show the chunky status text.
-        let chunkyStatus = document.querySelector("#chunky-status");
+        let chunkyStatus = getElement("chunky-status");
         chunkyStatus.classList.remove("hidden");
         if (this.chunkyRage <= 25) {
             chunkyStatus.innerHTML = "Chunky is appeased.";
@@ -472,13 +472,13 @@ class Chunky extends Popup {
         }
 
         if (this.chunkyRage <= 99) {
-            let chunkyReward = document.querySelector("#chunky-reward");
+            let chunkyReward = getElement("chunky-reward");
             chunkyReward.classList.remove("hidden");
             let displayPoints = Math.round((points + Number.EPSILON) * 100) / 100;
             chunkyReward.innerHTML = "+20% points. (" + displayPoints + " points)";
         }
 
-        document.querySelector("#chunky-progress-text").classList.add("red");
+        getElement("chunky-progress-text").classList.add("red");
 
         this.displayObj.querySelector(".button-container").classList.remove("clickable");
         // Hide the buttons
@@ -510,10 +510,10 @@ class AnnualSurvey extends Popup {
     constructor(popupDataName) {
         super(popupDataName);
 
-        document.querySelector("#survey-start").addEventListener("click", () => {
+        getElement("survey-start").addEventListener("click", () => {
             this.startSurvey();
         });
-        document.querySelector("#survey-submit").addEventListener("click", () => {
+        getElement("survey-submit").addEventListener("click", () => {
             this.submitSurvey();
         });
     }
@@ -549,7 +549,7 @@ class AnnualSurvey extends Popup {
         super.hidePopup();
     }
     createIncorrectPopups(currentPopup, maxPopups) {
-        let copy = document.querySelector("#incorrectOG").cloneNode(true);
+        let copy = getElement("incorrectOG").cloneNode(true);
         copy.classList.remove("hidden");
         document.body.appendChild(copy);
         copy.style.left = "calc(" + this.popupPixelsLeft + "px + " + currentPopup + "em)";
@@ -568,10 +568,10 @@ class AdblockBlocker extends Popup {
     constructor(popupDataName) {
         super(popupDataName);
 
-        document.querySelector("#adblock-blocker-close").addEventListener("click", () => {
+        getElement("adblock-blocker-close").addEventListener("click", () => {
             this.hidePopup();
         });
-        const leaveButton = document.querySelector("#adblockExit");
+        const leaveButton = getElement("adblockExit");
         leaveButton.addEventListener("mouseenter", () => {
             leaveButton.classList.add("invisible");
         });
@@ -585,7 +585,7 @@ class AdblockBlocker extends Popup {
             setTimeout(() => {
                 semiPopups["ad" + i].showPopup();
             }, i * 50);
-            document.querySelector("#ad" + i).querySelector(".close-icon").addEventListener("click", () => {
+            getElement("ad" + i).querySelector(".close-icon").addEventListener("click", () => {
                 semiPopups["ad" + i].hidePopup();
                 addPoints(1.5);
             });
@@ -599,7 +599,7 @@ class ChunkyVirus extends Popup {
         this.baseTime = 10;
         this.copies = {};
 
-        document.querySelector("#chunky-virus-close").addEventListener("click", () => {
+        getElement("chunky-virus-close").addEventListener("click", () => {
             this.duplicatePopup();
         });
     }
@@ -621,7 +621,6 @@ class ChunkyVirus extends Popup {
         this.updateInterval = setInterval(() => {
             this.baseTime -= 0.1;
             if (this.baseTime <= 0) {
-                console.log("DID GAMING");
                 this.hidePopup();
             } else {
                 // Update the base display time.
@@ -658,7 +657,7 @@ class ChunkyVirusCopy {
         // Create the new popup.
         this.displayObj = popups.chunkyVirus.displayObj.cloneNode(true);
         this.displayObj.id = "";
-        document.querySelector("#computer").appendChild(this.displayObj);
+        getElement("computer").appendChild(this.displayObj);
 
         // Find the next available display position
         let copyLength = Object.keys(popups.chunkyVirus.copies).length;
@@ -703,13 +702,13 @@ class ChunkyPlantation extends Popup {
         }
 
         this.currentTimerTime = 15;
-        document.querySelector("#chunky-plantation-count").innerHTML = 10;
+        getElement("chunky-plantation-count").innerHTML = 10;
 
         this.updateTimerText = setInterval(() => {
             this.currentTimerTime -= 0.1;
             
             let displayTime = Math.round((this.currentTimerTime + Number.EPSILON) * 100) / 100;
-            document.querySelector("#chunky-plantation-count").innerHTML = displayTime;
+            getElement("chunky-plantation-count").innerHTML = displayTime;
             if (this.currentTimerTime <= 0) {
                 this.hidePopup();
             }
@@ -895,12 +894,12 @@ class BankDetails extends Popup {
             getElement("bank-details-error").innerHTML = valid;
         } else {
             getElement("bank-details-error").innerHTML = "Accepted.";
-        }
 
-        setTimeout(() => {
-            this.hidePopup();
-            getElement("bank-details-error").innerHTML = "";
-        }, 2000);
+            setTimeout(() => {
+                this.hidePopup();
+                getElement("bank-details-error").innerHTML = "";
+            }, 2000);
+        }
     }
     checkDetails() {
         const userInput = getElement("bank-details-input").value;
@@ -994,8 +993,8 @@ class BankDetails extends Popup {
                 usedCharacters.push(inputChars[i]);
             }
 
-            if (numberCount < 2) {
-                return "Must contain at least 2 numbers.";
+            if (numberCount < 5) {
+                return "Must contain at least 5 numbers.";
             }
 
             let sum = 0;
@@ -1004,8 +1003,8 @@ class BankDetails extends Popup {
                     sum += parseInt(inputChars[i]);
                 }
             }
-            if (sum != 20) {
-                return "The sum of the numbers must be 20.";
+            if (sum != 19) {
+                return "The sum of the numbers must be 19.";
             }
 
             if (inputChars.length > 12) {
@@ -1016,7 +1015,64 @@ class BankDetails extends Popup {
     }
     showPopup() {
         super.showPopup();
-        // this.checkType = randomInt(1, 3, true);
-        this.checkType = 1;
+        this.checkType = randomInt(1, 3, true);
+    }
+}
+
+class Expandinator extends Popup {
+    constructor(popupDataName) {
+        super(popupDataName);
+
+        this.displayTimeSeconds = 2.5;
+
+        getElement("expandinator-close").addEventListener("click", () => this.hidePopup());
+    }
+    showPopup() {
+        super.showPopup();
+
+        const bounds = this.displayObj.getBoundingClientRect();
+        const computerBounds = getElement("computer").getBoundingClientRect();
+
+        this.startWidth = bounds.width;
+        const widthRemaining = computerBounds.width - bounds.width;
+        const startLeft = bounds.x;
+
+        this.startHeight = bounds.height;
+        const heightRemaining = computerBounds.height - bounds.height;
+        const startTop = bounds.y - computerBounds.y;
+        let time = this.displayTimeSeconds;
+        this.updateTimerInterval = setInterval(() => {
+            time -= 0.1;
+            getElement("expandinator-timer").innerHTML = "Time remaining: " + formatFloat(time);
+        }, 100);
+        this.timeout = setTimeout(() => {
+            clearInterval(this.updateTimerInterval);
+
+            let space = 0;
+            this.expandInterval = setInterval(() => {
+                space += 0.01;
+
+                this.displayObj.style.width = this.startWidth + widthRemaining * space + "px";
+                this.displayObj.style.height = this.startHeight + heightRemaining * space + "px";
+                this.displayObj.style.left = startLeft * (1 - space) + "px";
+                this.displayObj.style.top = startTop * (1 - space) + "px";
+
+                if (space >= 1) clearInterval(this.expandInterval);
+            }, 10);
+        }, this.displayTimeSeconds * 1000);
+    }
+    hidePopup() {
+        super.hidePopup();
+        this.resetPopup();
+    }
+    resetPopup() {
+        clearTimeout(this.timeout);
+        clearInterval(this.expandInterval);
+        clearInterval(this.updateTimerInterval);
+
+        getElement("expandinator-timer").innerHTML = "Time remaining: " + this.displayTimeSeconds;
+
+        this.displayObj.style.width = this.startWidth + "px";
+        this.displayObj.style.height = this.startHeight + "px";
     }
 }
