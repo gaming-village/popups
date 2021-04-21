@@ -204,24 +204,27 @@ class Rain extends Popup {
     }
     showPopup() {
         super.showPopup();
-        this.createLetterInterval = setInterval(() => {
-            if (this.letters.length < 20) { // Amount of letters is capped at 20.
-                const letter = new RainText();
-            }
-        }, 400);
-        this.checkLetterInterval = setInterval(() => {
-            for (let i = 0; i < this.letters.length; i++)  {
-                this.letters[i].incrementTop();
-            }
-        }, 10);
-        this.updateTextInterval = setInterval(() => {
-            this.changeRainText();
-        }, 100);
-        this.sapPointInterval = setInterval(() => {
-            let sapAmount = data.rain.stats.sapAmount;
-            addPoints(-sapAmount);
-            this.totalSapAmount += sapAmount;
-        }, 500);
+
+        if (this.displayed) {
+            this.createLetterInterval = setInterval(() => {
+                if (this.letters.length < 20) { // Amount of letters is capped at 20.
+                    const letter = new RainText();
+                }
+            }, 400);
+            this.checkLetterInterval = setInterval(() => {
+                for (let i = 0; i < this.letters.length; i++)  {
+                    this.letters[i].incrementTop();
+                }
+            }, 10);
+            this.updateTextInterval = setInterval(() => {
+                this.changeRainText();
+            }, 100);
+            this.sapPointInterval = setInterval(() => {
+                let sapAmount = data.rain.stats.sapAmount;
+                addPoints(-sapAmount);
+                this.totalSapAmount += sapAmount;
+            }, 500);
+        }
     }
     hidePopup() {
         super.hidePopup();
