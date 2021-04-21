@@ -14,6 +14,7 @@ class BaseStructure {
 class Popup extends BaseStructure {
     constructor(popupDataName) {
         super();
+
         this.displayObj = getElement("" + data[popupDataName].name);
         dragElement(this.displayObj, getElement("" + this.displayObj.id + "-title"));
         this.popupDataName = popupDataName;
@@ -28,28 +29,38 @@ class Popup extends BaseStructure {
         }
         return displayName.join("");
     }
-    showPopup(noMove) {
-        if (!this.displayed) {
-            console.log("Displayed " + this.displayName + ".");
-            clearTimeout(this.redisplayDelay);
-            this.displayObj.classList.remove("hidden");
-            this.displayed = true;
-    
-            noMove = noMove || false;
-            if (!noMove) this.moveToRandomPosition(80);
+    showPopup(noMove = false) {
+        const force = this == popups[Game.popupQueue[0]];
+        if (force) Game.popupQueue.splice(0, 1);
+        if (Game.visiblePopups < Game.maxPopups || force) {
+            if (!this.displayed) {
+                console.log("Displayed " + this.displayName + ".");
+                clearTimeout(this.redisplayDelay);
+                this.displayObj.classList.remove("hidden");
+                this.displayed = true;
+        
+                if (!noMove) this.moveToRandomPosition(80);
+            } else {
+                console.warn("Tried to show " + this.displayName + " but was already visible.");
+            }
         } else {
-            console.warn("Tried to show " + this.displayName + " but was already visible.");
+            Game.popupQueue.push(this.popupDataName);
+            console.log("ADDED " + this.popupDataName + " TO LE QUEU");
         }
     }
-    hidePopup(givePoints) {
+    hidePopup(givePoints = true) {
         if (this.displayed) {
+            // Show a queued popup
+            if (Game.popupQueue[0] != undefined) {
+                popups[Game.popupQueue[0]].showPopup();
+            }
+
             this.displayed = false;
 
             console.log("User closed " + this.displayName + ".");
             this.displayObj.classList.add("hidden");
 
             let points = data[this.popupDataName].stats.points;
-            givePoints = givePoints || true;
             if (typeof points != "object" && givePoints != false) addPoints(points);
     
             let redisplayTime = data[this.popupDataName].stats.redisplayTime;
@@ -85,9 +96,9 @@ class MicrosoftAntivirus extends Popup {
             clicked.classList.remove("hidden");
             let bounds = this.displayObj.getBoundingClientRect();
             let computerBounds = getElement("computer").getBoundingClientRect();
-            let xPos = bounds.x + bounds.width/2;
+            const xPos = bounds.x + bounds.width/2;
             clicked.style.left = xPos / computerBounds.width * 100 + "%";
-            let yPos = bounds.y;
+            const yPos = bounds.y;
             clicked.style.top = yPos / computerBounds.height * 100 + "%";
 
             this.hidePopup(false);
@@ -616,34 +627,35 @@ class ChunkyVirus extends Popup {
     showPopup() {
         super.showPopup();
 
-        this.baseTime = 10;
+        if (this.displayed) {
+            this.baseTime = 10;
+            this.updateInterval = setInterval(() => {
+                this.baseTime -= 0.1;
+                if (this.baseTime <= 0) {
+                    this.hidePopup();
+                } else {
+                    // Update the base display time.
+                    let baseDisplayTime = Math.round((this.baseTime + Number.EPSILON) * 100) / 100;
+                    this.displayObj.querySelector(".chunky-invisible").innerHTML = baseDisplayTime;
 
-        this.updateInterval = setInterval(() => {
-            this.baseTime -= 0.1;
-            if (this.baseTime <= 0) {
-                this.hidePopup();
-            } else {
-                // Update the base display time.
-                let baseDisplayTime = Math.round((this.baseTime + Number.EPSILON) * 100) / 100;
-                this.displayObj.querySelector(".chunky-invisible").innerHTML = baseDisplayTime;
+                    let virusKeys = Object.keys(this.copies);
+                    for (let i = 0; i < virusKeys.length; i++) {
+                        this.copies[virusKeys[i]].copyTime -= 0.1;
 
-                let virusKeys = Object.keys(this.copies);
-                for (let i = 0; i < virusKeys.length; i++) {
-                    this.copies[virusKeys[i]].copyTime -= 0.1;
+                        // Update the display time.
+                        let currentVirus = this.copies[virusKeys[i]].displayObj;
+                        let displayTime = Math.round((this.copies[virusKeys[i]].copyTime + Number.EPSILON) * 100) / 100;
+                        currentVirus.querySelector(".chunky-invisible").innerHTML = displayTime;
 
-                    // Update the display time.
-                    let currentVirus = this.copies[virusKeys[i]].displayObj;
-                    let displayTime = Math.round((this.copies[virusKeys[i]].copyTime + Number.EPSILON) * 100) / 100;
-                    currentVirus.querySelector(".chunky-invisible").innerHTML = displayTime;
-
-                    if (this.copies[virusKeys[i]].copyTime <= 0) {
-                        // Remove the copy.
-                        this.deletePopup(currentVirus);
-                        delete this.copies[virusKeys[i]];
+                        if (this.copies[virusKeys[i]].copyTime <= 0) {
+                            // Remove the copy.
+                            this.deletePopup(currentVirus);
+                            delete this.copies[virusKeys[i]];
+                        }
                     }
                 }
-            }
-        }, 100);
+            }, 100);
+        }
     }
     hidePopup() {
         super.hidePopup();
@@ -695,34 +707,36 @@ class ChunkyPlantation extends Popup {
     showPopup() {
         super.showPopup();
 
-        // Remove existing bananas
-        let bananaList = document.getElementsByClassName("plantation-banana");
-        for (let i = 0; i < bananaList.length; i++) {
-            bananaList[i].remove();
-        }
-
-        this.currentTimerTime = 15;
-        getElement("chunky-plantation-count").innerHTML = 10;
-
-        this.updateTimerText = setInterval(() => {
-            this.currentTimerTime -= 0.1;
-            
-            let displayTime = Math.round((this.currentTimerTime + Number.EPSILON) * 100) / 100;
-            getElement("chunky-plantation-count").innerHTML = displayTime;
-            if (this.currentTimerTime <= 0) {
-                this.hidePopup();
+        if (this.displayed) {
+            // Remove existing bananas
+            let bananaList = document.getElementsByClassName("plantation-banana");
+            for (let i = 0; i < bananaList.length; i++) {
+                bananaList[i].remove();
             }
-        }, 100);
 
-        // Show the bananas
-        let bananaCount = randomInt(15, 20);
-        let maxDisplayTime = 200; // Time it takes to display the bananas.
-        let currentBanana = 0;
-        this.createBananaInterval = setInterval(() => {
-            currentBanana++;
-            let newBanana = new ChunkyPlantationBanana();
-            if (currentBanana >= bananaCount) clearInterval(this.createBananaInterval);
-        }, maxDisplayTime / bananaCount);
+            this.currentTimerTime = 15;
+            getElement("chunky-plantation-count").innerHTML = 10;
+
+            this.updateTimerText = setInterval(() => {
+                this.currentTimerTime -= 0.1;
+                
+                let displayTime = Math.round((this.currentTimerTime + Number.EPSILON) * 100) / 100;
+                getElement("chunky-plantation-count").innerHTML = displayTime;
+                if (this.currentTimerTime <= 0) {
+                    this.hidePopup();
+                }
+            }, 100);
+
+            // Show the bananas
+            let bananaCount = randomInt(15, 20);
+            let maxDisplayTime = 200; // Time it takes to display the bananas.
+            let currentBanana = 0;
+            this.createBananaInterval = setInterval(() => {
+                currentBanana++;
+                let newBanana = new ChunkyPlantationBanana();
+                if (currentBanana >= bananaCount) clearInterval(this.createBananaInterval);
+            }, maxDisplayTime / bananaCount);
+        }
     }
     hidePopup() {
         clearInterval(this.updateTimerText);
@@ -887,6 +901,12 @@ class BankDetails extends Popup {
         super(popupDataName);
 
         getElement("bank-details-submit").addEventListener("click", () => this.submit());
+
+        const form = getElement("bank-details-form");
+        form.addEventListener("submit", this.handleForm);
+    }
+    handleForm(event) {
+        event.preventDefault();
     }
     submit() {
         const valid = this.checkDetails();
@@ -898,6 +918,7 @@ class BankDetails extends Popup {
             setTimeout(() => {
                 this.hidePopup();
                 getElement("bank-details-error").innerHTML = "";
+                getElement("bank-details-input").value = "";
             }, 2000);
         }
     }
@@ -913,7 +934,7 @@ class BankDetails extends Popup {
 
         if (this.checkType == 1) {
             if (!userInput.includes("pass")) {
-                return "Must contain the word 'pass'.";
+                return "ERROR: Must contain the word 'pass'.";
             }
 
             const specialCharacters = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")"];
@@ -925,33 +946,33 @@ class BankDetails extends Popup {
                 }
             }
             if (!containsSpecial) {
-                return "Must contain a special character.";
+                return "ERROR: Must contain a special character.";
             }
             if (numberCount < 3) {
-                return "Must contain at least 3 numbers.";
+                return "ERROR: Must contain at least 3 numbers.";
             }
 
             if (inputChars[2] != "_") {
-                return "Third character must be an underscore.";
+                return "ERROR: Third character must be an underscore.";
             }
 
             if (inputChars[inputChars.length - 1] != "?") {
-                return "Last character must be a question mark.";
+                return "ERROR: Last character must be a question mark.";
             }
         } else if (this.checkType == 2) {
             if (inputChars[0] != "(") {
-                return "Must start with opening bracket.";
+                return "ERROR: Must start with opening bracket.";
             }
 
             if (numberCount != 4) {
-                return "Must have exactly 4 numbers.";
+                return "ERROR: Must have exactly 4 numbers.";
             }
 
             let characterIsNumber = false;
             for (let i = 0; i < inputChars.length; i++) {
                 if (numbers.indexOf(parseInt(inputChars[i])) >= 0) {
                     if (characterIsNumber) {
-                        return "All numbers must be separated.";
+                        return "ERROR: All numbers must be separated.";
                     }
                     characterIsNumber = true;
                 } else {
@@ -966,14 +987,14 @@ class BankDetails extends Popup {
                 }
             }
             if (equalsCount != 2) {
-                return "Must contain exactly 2 equals signs.";
+                return "ERROR: Must contain exactly 2 equals signs.";
             }
 
             let lastIsDot = true;
             for (let i = 0; i < inputChars.length; i++) {
                 if (inputChars[i] != ".") {
                     if (!lastIsDot) {
-                        return "All characters must be separated by dots.";
+                        return "ERROR: All characters must be separated by dots.";
                     }
                     lastIsDot = false;
                 } else {
@@ -982,19 +1003,19 @@ class BankDetails extends Popup {
             }
         } else {
             if (inputChars.length < 10) {
-                return "Must be at least 10 characters long.";
+                return "ERROR: Must be at least 10 characters long.";
             }
 
             let usedCharacters = [];
             for (let i = 0; i < inputChars.length; i++) {
                 if (usedCharacters.indexOf(inputChars[i]) != -1) {
-                    return "Must not contain any of the same characters.";
+                    return "ERROR: Must not contain any of the same characters.";
                 }
                 usedCharacters.push(inputChars[i]);
             }
 
             if (numberCount < 5) {
-                return "Must contain at least 5 numbers.";
+                return "ERROR: Must contain at least 5 numbers.";
             }
 
             let sum = 0;
@@ -1004,17 +1025,18 @@ class BankDetails extends Popup {
                 }
             }
             if (sum != 19) {
-                return "The sum of the numbers must be 19.";
+                return "ERROR: The sum of the numbers must be 19.";
             }
 
             if (inputChars.length > 12) {
-                return "Must contain at most 12 characters.";
+                return "ERROR: Must contain at most 12 characters.";
             }
         }
         return true;
     }
     showPopup() {
         super.showPopup();
+
         this.checkType = randomInt(1, 3, true);
     }
 }
@@ -1023,7 +1045,7 @@ class Expandinator extends Popup {
     constructor(popupDataName) {
         super(popupDataName);
 
-        this.displayTimeSeconds = 2.5;
+        this.displayTimeSeconds = 1.5;
 
         getElement("expandinator-close").addEventListener("click", () => this.hidePopup());
     }
@@ -1050,7 +1072,7 @@ class Expandinator extends Popup {
 
             let space = 0;
             this.expandInterval = setInterval(() => {
-                space += 0.01;
+                space += 0.002;
 
                 this.displayObj.style.width = this.startWidth + widthRemaining * space + "px";
                 this.displayObj.style.height = this.startHeight + heightRemaining * space + "px";
@@ -1058,7 +1080,7 @@ class Expandinator extends Popup {
                 this.displayObj.style.top = startTop * (1 - space) + "px";
 
                 if (space >= 1) clearInterval(this.expandInterval);
-            }, 10);
+            }, 20);
         }, this.displayTimeSeconds * 1000);
     }
     hidePopup() {

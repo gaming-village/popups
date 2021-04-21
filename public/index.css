@@ -289,10 +289,9 @@ div#changelog {
 }
 
 #computer .xp-button {
-    font-size: 1em;
-    font-weight: 400;
+    font: 400 1rem "Windows";
     background-color: #ccc;
-    padding: 0.1em 0.3em;
+    padding: 0.1rem 0.3rem;
     border: 3px solid;
     border-top-color: #eee;
     border-left-color: #eee;
@@ -438,13 +437,28 @@ button.close-button {
     box-shadow: 0px -1px 3px 1px rgba(212, 12, 12, 0.6) inset, 0px 0px 2px 1px rgba(0, 0, 0, 0.6) inset;
 }
 .close-button::before {
-    content: "";
     width: 20px;
     height: 20px;
     background-image: url(images/close.png);
     background-size: 20px 20px;
     margin-right: 4px;
+}
+button.accept-button {
+    padding: 1px 8px 1px 4px;
+    border-color: #5d7080;
+    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.3) inset, 0px 0px 2px 2px #b3bace inset;
+}
+
+.button-container button::before {
+    content: "";
     float: left;
+}
+.button-send::before {
+    width: 18px;
+    height: 18px;
+    background-image: url(images/xp-icons/new-file.png);
+    background-size: 18px 18px;
+    margin: 1px 4px 0 0;
 }
 
 
@@ -529,6 +543,7 @@ button.close-button {
     margin: 0.2em 0 0.2em 0.2em;
 }
 #mining-feed-open {
+    font-size: 0.9rem !important; /* Overrides xp-button */
     margin-top: 0.2em;
     margin-left: 2em;
     margin-bottom: 0.6em;

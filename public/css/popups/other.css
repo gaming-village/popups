@@ -95,6 +95,15 @@
     color: rgb(0, 255, 0);
 }
 
+/* BANK DETAILS */
+#bank-details-input {
+    display: table;
+    margin-bottom: 0.5rem;
+}
+#bank-details-error {
+    color: red;
+}
+
 /* EXPANDINATOR */
 #expandinator {
     width: 15em;

@@ -72,8 +72,8 @@
                             <td id="total-lorem-mined">0</td>
                         </tr>
                     </table>
-                    <div class="xp-button xp-font center" id="mining-feed-open">View mining feed</div>
-                    <div id="mining-feed">
+                    <button class="xp-button xp-font center" id="mining-feed-open">View mining feed</button>
+                    <div id="mining-feed" class="hidden">
 
                     </div>
                     <h4 class="popup-header">Stats</h4>
@@ -187,7 +187,7 @@
                         <p>Uh oh1! Looks like you clicked the Button! unless You pay the &euro;2 you are thing</p>
                     </div>
                     <div class="button-container">
-                        <button>Send money</button>
+                        <button class="accept-button button-send">Send money</button>
                         <button onclick="hidePrompt();" class="close-button">
                             Ok.
                         </button>
@@ -208,10 +208,10 @@
                             <p class="hidden closePopup" id="iphonePopupMoveText">Looks like you tried to close this popup!</p>
                         </div>
                         <div class="button-container">
+                            <button>purchese!</button>
                             <button class="close-button" id="free-iPhone-close">
                                 close down.
                             </button>
-                            <button>purchese!</button>
                         </div>
                     </div>
                 </div>
@@ -539,10 +539,12 @@
                             <img src="images/warning-icon.png" class="warning" alt="Warning!">
                             <h3>In order to proces your purchase, we requre the Details.</h3>
                         </div>
-                        <p>Insert bank acount details below!</p>
-                        <input id="bank-details-input" type="text">
-                        <div id="bank-details-error"></div>
-                        <div id="bank-details-submit" class="xp-button centered">Submit</div>
+                        <p>> Insert bank acount details below!</p>
+                        <form id="bank-details-form">
+                            <input type="text" id="bank-details-input" class="centered">
+                            <label for="bank-details-input" id="bank-details-error"></label>
+                            <button id="bank-details-submit" class="xp-button centered">Submit</button>
+                        </form>
                     </div>
                 </div>
             </div>

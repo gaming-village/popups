@@ -23,12 +23,23 @@ var semiPopups = {};
 var applications = {};
 var points = 0;
 var Game = {
+    maxPopups: 5,
+    popupQueue: [],
+    get visiblePopups() {
+        let count = 0;
+        const popupNames = Object.keys(popups);
+        for (let i = 0; i < popupNames.length; i++) {
+            if (popups[popupNames[i]].displayed) count++;
+        }
+        return count;
+    },
     stats: {
         totalLoremMined: 0
     }
 };
 
 function generatePopups() {
+    // Can't automate popupDisplayName as it doesn't get pushed to the array before the constructor is run.
     popups.microsoftAntivirus = new MicrosoftAntivirus("microsoftAntivirus");
     popups.browserError = new BrowserError("browserError");
     popups.freeIPhone = new FreeIPhone("freeIPhone");

@@ -218,7 +218,7 @@ const data = {
         name: "ram-download",
         stats: {
             description: "The first implementation of digital RAM download. Viruses not sold seperately.",
-            special: "",
+            special: "Takes several seconds to process.",
             points: 8,
             redisplayTime: 30000,
             cost: 350
@@ -237,7 +237,7 @@ const data = {
         name: "bank-details",
         stats: {
             description: "",
-            special: "",
+            special: "Requires precise input to close.",
             points: 20,
             redisplayTime: 45000,
             cost: 500
@@ -256,7 +256,7 @@ const data = {
         name: "expandinator",
         stats: {
             description: "",
-            special: "",
+            special: "Expands to fill the screen if not clicked fast enough.",
             points: 30,
             redisplayTime: 40000,
             cost: 550
