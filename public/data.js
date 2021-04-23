@@ -270,5 +270,24 @@ const data = {
         unlocked: false,
         id: 14,
         from: 7
+    },
+    devHire: {
+        name: "dev-hire",
+        stats: {
+            description: "",
+            special: "Shows multiple prompts when you try to close it.",
+            points: 40,
+            redisplayTime: 50000,
+            cost: 750
+        },
+        display: {
+            top: "11em",
+            left: "50%",
+            transform: "translateX(-50%)",
+            imgSrc: "images/popup-schema-icons/rain-icon.png"
+        },
+        unlocked: false,
+        id: 15,
+        from: 8
     }
 }

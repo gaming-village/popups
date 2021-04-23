@@ -40,3 +40,9 @@ class LoremController extends Application {
         });
     }
 }
+
+class LoremCounter extends Application {
+   constructor() {
+      super("lorem-counter");
+   }
+}

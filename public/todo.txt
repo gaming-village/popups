@@ -77,6 +77,15 @@ Popups
 
 
 
+Mining feed:
+* Greenish (?) background
+* black gradient (to right, #000 0%, transparent 100%) on the texts.
+* boldened monospace font
+* Icons at the start of texts.
+* Packets in green.
+
+
+
 
 
 Congratulations on your admission to Lorem Ipsum Studios!
