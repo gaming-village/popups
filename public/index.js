@@ -318,7 +318,7 @@ const views = ["computer", "about", "black-market"];
 function setupNavBar() {
    views.forEach(view => {
       getElement(`nav-${view}`).addEventListener("click", () => switchView(view));
-   })
+   });
 }
 function switchView(view) {
    getElement(`nav-${view}`).classList.add("selected");
