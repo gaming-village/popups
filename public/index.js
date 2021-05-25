@@ -371,7 +371,7 @@ function changeViewHeights() {
 
 const loremTemplate = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores, aliquid! Officia amet adipisci porro repellat deserunt vero quos ad id sint dolore iure odio reprehenderit dolores sed, molestias vitae dicta! ";
 const adTexts = [" Full version costs $204967.235 ", " Go to www.this.is.a.site for free viruses! ", "Top 10 Top 10 list ! "];
-const loremBlockSize = 100;
+const loremBlockSize = 500;
 
 const loremLength = loremTemplate.split("").length;
 var iterationCount = 0;
@@ -418,7 +418,7 @@ function writeLorem(loremN = 1, giveLorem = true) {
          text.remove();
       }
       console.log(loremContainer);
-      Game.addLorem(20);
+      Game.addLorem(10);
       iterationCount = 0;
 
       // Recreate the current-lorem-text
