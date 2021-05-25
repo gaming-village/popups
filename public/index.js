@@ -1,39 +1,108 @@
-// Helping functions
-function randomInt(min, max, inclusive) {
-   inclusive = inclusive || false;
-   const add = inclusive ? 1 : 0;
-   const randomInt = Math.floor(Math.random() * (max - min + add)) + min;
-   return randomInt;
-}
-function randomFloat(min, max) {
-   const randomFloat = Math.random() * (max - min) + min;
-   return randomFloat;
-}
-function getElement(elementName) {
-   const element = document.querySelector("#" + elementName);
-   return element;
-}
-function formatFloat(input) {
-   const formattedFloat = Math.round((input + Number.EPSILON) * 100) / 100;
-   return formattedFloat;
-}
-
 const popups = {};
 const semiPopups = {};
 const applications = {};
-var points = 0;
+
 const Game = {
+   blackMarket: {
+      unlockShopAttempt: (shop) => {
+         if (!shop.unlocked && Game.packetCount >= shop.cost) {
+            Game.addPackets(-shop.cost, true);
+
+            Game.blackMarket.unlockShop(shop);
+         }
+      },
+      unlockShop: (shop) => {
+         getElement(`${shop.name}-segment`).classList.remove("locked");
+
+         shop.unlocked = true;
+         updateUnlockedShopsCookie();
+
+         const shopObject = getElement(`${shop.name}-segment`);
+         shopObject.querySelector("h2").innerHTML = shop.display.title;
+         shopObject.querySelector("p").innerHTML = shop.display.description;
+         shopObject.querySelector("button").innerHTML = "GO";
+      },
+      lockShop: (shop) => {
+         // Update the shop text to show it as locked.
+         const shopObject = getElement(`${shop.name}-segment`);
+         shopObject.querySelector("h2").innerHTML = "LOCKED";
+
+         const suffix = shop.cost == 1 ? "" : "s";
+         shopObject.querySelector("p").innerHTML = `You require <b>${shop.cost} packet${suffix}</b> to unlock this shop.`;
+
+         shopObject.querySelector("button").innerHTML = "BUY";
+      },
+      clickShop: (shop) => {
+         shop.clickEvent();
+      }
+   },
+   setup: {
+      setupLorem: () => {
+         const loremCookie = getCookie("lorem");
+         if (loremCookie == "") {
+            setCookie("lorem", 0, 31);
+         } else {
+            Game.loremCount = parseFloat(loremCookie);
+            displayPoints(Game.loremCount);
+         }
+      }, 
+      setupPackets: () => {
+         getElement("transfer-rate").innerHTML = Game.transferRate;
+         
+         const transferButton = getElement("transfer-button");
+         transferButton.addEventListener("click", () => {
+            if (transferButton.classList.contains("blocked")) return;
+            
+            transferButton.classList.add("blocked");
+            setTimeout(() => {
+               transferButton.classList.remove("blocked");
+            }, 5000);
+            
+            Game.addPackets(Game.loremCount);
+            Game.addLorem(-Game.loremCount);
+         });
+         
+         const packetCookie = getCookie("packets");
+         if (packetCookie == "") {
+            setCookie("packets", 0, 31);
+         } else {
+            Game.packetCount = parseFloat(packetCookie);
+         }
+
+         Game.updatePackets();
+      },
+      setupBlackMarket: () => {
+         Game.changeTransferRate();
+
+         // Setup each black market shop.
+         Object.values(blackMarketShops).forEach(shop => {
+            new blackMarketShop(shop);
+
+            const shopObject = getElement(`${shop.name}-segment`);
+            // Initialise all shops.
+            if (shop.unlocked) {
+               Game.blackMarket.unlockShop(shop);
+            } else {
+               Game.blackMarket.lockShop(shop);
+            }
+
+            shopObject.querySelector("button").addEventListener("click", () => {
+               if (!shop.unlocked) {
+                  Game.blackMarket.unlockShopAttempt(shop);
+                  return;
+               }
+               Game.blackMarket.clickShop(shop);
+            });
+         })
+      }
+   },
    loremCount: 0,
    addLorem: (add, force = false) => {
       if (semiPopups.scourgeOfChunky.activated && !force) return;
 
       Game.loremCount += add;
       Game.stats.totalLoremMined += add;
-
-      createMiningEntry(add);
-      displayPoints(add);
-
-      const incrementText = new PointIncrementText(add);
+      Game.updateLorem(add);
    },
    multLorem: (mult, force = false) => {
       if (semiPopups.scourgeOfChunky.activated && !force) return;
@@ -44,52 +113,119 @@ const Game = {
 
       // Find the difference in points.
       const difference = Game.loremCount - loremBefore;
-      const incrementText = new PointIncrementText(difference);
-      
-      displayPoints(difference);
-      createMiningEntry(difference);
+      Game.updateLorem(difference);
    },
-   packetCount: 0,
-   addPackets: (add, force = false) => {
-      if (semiPopups.scourgeOfChunky.activated && !force) return;
-
-      this.packetCount += add;
-      this.stats.totalLoremMined += add;
-
-      console.log(add);
-
+   updateLorem: (add) => {
       createMiningEntry(add);
       displayPoints(add);
+      setCookie("lorem", Game.loremCount, 31);
+      Game.checkLoremLetters();
 
-      const incrementText = new PointIncrementText(add);
+      new PointIncrementText(add);
    },
-   multPackets: (mult, force = false) => {
-      if (semiPopups.scourgeOfChunky.activated && !force) return;
 
-      const pointsBefore = this.packetCount;
-      this.packetCount *= mult;
-      this.stats.totalLoremMined *= mult;
-
-      // Find the difference in points.
-      const difference = this.packetCount - pointsBefore;
-      const incrementText = new PointIncrementText(difference);
-      
-      displayPoints(difference);
-      createMiningEntry(difference);
+   transferRate: 0,
+   transferIdeal: 0.03,
+   transferBias: 3, // MAX OF 100
+   changeTransferRate: () => {
+      const randomBias = randomFloat(Game.transferBias/10, Game.transferBias);
+      Game.transferRate = Game.transferIdeal + randomFloat(0.2, 3) * randomBias / 100;
+      getElement("transfer-rate").innerHTML = formatFloat(Game.transferRate);
    },
+
+   packetCount: 0,
+   addPackets: (add, directAdd = false) => {
+      const packets = add * (directAdd ? 1 : Game.transferRate);
+      Game.packetCount += packets;
+      Game.updatePackets();
+   },
+   updatePackets: () => {
+      getElement("packet-count").innerHTML = formatFloat(Game.packetCount);
+      setCookie("packets", Game.packetCount, 31);
+   },
+
+   newLetterCount: 0,
+   updateLetterCount: () => {
+      if (Game.newLetterCount > 0) {
+         getElement("nav-about").classList.add("new-mail");
+      } else {
+         getElement("nav-about").classList.remove("new-mail");
+      }
+   },
+   checkLoremLetters: () => {
+      if (Game.loremCount >= 2.5) receiveLetter("motivationalLetter");
+      if (Game.loremCount >= 5) receiveLetter("rumors");
+      if (Game.loremCount >= 8) receiveLetter("invitation");
+   },
+
+   loremPerWrite: 0.05,
+
    maxPopups: 7,
    popupQueue: [],
-   get visiblePopups() {
+   get visiblePopupsCount() {
       let visiblePopupCount = 0;
-      for (const popup in popups) {
-         if (popups[popup].displayed) visiblePopupCount++;
-      }
+      for (const popup of Object.values(popups)) if (popup.displayed) visiblePopupCount++;
       return visiblePopupCount;
+   },
+   get visiblePopups() {
+      let visiblePopups = [];
+      Object.values(popups).forEach(popup => {
+         if (popup.displayed) visiblePopups.push(popup);
+      });
+      return visiblePopups;
    },
    stats: {
       totalLoremMined: 0
    }
 };
+
+class blackMarketShop {
+   constructor(shop) {
+      // Create the shop DOM object
+      const shopObject = getElement("shop-segment-template").cloneNode(true);
+      getElement("black-market-bottom").appendChild(shopObject);
+      shopObject.id = `${shop.name}-segment`;
+      shopObject.classList.remove("hidden");
+
+      shopObject.querySelector("button").id = `${shop.name}-segment-button`;
+   }
+}
+
+class alertBox {
+   constructor(title = "", content = "") {
+      // Create the alert box
+      const alertBox = getElement("alert-box-template").cloneNode(true);
+      getElement("alert-container").appendChild(alertBox);
+      alertBox.classList.remove("hidden");
+      alertBox.id = "";
+
+      alertBox.querySelector("h3").innerHTML = title;
+      alertBox.querySelector("h2").innerHTML = content;
+
+      alertBox.querySelector("img").addEventListener("click", () => {
+         alertBox.remove();
+         delete this;
+      });
+   }
+}
+
+function showPrompt(prompt) {
+   if (prompts[prompt].received) return;
+
+   getElement("mask").classList.remove("hidden");
+   getElement("message-container").classList.remove("hidden");
+
+   getElement("message-title").innerHTML = prompts[prompt].title;
+   getElement("message-from").innerHTML = prompts[prompt].from;
+   getElement("message").innerHTML = prompts[prompt].content;
+
+   prompts[prompt].received = true;
+   updateReceivedPromptsCookie();
+}
+function closePrompt() {
+   getElement("mask").classList.add("hidden");
+   getElement("message-container").classList.add("hidden");
+}
 
 function generatePopups() {
    // Can't automate popupDisplayName as it doesn't get pushed to the array before the constructor is run.
@@ -108,6 +244,7 @@ function generatePopups() {
    popups.bankDetails = new BankDetails("bankDetails");
    popups.expandinator = new Expandinator("expandinator");
    popups.devHire = new DevHire("devHire");
+   popups.clippy = new Clippy("clippy");
 }
 
 function generateSemiPopups() {
@@ -134,11 +271,17 @@ function generateApplications() {
 function displayPoints(add) {
    getElement("total-lorem-mined").innerHTML = formatFloat(Game.stats.totalLoremMined);
 
-   getElement("pointCounter").innerHTML = formatFloat(Game.loremCount);
+   const loremCount = formatFloat(Game.loremCount);
+
+   getElement("pointCounter").innerHTML = loremCount;
    getElement("pointCounterContainer").classList.remove("hidden");
 
-   getElement("lorem-count").innerHTML = formatFloat(Game.loremCount);
+   getElement("lorem-count").innerHTML = loremCount;
    updateLoremCounter(add);
+
+   getElement("black-market-lorem-transfer-amount").innerHTML = loremCount;
+
+   getElement("packet-transfer-amount").innerHTML = formatFloat(Game.loremCount * Game.transferRate);
 }
 
 function updateLoremCounter(add) {
@@ -147,19 +290,18 @@ function updateLoremCounter(add) {
 
    text.classList.add("loremCounterAddText");
    getElement("lorem-counter-display").appendChild(text);
-   
-   const xVel = getCircleVel();
+
+   const xVel = getCurve();
    const yVel = 1 - xVel;
 
    let xPos = 0;
    let yPos = 0;
    let ticks = 0;
-   const mult = 4;
    const moveText = setInterval(() => {
       text.style.left = `calc(50% + ${xPos}px)`;
       text.style.top = `calc(50% + ${yPos}px)`;
-      xPos += xVel * mult;
-      yPos += yVel * mult;
+      xPos += xVel * 4;
+      yPos += yVel * 4;
 
       if (ticks++ > 50) {
          clearInterval(moveText);
@@ -167,157 +309,361 @@ function updateLoremCounter(add) {
       }
    }, 30);
 }
-function getCircleVel() {
-   const rand = randomFloat(-1, 1);
-   const result = Math.sin((rand * Math.PI + Math.PI) / 2);
-   return result;
-}
 
 function goToChangelog() {
    window.location = "changelog.html";
 }
-function moveToPopupView() {
-   window.location = "popupView.html";
+
+const views = ["computer", "about", "black-market"];
+function setupNavBar() {
+   views.forEach(view => {
+      getElement(`nav-${view}`).addEventListener("click", () => switchView(view));
+   })
+}
+function switchView(view) {
+   getElement(`nav-${view}`).classList.add("selected");
+   getElement(view).classList.remove("hidden");
+   views.forEach(item => {
+      if (item != view) {
+         getElement(`nav-${item}`).classList.remove("selected");
+         getElement(item).classList.add("hidden");
+      }
+   });
 }
 
-function load() {
+window.onload = () => {
+   LoadData();
+   setupNavBar();
+
+   Game.setup.setupLorem();
+   Game.setup.setupPackets();
+   Game.setup.setupBlackMarket();
+   displayPoints(0);
+
+   // Show the admission message and the starting letter.
+   showPrompt("admission");
+   receiveLetter("start");
+
    generatePopups();
    generateSemiPopups();
    generateApplications();
 
    dragElement(getElement("pointCounterContainer"), getElement("point-counter-title"));
 
-   changeComputerHeight();
-
-   window.addEventListener("resize", () => changeComputerHeight());
+   changeViewHeights();
+   window.addEventListener("resize", () => changeViewHeights());
 
    setupDevtools();
 
    getElement("header-title").addEventListener("click", () => getElement("devtools").classList.remove("hidden"));
+
+   switchView("computer");
+
+   setupMailbox();
+
+   if (getCookie("bm") == "true") messages.invitation.rewards.reward();
 }
 
-function changeComputerHeight() {
-   const mainHeight = getElement("info-bar").getBoundingClientRect().height;
-   getElement("computer").style.height = window.innerHeight - mainHeight + "px";
+function changeViewHeights() {
+   const topHeight = getElement("info-bar").getBoundingClientRect().height;
+   views.forEach(view => getElement(view).style.height = window.innerHeight - topHeight + "px")
 }
 
-const loremTemplate = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores, aliquid! Officia amet adipisci porro repellat deserunt vero quos ad id sint dolore iure odio reprehenderit dolores sed, molestias vitae dicta!";
+const loremTemplate = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores, aliquid! Officia amet adipisci porro repellat deserunt vero quos ad id sint dolore iure odio reprehenderit dolores sed, molestias vitae dicta! ";
+const adTexts = [" Full version costs $204967.235 ", " Go to www.this.is.a.site for free viruses! ", "Top 10 Top 10 list ! "];
+const loremBlockSize = 100;
+
 const loremLength = loremTemplate.split("").length;
 var iterationCount = 0;
-var nextText = 300;
+var nextText = 100;
 
-const adTexts = [" Full version costs $204967.235 ", " Go to www.this.is.a.site for free viruses! "];
+document.addEventListener("keydown", function (event) {
+   // If the input is a letter press or space
+   if (event.keyCode >= 65 && event.keyCode <= 90 || event.keyCode === 32) keyPress();
+});
 
+function writeLorem(loremN = 1, giveLorem = true) {
+   const currentText = getElement("current-lorem-text");
+   currentText.innerHTML += loremTemplate.split("")[iterationCount % loremLength];
 
+   if (!(iterationCount % 5) && giveLorem) Game.addLorem(Game.loremPerWrite);
 
-function ipsumStep() {
-   if (popups.luremImpsir.canLorem) {
-      let currentCharacter = iterationCount % loremLength;
-      getElement("current-lorem-text").innerHTML += loremTemplate.split("")[currentCharacter];
-      iterationCount++;
-      if (currentCharacter++ > loremLength) {
-         currentCharacter = 0;
+   const loremContainer = getElement("loremContainer");
+   // Create a lorem ad sometimes.
+   if (iterationCount++ > nextText) {
+      nextText += randomInt(60, 90);
+
+      // Create the ad.
+      const ad = document.createElement("div");
+      loremContainer.appendChild(ad);
+      ad.classList.add("loremAd");
+
+      ad.innerHTML = adTexts[randomInt(0, adTexts.length)];
+      ad.addEventListener("click", () => loremAdClick(ad));
+
+      // Update the current lorem text container.
+      currentText.id = "";
+      const newLoremContainer = document.createElement("span");
+      loremContainer.appendChild(newLoremContainer);
+      newLoremContainer.id = "current-lorem-text";
+   }
+
+   if (iterationCount >= loremBlockSize) {
+      // const currentLoremText = getElement("current-lorem-text").cloneNode(true);
+      console.log(loremContainer.querySelectorAll(".loremAd"));
+
+      console.log(loremContainer);
+      for (const text of loremContainer.children) {
+         console.log(text);
+         text.remove();
       }
-      if (iterationCount > nextText) {
-         // Create an ad.
-         nextText += randomInt(80, 120);
-         let ad = document.createElement("div");
-         getElement("loremContainer").appendChild(ad);
-         ad.classList.add("loremAd");
-         ad.innerHTML = adTexts[randomInt(0, adTexts.length)];
-         ad.addEventListener("click", () => {
-            console.log("FFFFFF");
-            loremAdClick(ad);
-         });
+      console.log(loremContainer);
+      Game.addLorem(20);
+      iterationCount = 0;
 
-         // Update the current lorem text container.
-         getElement("current-lorem-text").id = "";
-         const newLoremContainer = document.createElement("span");
-         getElement("loremContainer").appendChild(newLoremContainer);
-         newLoremContainer.id = "current-lorem-text";
-      }
+      // Recreate the current-lorem-text
+      const currentLoremText = document.createElement("span");
+      currentLoremText.id = "current-lorem-text";
+      loremContainer.appendChild(currentLoremText);
+   }
 
-      switch (iterationCount) {
-         case 50:
-            popups.microsoftAntivirus.showPopup();
-            break;
-         case 100:
-            popups.annualSurvey.showPopup();
-            break;
-         case 150:
-            popups.browserError.showPopup();
-            break;
-         case 200:
-            popups.freeIPhone.showPopup();
-            break;
-         case 225:
-            popups.bankDetails.showPopup();
-            break;
-         case 250:
-            popups.chunky.showPopup();
-            break;
-         case 275:
-            popups.ramDownload.showPopup();
-            break;
-         case 300:
-            popups.rain.showPopup();
-            break;
-         case 325:
-            popups.expandinator.showPopup();
-            break;
-         case 350:
-            popups.visitor.showPopup();
-            break;
-         case 375:
-            popups.devHire.showPopup();
-            break;
-         case 400:
-            popups.adblockBlocker.showPopup();
-            break;
-      }
+   if (loremN > 1) writeLorem(loremN - 1, giveLorem);
+}
+function keyPress() {
+   if (!popups.luremImpsir.canLorem) return; // Stop if the lurem impsir popup is blocking production.
 
-      if (iterationCount % 10 == 0) {
-         Game.addLorem(0.1);
-         if (iterationCount % 100 == 0 && Math.random() > 0.6 && iterationCount >= 200) {
-            popups.luremImpsir.showPopup();
-         }
-      }
+   writeLorem();
+
+   switch (iterationCount) {
+      case 50:
+         popups.microsoftAntivirus.showPopup();
+         break;
+      case 100:
+         popups.annualSurvey.showPopup();
+         break;
+      case 150:
+         popups.browserError.showPopup();
+         break;
+      case 175:
+         popups.luremImpsir.showPopup();
+         break;
+      case 200:
+         popups.freeIPhone.showPopup();
+         break;
+      case 225:
+         popups.bankDetails.showPopup();
+         break;
+      case 250:
+         popups.chunky.showPopup();
+         break;
+      case 275:
+         popups.ramDownload.showPopup();
+         break;
+      case 300:
+         popups.rain.showPopup();
+         break;
+      case 325:
+         popups.expandinator.showPopup();
+         break;
+      case 350:
+         popups.visitor.showPopup();
+         break;
+      case 375:
+         popups.devHire.showPopup();
+         break;
+      case 400:
+         popups.adblockBlocker.showPopup();
+         break;
    }
 }
 function loremAdClick(ad) {
    ad.remove();
-   Game.addLorem(0.5);
+   Game.addLorem(0.3);
 }
 
-var generating = false;
-var hasClicked = false; // Used to track the first time the button is clicked.
-var continued = false;
-var loremInterval;
 
-function generateLorumIpsum() {
-   if (!hasClicked) {
-      semiPopups.loremWarning.showPopup();
-      hasClicked = true;
-   } else if (continued) {
-      // When the button is clicked while active
-      generating = !generating;
-      const loremStatus = getElement("lorem-status");
-      if (generating) {
-         loremStatus.innerHTML = "Generating...";
-         loremStatus.classList.add("generating");
-         loremInterval = setInterval(ipsumStep, 80);
-      } else {
-         loremStatus.innerHTML = "Stopped.";
-         loremStatus.classList.remove("generating");
-         clearInterval(loremInterval);
+var selectedMessage = -1;
+function showInbox() {
+   getElement("mail-inbox").classList.remove("hidden");
+   getElement("mask").classList.remove("hidden");
+
+   // Show any selected letters.
+   if (selectedMessage >= 0) {
+      const newSelectedMessage = Object.values(messages)[selectedMessage];
+
+      changeSelectedLetter(newSelectedMessage);
+      switchLetterVisibility(newSelectedMessage);
+   }
+}
+function hideInbox() {
+   getElement("mail-inbox").classList.add("hidden");
+   getElement("mask").classList.add("hidden");
+   hideLetter();
+}
+function createInboxEntry(letter, existingEntry = false) {
+   // If the entry has already been created
+   if (getElement(`inbox-entry-${letter.reference}`) != undefined) {
+      return;
+   }
+   const newEntry = getElement("inbox-entry-template").cloneNode(true);
+   getElement("mail-inbox").appendChild(newEntry);
+   newEntry.id = `inbox-entry-${letter.reference}`;
+   newEntry.classList.remove("hidden");
+
+   if (letter.opened) {
+      newEntry.classList.add("opened");
+   } else if (existingEntry) {
+      console.log("inc");
+      Game.newLetterCount++;
+      Game.updateLetterCount();
+
+      new alertBox("New letter received!", letter.title);
+   }
+
+   newEntry.querySelector(".inbox-entry-title").innerHTML = letter.title;
+   newEntry.querySelector(".inbox-entry-from").innerHTML = letter.from;
+
+   newEntry.addEventListener("click", () => {
+      changeSelectedLetter(letter);
+      switchLetterVisibility(letter);
+   });
+}
+function showExistingEntries() {
+   for (const message of Object.values(messages)) {
+      if (message.received) {
+         createInboxEntry(message, true);
       }
    }
 }
+function setupMailbox() {
+   getElement("mail-container").addEventListener("click", () => openLetter());
+   getElement("open-mail").addEventListener("click", () => showInbox());
 
-// Mining feed
+   showExistingEntries();
+   hideLetter();
 
-// MAKE INTO SMART OBJECT THING
-var miningEntries = {};
+   getElement("mask").addEventListener("click", () => {
+      if (getElement("about").classList.contains("hidden")) return;
+      getElement("mask").classList.add("hidden");
+      hideInbox();
+   });
+}
+function changeSelectedLetter(message) {
+   selectedMessage = message.reference - 1;
+   const selectedEntry = getElement(`inbox-entry-${message.reference}`);
+   selectedEntry.classList.add("selected-letter");
+   for (const entry of document.getElementsByClassName("inbox-entry")) {
+      if (entry !== selectedEntry) {
+         entry.classList.remove("selected-letter");
+      }
+   }
+}
+function openReward(letter) {
+   letter.rewards.opened = true;
+   updateOpenedRewardsCookie();
+   getElement(`letter-${letter.reference}-reward`).classList.add("opened");
+
+   letter.rewards.reward();
+}
+function showLetter(letter) {
+   getElement("mail-container").classList.remove("hidden");
+   getElement("paper").innerHTML = `<h3>${letter.title}</h3> ${letter.content}`;
+   if (letter.rewards != undefined) {
+      getElement("paper").innerHTML += `
+      <h2 class="reward-header">Rewards</h2>
+      `;
+
+      if (letter.rewards.type == "box") {
+         const boxId = `letter-${letter.reference}-reward`;
+         getElement("paper").innerHTML += `
+         <div id="${boxId}" class="reward-type-box">
+            <div class="reward-box"><img src="${letter.rewards.img}"></div>
+            <div class="reward-text">${letter.rewards.text}</div>
+         </div>
+         `;
+         if (letter.rewards.opened) {
+            getElement(boxId).classList.add("opened");
+         }
+
+         getElement(boxId).addEventListener("click", () => {
+            openReward(letter);
+         });
+      }
+   }
+
+   if (letter.opened) {
+      getElement("mail-container").classList.add("opened");
+      getElement("mail-container").classList.remove("opening");
+   } else {
+      getElement("mail-container").classList.remove("opened");
+      getElement("mail-container").classList.remove("opening");
+   }
+}
+function hideLetter() {
+   getElement("mail-container").classList.add("hidden");
+}
+function switchLetterVisibility(letter) {
+   if (getElement("mail-container").classList.contains("hidden")) {
+      showLetter(letter);
+   } else {
+      hideLetter();
+      document.getElementsByClassName("selected-letter")[0].classList.remove("selected-letter");
+      selectedMessage = -1;
+   }
+}
+function openLetter(letter = false) {
+   let currentLetter = letter;
+   if (!letter) {
+      console.log(selectedMessage);
+      for (const letter of Object.values(messages)) {
+         console.log(letter.reference);
+         if (letter.reference == selectedMessage + 1) {
+            console.log("AEF");
+            console.log(letter);
+            currentLetter = letter;
+            break;
+         }
+      }
+   }
+
+   console.log(currentLetter);
+
+   if (currentLetter.opened) {
+      getElement("mail-container").classList.add("opened");
+      getElement("mail-container").classList.remove("opening");
+   } else {
+      console.log("dec");
+      Game.newLetterCount--;
+      Game.updateLetterCount();
+      getElement("mail-container").classList.remove("opened");
+      getElement("mail-container").classList.add("opening");
+   }
+
+   currentLetter.opened = true;
+   getElement(`inbox-entry-${currentLetter.reference}`).classList.add("opened");
+   updateOpenedMessagesCookie();
+}
+function receiveLetter(letterName) {
+   const letter = messages[letterName];
+   if (letter.received) return;
+
+   letter.received = true;
+   createInboxEntry(letter);
+   updateReceivedMessagesCookie();
+
+   if (!letter.opened) {
+      console.log("inc");
+      Game.newLetterCount++;
+      Game.updateLetterCount();
+
+      new alertBox("New letter received!", letter.title);
+   }
+}
+
+/*
+MINING FEED
+*/
+const miningEntries = {};
 function createMiningEntry(amount, description) {
    const maxEntries = 4;
 
@@ -427,11 +773,20 @@ function setupDevtools() {
 
    summonPopupSetup();
    miscToolsSetup();
+   dataSetup();
+
+   getElement("devtools-close").addEventListener("click", () => {
+      const allTools = ["summon-popup", "misc-tools", "data-controls"];
+      for (const tool of allTools) {
+         getElement(tool).classList.add("hidden");
+         getElement("devtools").classList.add("hidden");
+      }
+   });
 }
 function switchVisibility(elem) {
    getElement(elem).classList.contains("hidden") ? getElement(elem).classList.remove("hidden") : getElement(elem).classList.add("hidden");
 
-   const allTools = ["summon-popup", "misc-tools"];
+   const allTools = ["summon-popup", "misc-tools", "data-controls"];
    for (let i = 0; i < allTools.length; i++) {
       if (allTools[i] != elem) {
          getElement(allTools[i]).classList.add("hidden");
@@ -466,7 +821,7 @@ function summonPopupSetup() {
       newOption.querySelector(".summon-popup-text").innerHTML = popups[popupNames[i]].displayName;
 
       selectedPopups[popupNames[i]] = false;
-      let summonInput = newOption.querySelector(".summon-popup-input");
+      const summonInput = newOption.querySelector(".summon-popup-input");
       summonInput.addEventListener("click", () => {
          selectedPopups[popupNames[i]] = !selectedPopups[popupNames[i]];
       });
@@ -481,6 +836,7 @@ function summonPopupSetup() {
    submitButton.addEventListener("click", () => {
       for (let i = 0; i < popupNames.length; i++) {
          if (selectedPopups[popupNames[i]]) {
+            console.log("A");
             popups[popupNames[i]].showPopup(false, true);
          }
       }
@@ -488,15 +844,36 @@ function summonPopupSetup() {
 
    // Add the summon all button functionality.
    const summonAllButton = getElement("summon-popup-all");
-   summonAllButton.addEventListener("click", () => {
-      for (let i = 0; i < popupNames.length; i++) {
-         popups[popupNames[i]].showPopup(false, true);
-      }
+   summonAllButton.addEventListener("click", () => { 
+      Object.values(popups).forEach(popup => {
+         popup.showPopup(false, true);
+      })
    });
 }
-function showSummonPopup() {
-   let summonPopup = getElement("summon-popup");
-   summonPopup.classList.remove("hidden");
+function dataSetup() {
+   getElement("devtools-data").addEventListener("click", () => {
+      switchVisibility("data-controls");
+      appendToDevtools(getElement("data-controls"));
+   });
+
+   getElement("reset-button").addEventListener("click", () => {
+      // Currencies
+      setCookie("lorem", "", 1);
+      Game.addLorem(-Game.loremCount);
+      setCookie("packets", "", 1);
+
+      // Letters/Alerts
+      setCookie("receivedPrompts", "", 1);
+      setCookie("openedMessages", "", 1);
+      setCookie("openedRewards", "", 1);
+      setCookie("receivedMessages", "", 1);
+      setCookie("unlockedMalware", "", 1);
+      setCookie("receivedPrompts", "", 1);
+
+      // Black Market
+      setCookie("unlockedShops", "", 1);
+      setCookie("bm", "", 1);
+   });
 }
 function appendToDevtools(element) {
    let devBounds = getElement("devtools").getBoundingClientRect();

@@ -31,28 +31,36 @@ class Popup extends BaseStructure {
       return displayName.join("");
    }
    showPopup(noMove = false, manualForce = false) {
+      if (!data[this.popupDataName].unlocked) return;
+
       const force = this == popups[Game.popupQueue[0]];
       if (force) Game.popupQueue.splice(0, 1);
 
-      if (Game.visiblePopups < Game.maxPopups || force || manualForce) {
+      if (Game.visiblePopupsCount < Game.maxPopups || force || manualForce) {
          if (!this.displayed) {
-            console.log("Displayed " + this.displayName + ".");
+            console.log(`%c Displayed ${this.displayName}.`, "color: #999");
             clearTimeout(this.redisplayDelay);
             this.displayObj.classList.remove("hidden");
             this.displayed = true;
 
             if (!noMove) this.moveToRandomPosition(80);
          } else {
-            console.warn("Tried to show " + this.displayName + ", but it was already visible.");
+            console.warn(`Tried to show ${this.displayName}, but it was already visible.`);
          }
       } else {
+         if (Game.popupQueue.indexOf(this.popupDataName) != -1) return;
          Game.popupQueue.push(this.popupDataName);
-         console.log("ADDED " + this.popupDataName + " TO LE QUEU");
+         console.log(`%c Added ${this.popupDataName} to the queue.`, "color: #999");
+
+         if (Game.popupQueue.length + Game.maxPopups >= Object.keys(popups).length * 0.75) {
+            // SHOW CLIPPY
+            if (Game.popupQueue.indexOf("clippy") == -1) popups.clippy.showPopup(false, true);
+         }
       }
    }
    hidePopup(givePoints = true) {
       if (!this.displayed) {
-         console.warn("Tried to hide " + this.displayName + " but was already hidden.");
+         console.warn(`Tried to hide ${this.displayName} but was already hidden.`);
          return;
       }
 
@@ -63,15 +71,18 @@ class Popup extends BaseStructure {
 
       this.displayed = false;
       this.displayObj.classList.add("hidden");
-      console.log("User closed " + this.displayName + ".");
+      console.log(`%c User closed ${this.displayName}.`, "color: #999");
 
       const points = data[this.popupDataName].stats.points;
-      if (typeof points != "object" && givePoints) Game.addLorem(points);
+      if (typeof points != "object" && givePoints && points !== undefined) {
+         Game.addLorem(points);
+         writeLorem(Math.floor(points / Game.loremPerWrite), false);
+      }
 
       let redisplayTime = data[this.popupDataName].stats.redisplayTime;
-      if (typeof redisplayTime == "undefined") {
+      if (typeof redisplayTime === "undefined") {
          redisplayTime = 15000;
-         console.warn("WARNING: Redisplay time not defined for " + this.displayName + ". Defaulting to 15 seconds.");
+         console.warn(`WARNING: Redisplay time not defined for ${this.displayName}. Defaulting to 15 seconds.`);
       }
 
       this.redisplayDelay = setTimeout(() => this.showPopup(), redisplayTime);
@@ -112,6 +123,8 @@ class LuremImpsir extends Popup {
       this.loremTime = 5;
 
       getElement("loremTimeRemaining").addEventListener("click", () => {
+         // Only execute if the countdown has ended.
+         if (!getElement("loremTimeRemaining").classList.contains("clickable")) return;
          this.hidePopup();
       });
    }
@@ -123,13 +136,13 @@ class LuremImpsir extends Popup {
       getElement("loremContainer").setAttribute("display-text", "STOPPED");
       getElement("loremContainer").classList.remove("canLorem");
       this.displayObj.classList.remove("hidden");
-      const updateLoremText = setInterval(() => {
+      this.updateLoremText = setInterval(() => {
          // Update lorem time.
          getElement("loremTimeRemaining").innerHTML = `continue (${formatFloat(this.loremTime)})`;
 
          this.loremTime -= 0.01;
          if (this.loremTime <= 0) {
-            clearInterval(updateLoremText);
+            clearInterval(this.updateLoremText);
             const timeObject = getElement("loremTimeRemaining");
             timeObject.classList.add("clickable");
             timeObject.innerHTML = "continue";
@@ -137,17 +150,16 @@ class LuremImpsir extends Popup {
       }, 10);
    }
    hidePopup() {
-      // Only execute if the countdown has ended.
-      if (!getElement("loremTimeRemaining").classList.contains("clickable")) return;
-
       super.hidePopup();
 
       getElement("loremContainer").setAttribute("display-text", "Generate your lorem here.");
       getElement("loremContainer").classList.add("canLorem");
       getElement("loremTimeRemaining").classList.remove("clickable");
+
       this.canLorem = true;
       this.loremTime = 5;
       this.displayObj.classList.add("hidden");
+      clearInterval(this.updateLoremText);
    }
 }
 class BrowserError extends Popup {
@@ -181,7 +193,7 @@ class FreeIPhone extends Popup {
 
       if (!this.displayed) return;
       getElement("iphonePopupMoveText").classList.add("hidden");
-      this.moveToRandomPosition(3); // Needed due to the hover movement
+      this.moveToRandomPosition(5); // Needed due to the hover movement
    }
    hidePopup() {
       super.hidePopup();
@@ -210,12 +222,13 @@ class Rain extends Popup {
    }
    showPopup() {
       super.showPopup();
-
       if (!this.displayed) return;
+      
+      this.totalSapAmount = 0;
       this.createLetterInterval = setInterval(() => {
          // Create a letter.
          if (this.letters.length < 20) { // Amount of letters is capped at 20.
-            const letter = new RainText();
+            new RainText();
          }
 
          // Sap points.
@@ -260,7 +273,7 @@ class RainText {
    incrementTop() {
       this.topPos += 0.1 * this.fallSpeed;
       this.displayObj.style.top = this.topPos + "vh";
-      if (this.topPos > 100 && popups.rain.letters.length <= 1) {
+      if (this.topPos >= 100) {
          if (popups.rain.letters.length <= 1) clearInterval(popups.rain.checkLetterInterval);
 
          popups.rain.letters.splice(popups.rain.letters.indexOf(this), 1);
@@ -273,18 +286,7 @@ class RainText {
 class Visitor extends Popup {
    constructor(popupDataName) {
       super(popupDataName);
-      this.rewards = {
-         points: {
-            1: -3,
-            2: -1,
-            3: 4,
-            4: 7
-         },
-         special: {
-            1: "Popup wave",
-            2: "3x points (5s)"
-         }
-      };
+      this.rewards = [-4, -2, 4, 7, "Popup wave", "3x points (5s)"];
       getElement("visitor-open-button").addEventListener("click", () => {
          this.spinBox();
          setTimeout(() => {
@@ -308,25 +310,25 @@ class Visitor extends Popup {
       this.randomiseBoxText();
    }
    randomiseBoxText() {
-      if (this.spinningBox) {
-         // Display current reward
-         let randomReward = this.getRandomReward();
-         this.currentReward = randomReward;
-         if (typeof randomReward == "number") {
-            let prefix = randomReward > 0 ? "+" : "";
-            let suffix = randomReward == -1 ? "" : "s";
-            getElement("visitor-value").innerHTML = `${prefix + randomReward} point${suffix}`;
-         } else {
-            getElement("visitor-value").innerHTML = randomReward;
-         }
+      if (!this.spinningBox) return;
 
-         // Respin
-         setTimeout(() => {
-            this.randomiseRate += 0.9;
-            this.randomiseRate *= 1.15;
-            this.randomiseBoxText();
-         }, Math.pow(this.randomiseRate, 1.2) + this.randomiseRate / 2);
+      // Display current reward
+      let randomReward = this.getRandomReward();
+      this.currentReward = randomReward;
+      if (typeof randomReward == "number") {
+         let prefix = randomReward > 0 ? "+" : "";
+         let suffix = randomReward == -1 ? "" : "s";
+         getElement("visitor-value").innerHTML = `${prefix + randomReward} point${suffix}`;
+      } else {
+         getElement("visitor-value").innerHTML = randomReward;
       }
+
+      // Respin
+      setTimeout(() => {
+         this.randomiseRate += 0.9;
+         this.randomiseRate *= 1.15;
+         this.randomiseBoxText();
+      }, Math.pow(this.randomiseRate, 1.2) + this.randomiseRate / 2);
    }
    openBox() {
       this.spinningBox = false;
@@ -380,31 +382,26 @@ class Visitor extends Popup {
       }
    }
    getRandomReward() {
-      let totalLength = Object.keys(this.rewards.points).length + Object.keys(this.rewards.special).length;
-      let randomNum = randomInt(1, totalLength + 1);
-
-      let pointsLength = Object.keys(this.rewards.points).length;
-      if (randomNum <= pointsLength) {
-         return this.rewards.points[randomInt(1, pointsLength + 1)];
-      } else {
-         let specialRewardNames = Object.keys(this.rewards.special);
-         let randomSpecialName = specialRewardNames[randomInt(0, specialRewardNames.length)];
-         return this.rewards.special[randomSpecialName];
-      }
+      const adjustedArray = this.rewards.slice();
+      adjustedArray.splice(adjustedArray.indexOf(this.currentReward), 1);
+      return adjustedArray[randomInt(0, adjustedArray.length)];
    }
    showPopup() {
       super.showPopup();
 
       if (!this.displayed) return;
+      this.currentReward = "";
       this.displayObj.style.opacity = 1;
       getElement("visitor-open-button").style.pointerEvents = "visible";
       getElement("visitor-value").innerHTML = "??";
       getElement("visitor-value").classList.remove("negativeViewerReward");
       getElement("visitor-status").innerHTML = "";
+
+      this.runConfetti();
    }
    hidePopup() {
       this.displayOpacity = 1;
-      let opacityFade = setInterval(() => {
+      const opacityFade = setInterval(() => {
          this.displayOpacity -= 0.06;
          this.displayObj.style.opacity = this.displayOpacity;
          if (this.displayOpacity <= 0) {
@@ -412,7 +409,60 @@ class Visitor extends Popup {
             this.displayOpacity = 1;
             super.hidePopup();
          }
-      }, 80)
+      }, 40)
+   }
+   runConfetti() {
+      const confettiCount = randomInt(75, 150);
+      const confettiList = [];
+      for (let i = 0; i < confettiCount; i++) {
+         const confetti = new Confetti();
+         confettiList.push(confetti);
+      }
+
+      this.confettiAnimation = setInterval(() => {
+         confettiList.forEach((confetti, index) => {
+            confetti.top += confetti.yVel;
+            confetti.displayObj.style.top = confetti.top + "%";
+            confetti.left += confetti.xVel;
+            confetti.displayObj.style.left = confetti.left + "%";
+
+            confetti.xVel *= 0.96;
+            confetti.yVel += 0.1;
+
+            if (confetti.top >= 101 || confetti.left >= 101 || confetti.left <= -1) {
+               confetti.displayObj.remove();
+               confettiList.splice(index, 1);
+
+               if (confettiList.length === 0) {
+                  clearInterval(this.confettiAnimation);
+               }
+            }
+         });
+      }, 20);
+   }
+}
+class Confetti {
+   constructor() {
+      this.displayObj = document.createElement("div");
+      getElement("visitor").appendChild(this.displayObj);
+      this.displayObj.classList.add("visitor-confetti");
+
+      this.top = randomInt(1, 99) + 10;
+      this.displayObj.style.top = this.top + "%";
+      this.left = randomInt(1, 99);
+      this.displayObj.style.left = this.left + "%";
+
+      this.displayObj.style.width = randomInt(10, 12.5) + "px";
+      this.displayObj.style.height = randomInt(4.5, 4.75) + "px";
+
+      this.displayObj.style.transform = `rotate(${randomInt(0, 359)}deg)`;
+
+      this.yVel = randomFloat(-1.5, -3.5);
+      this.xVel = randomFloat(-3, 3);
+
+      // Randomise bg colour
+      const colours = ["rgb(255, 0, 0)", "rgb(0, 255, 0)", "blue", "yellow"];
+      this.displayObj.style.backgroundColor = colours[randomInt(0, colours.length)];
    }
 }
 class PointIncrementText {
@@ -442,15 +492,36 @@ class Chunky extends Popup {
       super(popupDataName);
       this.chunkyRage = 0;
 
-      getElement("chunky-close").addEventListener("click", () => {
-         this.hidePopup();
-      });
-
+      getElement("chunky-close").addEventListener("click", () => this.hidePopup());
       getElement("chunky-remove").addEventListener("click", () => this.removeVirus());
    }
    removeVirus() {
       popups.chunkyVirus.showPopup(false, true);
       popups.chunkyPlantation.showPopup(false, true);
+
+      const chunkyStatus = getElement("chunky-status")
+      chunkyStatus.classList.remove("hidden");
+      chunkyStatus.classList.add("green");
+      chunkyStatus.innerHTML = "Chunky is appeased.";
+      
+      this.chunkyRage -= 25 + randomInt(0, 9);
+      if (this.chunkyRage < 0) this.chunkyRage = 0;
+      const displayText = formatFloat(this.chunkyRage);
+      getElement("chunky-progress-text").innerHTML = displayText + "%";
+
+      const progressBar = getElement("chunky-progress-bar");
+      progressBar.style.width = displayText + "%";
+      progressBar.classList.add("changed");
+
+      this.displayObj.querySelector(".button-container").classList.remove("clickable");
+      // Hide the buttons
+      getElement("chunky-button-container").classList.add("hidden");
+
+      // Hide chunky after time
+      setTimeout(() => {
+         super.hidePopup();
+         progressBar.classList.remove("changed");
+      }, 2500);
    }
    showPopup() {
       super.showPopup();
@@ -462,6 +533,7 @@ class Chunky extends Popup {
       this.displayObj.querySelector(".button-container").classList.add("clickable");
       getElement("chunky-reward").classList.add("hidden");
       getElement("chunky-button-container").classList.remove("hidden");
+      getElement("chunky-status").classList.remove("green");
    }
    hidePopup() {
       this.chunkyRage += 34 + randomInt(0, 11);
@@ -473,10 +545,10 @@ class Chunky extends Popup {
       progressBar.classList.add("changed");
 
       // Show the chunky status text.
-      let chunkyStatus = getElement("chunky-status");
+      const chunkyStatus = getElement("chunky-status");
       chunkyStatus.classList.remove("hidden");
       if (this.chunkyRage <= 25) {
-         chunkyStatus.innerHTML = "Chunky is appeased.";
+         chunkyStatus.innerHTML = "Chunky is annoyed.";
       } else if (this.chunkyRage <= 50) {
          chunkyStatus.innerHTML = "Chunky grows angry.";
       } else if (this.chunkyRage <= 75) {
@@ -491,8 +563,9 @@ class Chunky extends Popup {
       if (this.chunkyRage <= 99) {
          let chunkyReward = getElement("chunky-reward");
          chunkyReward.classList.remove("hidden");
-         let displayPoints = Math.round((points + Number.EPSILON) * 100) / 100;
+         const displayPoints = formatFloat(Game.loremCount / 5);
          chunkyReward.innerHTML = "+20% points. (" + displayPoints + " points)";
+         Game.multLorem(1.2);
       }
 
       getElement("chunky-progress-text").classList.add("red");
@@ -711,7 +784,7 @@ class ChunkyPlantation extends Popup {
 
       if (!this.displayed) return;
       // Remove existing bananas
-      let bananaList = document.getElementsByClassName("plantation-banana");
+      const bananaList = document.getElementsByClassName("plantation-banana");
       for (let i = 0; i < bananaList.length; i++) {
          bananaList[i].remove();
       }
@@ -730,17 +803,16 @@ class ChunkyPlantation extends Popup {
 
       // Show the bananas
       const bananaCount = randomInt(15, 20, true);
-      const maxDisplayTime = 200; // Time it takes to display the bananas.
+      const maxDisplayTime = 500; // Time it takes to display the bananas.
       let currentBanana = 0;
       this.createBananaInterval = setInterval(() => {
-         currentBanana++;
-         const newBanana = new ChunkyPlantationBanana();
-         if (currentBanana >= bananaCount) clearInterval(this.createBananaInterval);
+         new ChunkyPlantationBanana();
+         if (currentBanana++ >= bananaCount) clearInterval(this.createBananaInterval);
       }, maxDisplayTime / bananaCount);
    }
    hidePopup() {
-      clearInterval(this.updateTimerText);
       super.hidePopup();
+      clearInterval(this.updateTimerText);
    }
 }
 class ChunkyPlantationBanana {
@@ -750,18 +822,21 @@ class ChunkyPlantationBanana {
       document.querySelector(".chunky-tree").appendChild(this.displayObj);
 
       // Change display position.
-      const displayBounds = this.displayObj.getBoundingClientRect();
-      this.top = Math.random() * 90 + 5;
-      this.left = Math.random() * 90 + 5;
+      this.top = randomFloat(5, 95);
+      this.left = randomFloat(5, 95);
       this.displayObj.style.top = this.top + "%";
       this.displayObj.style.left = this.left + "%";
 
       // Give random rotation.
-      this.displayObj.style.transform = "rotate(" + randomInt(0, 360) + "deg)";
+      this.rotation = randomInt(0, 360);
+      this.displayObj.style.transform = `rotate(${this.rotation}deg)`;
 
-      this.displayObj.addEventListener("click", () => {
-         this.collectBanana();
-      });
+      this.displayObj.addEventListener("click", () => this.collectBanana());
+
+      this.rotateBananaInterval = setInterval(() => {
+         this.rotation += randomFloat(30, 50) * randomSign();
+         this.displayObj.style.transform = `rotate(${this.rotation}deg)`;
+      }, 800);
    }
    collectBanana() {
       // Hide popup if all bananas are collected.
@@ -769,10 +844,13 @@ class ChunkyPlantationBanana {
          popups.chunkyPlantation.hidePopup();
       }
 
+      clearInterval(this.rotateBananaInterval)
+
+      Game.addLorem(1);
       this.displayObj.remove();
 
-      for (let i = 0; i < 10 + Math.random() * 5; i++) {
-         let text = new ChunkyPlantationText(this.top, this.left);
+      for (let i = 0; i < randomFloat(10, 15); i++) {
+         new ChunkyPlantationText(this.top, this.left);
       }
    }
 }
@@ -1053,16 +1131,22 @@ class Expandinator extends Popup {
    showPopup() {
       super.showPopup();
 
+      if (!this.displayed) return;
       this.resetPopup();
 
       const bounds = this.displayObj.getBoundingClientRect();
       const computerBounds = getElement("computer").getBoundingClientRect();
 
+      if (this.startWidth != undefined) {
+         this.displayObj.style.width = `${this.startWidth}px`;
+         this.displayObj.style.height = `${this.startHeight}px`;
+      }
       this.startWidth = bounds.width;
+      this.startHeight = bounds.height;
+
       const widthRemaining = computerBounds.width - bounds.width;
       const startLeft = bounds.x;
 
-      this.startHeight = bounds.height;
       const heightRemaining = computerBounds.height - bounds.height;
       const startTop = bounds.y - computerBounds.y;
 
@@ -1077,14 +1161,14 @@ class Expandinator extends Popup {
 
          let space = 0;
          this.expandInterval = setInterval(() => {
-            space += 0.002;
-
             this.displayObj.style.width = this.startWidth + widthRemaining * space + "px";
             this.displayObj.style.height = this.startHeight + heightRemaining * space + "px";
             this.displayObj.style.left = startLeft * (1 - space) + "px";
             this.displayObj.style.top = startTop * (1 - space) + "px";
 
             if (space >= 1) clearInterval(this.expandInterval);
+
+            space += 0.0025;
          }, 20);
       }, this.displayTimeSeconds * 1000);
    }
@@ -1095,8 +1179,6 @@ class Expandinator extends Popup {
 
       getElement("expandinator-timer").innerHTML = "Time remaining: " + this.displayTimeSeconds;
 
-      console.log(this.startWidth, this.startHeight);
-
       this.displayObj.style.width = this.startWidth + "px";
       this.displayObj.style.height = this.startHeight + "px";
    }
@@ -1106,29 +1188,66 @@ class DevHire extends Popup {
    constructor(popupDataName) {
       super(popupDataName);
 
-      const promptCount = 4;
-      for (let i = 1; i <= promptCount - 1; i++) {
+      const questionSegments = 1;
+      for (let i = 1; i <= questionSegments; i++) {
+         const correctQuestion = randomInt(1, 3, true);
+         let equations = ["9 - 4 =", "2 * 5 =", "6 / 2 =", "9 + 9 =", "1 + 0 ="];
+         let answers = ["5", "10", "3", "18", "1"];
+         const correctIndex = randomInt(0, equations.length);
+         getElement("prompt-equation").innerHTML = equations[correctIndex];
+         getElement(`dev-hire-q${i}_${correctQuestion}`).classList.add("correct-button");
+         getElement(`dev-hire-q${i}_${correctQuestion}`).innerHTML = answers[correctIndex];
+         equations.splice(correctIndex, 1);
+         answers.splice(correctIndex, 1);
+
+         for (let k = 1; k <= 3; k++) {
+            if (k != correctQuestion) {
+               const incorrectAnswer = getElement(`dev-hire-q${i}_${k}`);
+               incorrectAnswer.onclick = () => {
+                  this.hideAllPrompts();
+               }
+               const incorrectIndex = randomInt(0, equations.length);
+               incorrectAnswer.innerHTML = answers[incorrectIndex];
+               equations.splice(incorrectIndex, 1);
+               answers.splice(incorrectIndex, 1);
+            }
+         }
+      }
+
+      const promptCount = document.getElementsByClassName("dev-hire-prompt").length;
+      for (let i = 1; i <= promptCount; i++) {
          getElement(`dev-hire-prompt-${i}`).querySelector(".correct-button").addEventListener("click", () => {
-            console.log("A");
-            this.showPrompt(i + 1);
+            if (i < promptCount) {
+               this.showPrompt(i + 1);
+            } else {
+               this.hidePopup();
+            }
          });
       }
-      getElement(`dev-hire-prompt-${promptCount}`).addEventListener("click", () => {
-         this.hidePopup();
-      });
 
       getElement("dev-hire-close").addEventListener("click", () => {
+         // console.log(document.getElementsByClassName("dev-hire-prompt"));
+         // document.getElementsByClassName("dev-hire-prompt").forEach(prompt => {
+         //    if (!prompt.classList.contains("hidden")) console.log("A");
+         // });
          this.showPrompt(1);
       });
 
-      getElement("equ-in-1").addEventListener("click", () => {
-         getElement("dev-hire-prompt-3").classList.add("hidden");
-      });
-      getElement("equ-in-2").addEventListener("click", () => {
-         getElement("dev-hire-prompt-3").classList.add("hidden");
-      });
+      const list = getElement("dev-hire-list");
+      getElement("dev-hire-requirements").addEventListener("click", () => {
+         if (list.classList.contains("hidden")) {
+            list.classList.remove("hidden");
+         } else {
+            list.classList.add("hidden");
+         }
+      })
+   }
+   hideAllPrompts() {
+      const prompts = document.getElementsByClassName("dev-hire-prompt");
+      for (const prompt of prompts) prompt.classList.add("hidden");
    }
    showPrompt(promptN) {
+      console.log(promptN);
       getElement(`dev-hire-prompt-${promptN}`).classList.remove("hidden");
       if (promptN > 1) getElement(`dev-hire-prompt-${promptN - 1}`).classList.add("hidden");
    }
@@ -1136,16 +1255,43 @@ class DevHire extends Popup {
       super.showPopup();
 
       if (!this.displayed) return;
-      this.updatePrompt3();
-      getElement("dev-hire-prompt-4").classList.dd("hidden");
+      // this.updatePrompt3();
+      getElement("dev-hire-prompt-4").classList.add("hidden");
    }
    updatePrompt3() {
       const equationType = randomInt(0, 5);
-      const equations = ["9 - 4 =", "2 * 5 =", "6 / 2 =", "9 + 9 =", "1 + 0 ="];
-      const answers = ["5", "10", "3", "18", "1"];
       getElement("prompt-equation").innerHTML = equations[equationType];
       getElement("equ-correct").innerHTML = answers[equationType];
       getElement("equ-in-1").innerHTML = parseInt(answers[equationType]) + 9;
       getElement("equ-in-2").innerHTML = randomInt(parseInt(answers[equationType]), parseInt(answers[equationType]) + 5, true);
+   }
+}
+class Clippy extends Popup {
+   constructor(popupDataName) {
+      super(popupDataName);
+      
+      getElement("clippy-close").addEventListener("click", () => this.hidePopup());
+   }
+   showPopup() {
+      super.showPopup();
+      if (!this.displayed) return;
+   }
+   hidePopup() {
+      super.hidePopup();
+
+      const allPopups = [ ...Game.visiblePopups, ...Object.values(semiPopups) ];
+
+      allPopups.forEach(popup => {
+         console.log(popup);
+         if (popup.popupDataName != "clippy") {
+            console.log("no.");
+            console.log(popup);
+            popup.hidePopup();
+         }
+      });
+
+      // setTimeout(() => {
+      //    super.hidePopup();
+      // }, 2000);
    }
 }

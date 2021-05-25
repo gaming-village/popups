@@ -134,6 +134,6 @@ function drawLine(startObj, endObj, unlocked) {
 }
 
 function a() {
-    setCookie("unlockedUnits", "101000000", 1);
-    console.log(getCookie("unlockedUnits"));
+    setCookie("unlockedMalware", "101000000", 1);
+    console.log(getCookie("unlockedMalware"));
 }

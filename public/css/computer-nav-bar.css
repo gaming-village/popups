@@ -8,10 +8,10 @@
 }
 
 #computer-start-icon {
-   height: 8em;
-   margin-top: 0.125em;
+   height: 5em;
+   margin-top: -1.5em;
    margin-right: 1em;
-   margin-left: 0.5em;
+   margin-left: 0.05rem;
    float: left;
 }
 
@@ -21,6 +21,7 @@
    border-top-right-radius: 3px;
    border-bottom: none;
    padding: 0.1em 0.8em;
+   margin-right: 0.2rem;
    float: left;
    cursor: pointer;
 }

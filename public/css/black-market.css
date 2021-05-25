@@ -1,0 +1,320 @@
+@import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato&display=swap');
+
+#black-market {
+   border-top: 2px solid rgb(252, 255, 208);
+   background-color: #222;
+   box-shadow: 0 -1px 0 1px rgb(184, 128, 54), 0 0 4rem 3rem #000 inset;
+   overflow: hidden;
+}
+#black-market-stars {
+   width: 110%;
+   height: 110%;
+   background-image: url(../images/stars.jpeg);
+   background-size: cover;
+   position: absolute;
+   top: 0;
+   left: 0;
+   opacity: 0.3;
+   animation: starMove 60s forwards linear infinite;
+}
+@keyframes starMove {
+   0% {
+      background-position: 0% 0%;
+   }
+   50% {
+      background-position: 100% 0%;
+   }
+   100% {
+      background-position: 0% 0%;
+   }
+}
+@keyframes starSpin {
+   0% {
+      transform: rotate(0deg);
+   }
+   100% {
+      transform: rotate(360deg);
+
+   }
+}
+
+#black-market-header-container {
+   display: inline-block;
+   margin: 1rem 0 0 50%;
+   transform: translateX(-50%);
+}
+
+.segment, .black-market-container {
+   --size: 28px;
+   border: 2px solid;
+   border-top-color: rgb(252, 255, 208);
+   border-left-color: rgb(255, 241, 113);
+   border-bottom-color: rgb(133, 119, 88);
+   border-right-color: rgb(163, 143, 99);
+   padding: 0 calc(var(--size) + 5px) 0.3rem;
+   display: table;
+}
+.black-market-container {
+   color: #feffdd;
+   font-weight: normal;
+   font-family: "Abril Fatface";
+   background-color: #111;
+   border-radius: 8px;
+   margin-left: 50%;
+   position: relative;
+   transform: translateX(-50%);
+   box-shadow: 0 0 10px 3.5px #000, 0 0 15px 5px #000 inset;
+}
+.black-market-container:not(:first-child) {
+   margin-top: 0.2rem;
+}
+.black-market-container :is(h4, h3, h2) {
+   white-space: nowrap;
+   text-align: center;
+   margin: 0;
+}
+.black-market-container h4 {
+   font-size: 0.85rem;
+   letter-spacing: 0.03rem;
+}
+.black-market-container h4::first-letter {
+   font-size: 1.1rem;
+}
+.black-market-container h3 {
+   font-size: 0.95rem;
+   letter-spacing: 0.04rem;
+}
+.black-market-container h3:not(.no-large):first-letter {
+   font-size: 1.3rem;
+}
+.black-market-container h2 {
+   font-size: 1.2rem;
+   letter-spacing: 0.1rem;
+}
+.black-market-container::before, .black-market-container::after {
+   content: "";
+   width: var(--size);
+   height: var(--size);
+   background-image: url(../images/code-feather.png);
+   background-size: var(--size) var(--size);
+   position: absolute;
+   top: 50%;
+   transform: translateY(-50%);
+   opacity: 0.5;
+}
+.black-market-container::before {
+   left: 2.5px;
+}
+.black-market-container::after {
+   right: 2.5px;
+   transform: translateY(-50%) scaleX(-1);
+}
+
+#black-market-title h2 {
+   font-size: 1.35rem;
+   color: rgb(247, 96, 37);
+   letter-spacing: 0.15rem;
+}
+#black-market-title h2::after {
+   content: " PACKETS";
+}
+
+
+/* MAIN TRANSFER SCREEN */
+#transfer-screen {
+   min-width: 20vw;
+   min-height: 8rem;
+   background-color: #222;
+   border-radius: 5px;
+   margin-top: 3.5rem;
+   box-shadow: 0 2px 15px 4px #090909, 0 2px 10px 2px #0c0c0c, 0 0 30px 5px rgba(0, 0, 0, 0.8) inset;
+}
+#transfer-screen::before, #transfer-screen::after {
+   display: none !important;
+}
+#transfer-caption {
+   color: #fcfcfc;
+   white-space: nowrap;
+   font-size: 0.85rem;
+   font-weight: normal;
+   font-family: "Abril Fatface";
+   letter-spacing: 0.025rem;
+   min-width: 50%;
+   text-align: center;
+   background-color: #222;
+   padding: 0.2rem 0.5rem 0.4rem;
+   border: 2px solid;
+   border-top-color: rgb(252, 255, 208);
+   border-left-color: rgb(255, 241, 113);
+   border-bottom: none;
+   border-right-color: rgb(163, 143, 99);
+   border-top-left-radius: 10px;
+   border-top-right-radius: 10px;
+   position: absolute;
+   left: 50%;
+   top: 1px;
+   transform: translate(-50%, -100%);
+   box-shadow: 0 -2px 12px 3px #020202, 0 0 15px 3px #000 inset;
+}
+#transfer-caption i {
+   font-size: 1.1rem;
+   font-style: normal;
+}
+#black-market-lorem-transfer-amount {
+   text-align: center;
+   color: #efefef;
+   font: 400 1.3rem "Abril Fatface";
+   margin: 0.7rem 0 0;
+   letter-spacing: 0.03rem;
+}
+#black-market-lorem-transfer-amount::after {
+   content: " LOREM";
+}
+#transfer-screen p {
+   color: #b2b2b2;
+   font: 400 0.8rem "Abril Fatface";
+   text-align: center;
+   margin: 0;
+   letter-spacing: 0.025rem;
+}
+#transfer-screen p::first-letter {
+   font-size: 1.1rem;
+}
+#packet-transfer-amount {
+   color: #fff;
+   text-align: center;
+   text-shadow: 1px 1px 6px #000, 1px 1px 4px #000, 1px 1px 2px #000;
+   font: 400 1.65rem "Abril Fatface";
+   margin: 0;
+   letter-spacing: 0.1rem;
+}
+#packet-transfer-amount::after {
+   content: " PACKETS";
+}
+#transfer-button {
+   min-width: 7.5rem;
+   font-size: 1.1rem;
+   padding: 0 2rem 0.2rem;
+   margin: 1.4rem 0 0.8rem 50%;
+   transform: translateX(-50%);
+   letter-spacing: 0.025rem;
+}
+#transfer-button::first-letter {
+   font-size: 1.4rem;
+}
+#transfer-button.blocked {
+   color: rgb(202, 200, 166);
+   background-color: rgb(223, 79, 23);
+   border-color: rgb(201, 199, 171);
+   box-shadow: 0 0 0 1px rgb(184, 128, 54), 0 0 10px 3px rgba(0, 0, 0, 0.4) inset;
+   cursor: default;
+}
+
+
+.red-button {
+   color: rgb(255, 253, 228);
+   font-weight: 400;
+   font-family: "Abril Fatface";
+   background-color: rgb(255, 84, 17);
+   box-shadow: 0 0 0 1px rgb(184, 128, 54), 0 0 6px 1px rgba(0, 0, 0, 0.4) inset;
+   border: 1px solid rgb(255, 253, 228);
+   cursor: pointer;
+   display: inline-block;
+}
+.red-button:hover {
+   box-shadow: 0 0 0 1px rgb(184, 128, 54);
+}
+.red-button:active {
+   color: rgb(235, 233, 210);
+   border-color: rgb(235, 233, 210);
+   background-color: rgb(226, 81, 24);
+   box-shadow: 0 0 8px 1px rgba(0, 0, 0, 0.3) inset, 0 0 8px 1px #000;
+}
+
+#black-market-bottom {
+   white-space: nowrap;
+   position: absolute;
+   left: 50%;
+   bottom: 5vh;
+   display: inline-block;
+   transform: translateX(-50%);
+}
+.segment {
+   color: #fefefe;
+   background-color: #222;
+   padding-left: 0.4rem !important;
+   padding-right: 0.4rem !important;
+   width: 12rem;
+   border-radius: 5px;
+   display: inline-block;
+   box-shadow: 0 0 10px 5px #000 inset;
+}
+.segment * {
+   white-space: normal;
+}
+.segment:not(.hidden):not(:first-child) {
+   margin-left: 0.3rem;
+}
+.segment.locked {
+   border-radius: 0px;
+   border-color: rgb(133, 119, 88);
+}
+.segment.locked p {
+   color: #ddd;
+}
+.segment.locked span {
+   width: 100%;
+   text-align: center;
+   white-space: pre;
+   content: attr(after-text);
+   color: rgb(255, 243, 199);
+   font: 400 1.1rem "Abril Fatface";
+   position: absolute;
+   top: 50%;
+   left: 0;
+   transform: translateY(-50%);
+   text-shadow: 0 0 50px #000, 0 0 30px #000, 0 0 20px #000, 0 0 15px #000, 0 0 10px #000, 0 0 5px #000;
+}
+.segment:not(.locked) span {
+   display: none !important;
+}
+
+.segment h2 {
+   color: rgb(255, 253, 228);
+   white-space: nowrap;
+   font: 400 1rem "Abril Fatface";
+   font-size: 1rem;
+   width: 100%;
+   text-align: center;
+   margin: 0;
+   letter-spacing: 0.025rem;
+}
+.segment h2::before, .segment h2::after {
+   --size: 24px;
+   content: "";
+   width: var(--size);
+   height: var(--size);
+   background-image: url(../images/code-feather.png);
+   background-size: var(--size) var(--size);
+   display: inline-block;
+   opacity: 0.6;
+   transform: translateY(10px);
+}
+.segment h2::after {
+   transform: translateY(10px) scaleX(-1);
+}
+.segment p {
+   font-size: 0.95rem;
+   font-family: "Times New Roman", Times, serif;
+   margin: 0.5rem 0 0 0.2rem;
+}
+.segment button {
+   font-size: 1rem;
+   padding: 0 0.8rem;
+   margin: 1rem 0 0.3rem 50%;
+   transform: translateX(-50%);
+}
+.segment button::first-letter {
+   font-size: 1.2rem;
+}

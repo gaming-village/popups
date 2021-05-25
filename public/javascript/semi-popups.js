@@ -36,14 +36,12 @@ class PlagueOfChunky extends SemiPopup {
       this.isChunky = true;
    }
    showPopup() {
-      super.showPopup(50);
+      super.showPopup(60);
 
       Game.multLorem(0.65, true);
 
-      const displayTime = 7.5; // In seconds
-      setTimeout(() => {
-         this.hidePopup();
-      }, displayTime * 1000);
+      const displayTime = 7500;
+      setTimeout(() => this.hidePopup(), displayTime);
    }
 }
 class ScourgeOfChunky extends SemiPopup {
@@ -54,7 +52,7 @@ class ScourgeOfChunky extends SemiPopup {
       this.isChunky = true;
    }
    showPopup() {
-      super.showPopup(50);
+      super.showPopup(60);
 
       this.activated = true;
 
@@ -75,13 +73,13 @@ class WrathOfChunky extends SemiPopup {
       this.isChunky = true;
    }
    showPopup() {
-      super.showPopup(50);
+      super.showPopup(60);
 
       // Move all popups.
       const movePopupsInterval = setInterval(() => {
          const movePopups = { ...popups, ...semiPopups };
          for (const item of Object.values(movePopups)) {
-            if (item.displayed && !item.isChunky) item.moveToRandomPosition(60);
+            if (item.displayed && !item.isChunky && item.popupDataName != "chunky") item.moveToRandomPosition(60);
          }
       }, 500);
 
@@ -101,7 +99,7 @@ class HexOfChunky extends SemiPopup {
       this.isChunky = true;
    }
    showPopup() {
-      super.showPopup(50);
+      super.showPopup(60);
 
       this.associateTimer();
 
@@ -120,8 +118,7 @@ class HexOfChunky extends SemiPopup {
                delete this.associateList[associateNames[i]];
                if (associateNames.length == 1) clearInterval(moveAssociates);
             } else {
-               associateCheck.left += 0.1 + associateCheck.addedSpeed;
-               associateCheck.top += randomFloat(-0.6, 0.6) + associateCheck.glitchMod * Math.sign(randomFloat(-1, 1));
+               associateCheck.left += associateCheck.speed;
                associateCheck.displayObj.style.top = associateCheck.top + "%";
                associateCheck.displayObj.style.left = associateCheck.left + "%";
             }
@@ -139,7 +136,6 @@ class HexOfChunky extends SemiPopup {
    createAssociate() {
       const potentialAssociates = ["banana", "chunky", "monke"];
       let currentAssociate = potentialAssociates[randomInt(0, potentialAssociates.length)];
-      if (Math.random() < 0.05) currentAssociate = "bigmonke";
       this.createAssociateElement(currentAssociate);
    }
    createAssociateElement(associateType) {
@@ -160,13 +156,26 @@ class HexOfChunky extends SemiPopup {
 
       // Add the element ot the list to be checked in the iteration.
       this.associateList[earliestAvailable] = {};
+      const size = randomFloat(1, 5);
+      this.associateList[earliestAvailable].size = size;
       this.associateList[earliestAvailable].displayObj = newAssociate;
       this.associateList[earliestAvailable].left = -1;
-      this.associateList[earliestAvailable].addedSpeed = randomFloat(0, 0.6);
-      this.associateList[earliestAvailable].glitchMod = randomInt(0, 2) * 2.5;
+      this.associateList[earliestAvailable].speed = Math.pow(size / 3, 1.15);
+
+      // Convert (size * 20) to (vw+vh)/2 to scale with viewport size.
+      const px = size * 20;
+      const vw = 100 / window.innerWidth * px;
+      const vh = 100 / window.innerHeight * px;
+
+      // Change the element's size.
+      newAssociate.style.width = `calc((${vw}vw + ${vh}vh) / 2)`;
+      newAssociate.style.height = `calc((${vw}vw + ${vh}vh) / 2)`;
+      if (size >= 2.5) {
+         newAssociate.style.zIndex = 2;
+      }
 
       // Move the element to a random top position;
-      this.associateList[earliestAvailable].top = associateType === "bigmonke" ? 50 : randomInt(0, 100);
+      this.associateList[earliestAvailable].top = randomFloat(5, 95);
       newAssociate.style.top = this.associateList[earliestAvailable].top + "%";
 
       // Style the element.
@@ -176,13 +185,6 @@ class HexOfChunky extends SemiPopup {
          newAssociate.classList.add("hex-chunky");
       } else if (associateType === "monke") {
          newAssociate.classList.add("hex-monke");
-      } else if (associateType === "bigmonke") {
-         newAssociate.classList.add("hex-bigmonke");
-
-         this.associateList[earliestAvailable].addedSpeed += 0.3;
-         this.associateList[earliestAvailable].addedSpeed *= 2;
-         this.associateList[earliestAvailable].glitchMod += 2.5;
-         this.associateList[earliestAvailable].glitchMod *= 2.5;
       }
    }
 }
@@ -225,12 +227,12 @@ class LoremWarning extends SemiPopup {
    hidePopup() {
       super.hidePopup();
 
-      continued = true;
-      getElement("a").classList.remove("unclickable");
+      // continued = true;
+      // getElement("a").classList.remove("unclickable");
    }
    showPopup() {
       super.showPopup(30);
 
-      getElement("a").classList.add("unclickable");
+      // getElement("a").classList.add("unclickable");
    }
 }

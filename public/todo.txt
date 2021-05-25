@@ -85,10 +85,17 @@ Mining feed:
 * Packets in green.
 
 
+News section
 
+Lorem:
+L.O.R.E.M: League of _ _ _
 
+Welcome new employee.
+Congratulations on your entry into Lorem Corp. You have been supplied a virtual machine on which to conduct your mining. See the About page for further information.
+You are dispensable and will be removed if you step out of line.
+- Lorem Corp.
 
-Congratulations on your admission to Lorem Ipsum Studios!
+*Employee Guidelines*
 
 As a new employee, we suggest you look at our "About" page.
 
@@ -97,3 +104,39 @@ We have designated you one Windows XP computer for the cause.
 Dear Employees, it has come to our attention that a new currency has been 
 
 If you see any suspicious popups, just close them. It shouldn't be that hard...
+
+*FROM BLACK MARKET* Hello user, we have opened your access to several more popups.
+
+
+Message from Chunky
+Hello _, ... .
+
+*Message from Clippy* (Some company name)
+
+* Received messages stored in a binary number
+1 = received,
+0 = not received.
+
+
+
+Active "binaries"
+* Add modifiers
+Unlock artifacts
+
+* When 10 lorem is reached, receive a message from the black makret and allow the player to purchase the microsoft antivirus popup.
+
+
+
+
+Upgrade which creates ad every 10 seconds
+If chunky gets to 200% rage, do something
+
+Achievements
+
+Terminology:
+"Grow" new malware
+Branches
+Seeds
+
+Chunky face on chukny popup icons
+cooldown message on transfer button
