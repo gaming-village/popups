@@ -17,3 +17,4 @@ Before submitting code, make sure to run the game to make sure everything works 
 - Use spaces around parentheses: `if (1 == 2) {`
 - Use camel case in Javascript (e.g. `myVariable`), and hyphens in CSS and HTML (e.g. `this-is-a-header`).
 - Comment where appropriate, but not too extensively. If you have what could potentially be a confusing piece of code for other programmers, either add comments or simplify the code.
+- Try to keep variable names simple and short where possible.
