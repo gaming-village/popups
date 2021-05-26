@@ -6,7 +6,7 @@ _[Trello Board](https://trello.com/b/K79SuoKy/popup-website-game)_
 
 ## View Project
 
-To view the project, visit the _[Website](https://gaming-village.github.io/popups/public/index.html)_.
+To view the project, visit the [Website](https://gaming-village.github.io/popups/public/index.html).
 
 ## Contributing
 
