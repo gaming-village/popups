@@ -11,7 +11,7 @@
    width: 110%;
    height: 110%;
    background-image: url(../images/stars.jpeg);
-   background-size: cover;
+   background-size: 150vw auto;
    position: absolute;
    top: 0;
    left: 0;

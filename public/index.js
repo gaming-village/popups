@@ -409,15 +409,7 @@ function writeLorem(loremN = 1, giveLorem = true) {
    }
 
    if (iterationCount >= loremBlockSize) {
-      // const currentLoremText = getElement("current-lorem-text").cloneNode(true);
-      console.log(loremContainer.querySelectorAll(".loremAd"));
-
-      console.log(loremContainer);
-      for (const text of loremContainer.children) {
-         console.log(text);
-         text.remove();
-      }
-      console.log(loremContainer);
+      for (const text of loremContainer.children) text.remove();
       Game.addLorem(10);
       iterationCount = 0;
 
