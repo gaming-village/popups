@@ -408,6 +408,8 @@ function writeLorem(loremN = 1, giveLorem = true) {
       newLoremContainer.id = "current-lorem-text";
    }
 
+   showPopupsAttempt();
+
    if (iterationCount >= loremBlockSize) {
       for (const text of loremContainer.children) text.remove();
       Game.addLorem(10);
@@ -426,6 +428,9 @@ function keyPress() {
 
    writeLorem();
 
+   showPopupsAttempt();
+}
+function showPopupsAttempt() {
    switch (iterationCount) {
       case 50:
          popups.microsoftAntivirus.showPopup();
