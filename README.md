@@ -10,4 +10,4 @@ To view the project, visit the _[Website](https://gaming-village.github.io/popup
 
 ## Contributing
 
-Before contributing to the project, please see CONTRIBUTING.
+Before contributing to the project, please see _[CONTRIBUTING](https://gaming-village.github.io/popups/CONTRIBUTING.md)_.
