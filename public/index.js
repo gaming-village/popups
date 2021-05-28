@@ -227,45 +227,29 @@ function closePrompt() {
    getElement("message-container").classList.add("hidden");
 }
 
-function generatePopups() {
-   // Can't automate popupDisplayName as it doesn't get pushed to the array before the constructor is run.
-   popups.microsoftAntivirus = new MicrosoftAntivirus("microsoftAntivirus");
-   popups.browserError = new BrowserError("browserError");
-   popups.freeIPhone = new FreeIPhone("freeIPhone");
-   popups.rain = new Rain("rain");
-   popups.chunky = new Chunky("chunky");
-   popups.adblockBlocker = new AdblockBlocker("adblockBlocker");
-   popups.annualSurvey = new AnnualSurvey("annualSurvey");
-   popups.luremImpsir = new LuremImpsir("luremImpsir");
-   popups.chunkyVirus = new ChunkyVirus("chunkyVirus");
-   popups.visitor = new Visitor("visitor");
-   popups.chunkyPlantation = new ChunkyPlantation("chunkyPlantation");
-   popups.ramDownload = new RamDownload("ramDownload");
-   popups.bankDetails = new BankDetails("bankDetails");
-   popups.expandinator = new Expandinator("expandinator");
-   popups.devHire = new DevHire("devHire");
-   popups.clippy = new Clippy("clippy");
-}
+function instantiateClasses() {
+   let popupNames = ["chunkyMessage", "plagueOfChunky", "scourgeOfChunky", "wrathOfChunky", "hexOfChunky", "ad1", "ad2", "ad3", "ad4", "ad5", "loremWarning"];
+   // Generate the popup names
+   for (const popup of Object.values(data)) {
+      const camelCaseArray = popup.name.split("-").map((string, index) => {
+         return index >= 1 ? string.charAt(0).toUpperCase() + string.slice(1) : string;
+      });
+      popupNames.push(camelCaseArray.join(""));
+   }
 
-function generateSemiPopups() {
-   semiPopups.chunkyMessage = new ChunkyMessage("chunky-message");
-   semiPopups.plagueOfChunky = new PlagueOfChunky("plague-of-chunky");
-   semiPopups.scourgeOfChunky = new ScourgeOfChunky("scourge-of-chunky");
-   semiPopups.wrathOfChunky = new WrathOfChunky("wrath-of-chunky");
-   semiPopups.hexOfChunky = new HexOfChunky("hex-of-chunky");
+   function generateClasses(classObjectName, names) {
+      names.forEach(name => {
+         const capitalCase = name.charAt(0).toUpperCase() + name.slice(1);
+         eval(`${classObjectName}["${name}"] = new ${capitalCase}("${name}")`);
+      });
+   }
 
-   semiPopups.ad1 = new Ad1("ad1");
-   semiPopups.ad2 = new Ad2("ad2");
-   semiPopups.ad3 = new Ad3("ad3");
-   semiPopups.ad4 = new Ad4("ad4");
-   semiPopups.ad5 = new Ad5("ad5");
-
-   semiPopups.loremWarning = new LoremWarning("lorem-warning");
-}
-
-function generateApplications() {
-   applications.loremController = new LoremController();
-   applications.loremCounter = new LoremCounter();
+   // Create the popups from their classes using popupNames.
+   generateClasses("popups", popupNames);
+   const semiPopupNames = ["chunkyMessage", "plagueOfChunky", "scourgeOfChunky", "wrathOfChunky", "hexOfChunky", "ad1", "ad2", "ad3", "ad4", "ad5", "loremWarning"];
+   generateClasses("semiPopups", semiPopupNames);
+   const applicationNames = ["loremController", "loremCounter"];
+   generateClasses("applications", applicationNames);
 }
 
 function displayPoints(add) {
@@ -310,19 +294,15 @@ function updateLoremCounter(add) {
    }, 30);
 }
 
-function goToChangelog() {
-   window.location = "changelog.html";
-}
-
 const views = ["computer", "about", "black-market"];
 function setupNavBar() {
-   views.forEach(view => {
-      getElement(`nav-${view}`).addEventListener("click", () => switchView(view));
-   });
+   // Make buttons change the screen on click.
+   views.forEach(view => getElement(`nav-${view}`).addEventListener("click", () => switchView(view)));
 }
 function switchView(view) {
    getElement(`nav-${view}`).classList.add("selected");
    getElement(view).classList.remove("hidden");
+   // Hide all views but the one being shown.
    views.forEach(item => {
       if (item != view) {
          getElement(`nav-${item}`).classList.remove("selected");
@@ -332,6 +312,8 @@ function switchView(view) {
 }
 
 window.onload = () => {
+   instantiateClasses();
+
    LoadData();
    setupNavBar();
 
@@ -343,10 +325,6 @@ window.onload = () => {
    // Show the admission message and the starting letter.
    showPrompt("admission");
    receiveLetter("start");
-
-   generatePopups();
-   generateSemiPopups();
-   generateApplications();
 
    dragElement(getElement("pointCounterContainer"), getElement("point-counter-title"));
 
@@ -376,6 +354,7 @@ const loremBlockSize = 500;
 const loremLength = loremTemplate.split("").length;
 var iterationCount = 0;
 var nextText = 100;
+var checkOffset = 0;
 
 document.addEventListener("keydown", function (event) {
    // If the input is a letter press or space
@@ -389,6 +368,14 @@ function writeLorem(loremN = 1, giveLorem = true) {
    if (!(iterationCount % 5) && giveLorem) Game.addLorem(Game.loremPerWrite);
 
    const loremContainer = getElement("loremContainer");
+
+   if (!giveLorem) {
+      checkOffset++;
+      // console.log(iterationCount - checkOffset);
+   } else {
+
+      showPopupsAttempt();
+   }
    // Create a lorem ad sometimes.
    if (iterationCount++ > nextText) {
       nextText += randomInt(60, 90);
@@ -408,8 +395,6 @@ function writeLorem(loremN = 1, giveLorem = true) {
       newLoremContainer.id = "current-lorem-text";
    }
 
-   showPopupsAttempt();
-
    if (iterationCount >= loremBlockSize) {
       for (const text of loremContainer.children) text.remove();
       Game.addLorem(10);
@@ -421,17 +406,16 @@ function writeLorem(loremN = 1, giveLorem = true) {
       loremContainer.appendChild(currentLoremText);
    }
 
-   if (loremN > 1) writeLorem(loremN - 1, giveLorem);
+   // if (loremN > 1) writeLorem(loremN - 1, giveLorem);
 }
 function keyPress() {
    if (!popups.luremImpsir.canLorem) return; // Stop if the lurem impsir popup is blocking production.
 
    writeLorem();
-
-   showPopupsAttempt();
 }
 function showPopupsAttempt() {
-   switch (iterationCount) {
+   // console.log(iterationCount - checkOffset);
+   switch (iterationCount - checkOffset) {
       case 50:
          popups.microsoftAntivirus.showPopup();
          break;
@@ -471,7 +455,10 @@ function showPopupsAttempt() {
       case 400:
          popups.adblockBlocker.showPopup();
          break;
+      // default:
+      //    checkOffset--;
    }
+   // checkOffset++;
 }
 function loremAdClick(ad) {
    ad.remove();
@@ -832,19 +819,14 @@ function summonPopupSetup() {
    const submitButton = getElement("summon-popup-submit");
    submitButton.addEventListener("click", () => {
       for (let i = 0; i < popupNames.length; i++) {
-         if (selectedPopups[popupNames[i]]) {
-            console.log("A");
-            popups[popupNames[i]].showPopup(false, true);
-         }
+         if (selectedPopups[popupNames[i]]) popups[popupNames[i]].showPopup(false, true);
       }
    });
 
    // Add the summon all button functionality.
    const summonAllButton = getElement("summon-popup-all");
    summonAllButton.addEventListener("click", () => { 
-      Object.values(popups).forEach(popup => {
-         popup.showPopup(false, true);
-      })
+      Object.values(popups).forEach(popup => popup.showPopup(false, true));
    });
 }
 function dataSetup() {

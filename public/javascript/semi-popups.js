@@ -4,7 +4,10 @@ class SemiPopup extends BaseStructure {
       this.displayObj = getElement(popupDataName);
       this.displayed = false;
 
-      dragElement(this.displayObj, getElement(popupDataName + "-title"));
+      // Convert camelCase to slug-case
+      const slugCase = popupDataName.replace(/([A-Z])/g, "-$1").toLowerCase(); 
+
+      dragElement(this.displayObj, getElement(`${slugCase}-title`));
    }
    showPopup(range) {
       this.displayObj.classList.remove("hidden");

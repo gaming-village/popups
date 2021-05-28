@@ -326,24 +326,22 @@ div#changelog {
    box-shadow: 0px 0px 0px 1px rgba(243, 248, 252, 0.4) inset, 0px 0px 0px 1px #72a5cb;
 }
 
-#computer #loremContainer::before {
+#loremContainer::before {
    /* The container's caption */
    content: attr(display-text);
    font-size: 1em;
    font-weight: 400;
-   background-color: #ccc;
-   padding: 0 0.25em;
-   border: 2px solid;
-   border-top-color: #e5e5e5;
-   border-left-color: #e5e5e5;
-   border-right-color: #444;
-   border-bottom-color: #444;
+   background-color: #bbb;
+   padding: 0 0.35em;
+   border-radius: 2px;
+   border: 2px solid #e0e0e0;
    position: absolute;
    left: 50%;
    top: -0.65em;
    transform: translateX(-50%);
    white-space: nowrap;
    display: table;
+   box-shadow: 0 0 0 2px #666;
 }
 
 #loremContainer:not(.canLorem) {

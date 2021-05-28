@@ -33,23 +33,28 @@ class Popup extends BaseStructure {
    showPopup(noMove = false, manualForce = false) {
       if (!data[this.popupDataName].unlocked) return;
 
-      const force = this == popups[Game.popupQueue[0]];
-      if (force) Game.popupQueue.splice(0, 1);
-
-      if (Game.visiblePopupsCount < Game.maxPopups || force || manualForce) {
+      if (Game.visiblePopupsCount < Game.maxPopups || manualForce) {
          if (!this.displayed) {
+            // Display the popup
             console.log(`%c Displayed ${this.displayName}.`, "color: #999");
+            // console.trace();
             clearTimeout(this.redisplayDelay);
             this.displayObj.classList.remove("hidden");
             this.displayed = true;
 
             if (!noMove) this.moveToRandomPosition(80);
+
+            // Clear all instances of the popup from the queue.
+            Game.popupQueue = Game.popupQueue.filter(elem => elem !== this.popupDataName);
          } else {
             console.warn(`Tried to show ${this.displayName}, but it was already visible.`);
          }
       } else {
+         // Don't run if this popup is already in the queue.
          if (Game.popupQueue.indexOf(this.popupDataName) != -1) return;
+
          Game.popupQueue.push(this.popupDataName);
+         // console.trace();
          console.log(`%c Added ${this.popupDataName} to the queue.`, "color: #999");
 
          if (Game.popupQueue.length + Game.maxPopups >= Object.keys(popups).length * 0.75) {
@@ -65,8 +70,11 @@ class Popup extends BaseStructure {
       }
 
       // Show a queued popup
-      if (Game.popupQueue[0] != undefined) {
-         popups[Game.popupQueue[0]].showPopup();
+      console.log(Game.popupQueue);
+      console.log(Game.popupQueue.length);
+      if (Game.popupQueue.length >= 1) {
+         console.log(popups[Game.popupQueue[0]]);
+         popups[Game.popupQueue[0]].showPopup(false, true);
       }
 
       this.displayed = false;
@@ -128,8 +136,8 @@ class LuremImpsir extends Popup {
          this.hidePopup();
       });
    }
-   showPopup() {
-      super.showPopup();
+   showPopup(noMove = false, manualForce = false) {
+      super.showPopup(noMove, manualForce);
       if (!this.displayed) return;
 
       this.canLorem = false;
@@ -168,10 +176,12 @@ class BrowserError extends Popup {
       this.moveInterval;
       getElement("browser-error-close").addEventListener("click", () => this.hidePopup());
    }
-   showPopup() {
-      super.showPopup();
-
+   showPopup(noMove = false, manualForce = false) {
+      super.showPopup(noMove, manualForce);
       if (!this.displayed) return;
+
+      console.log("COMMITTING WIGGLe");
+
       this.moveInterval = setInterval(() => {
          this.moveToRandomPosition(80);
       }, 1500);
@@ -188,8 +198,8 @@ class FreeIPhone extends Popup {
       iPhoneCloseButton.addEventListener("click", () => this.hidePopup());
       iPhoneCloseButton.addEventListener("mouseenter", () => this.popupHover());
    }
-   showPopup() {
-      super.showPopup();
+   showPopup(noMove = false, manualForce = false) {
+      super.showPopup(noMove, manualForce);
 
       if (!this.displayed) return;
       getElement("iphonePopupMoveText").classList.add("hidden");
@@ -220,8 +230,8 @@ class Rain extends Popup {
 
       getElement("rain-close-button").addEventListener("click", () => this.hidePopup());
    }
-   showPopup() {
-      super.showPopup();
+   showPopup(noMove = false, manualForce = false) {
+      super.showPopup(noMove, manualForce);
       if (!this.displayed) return;
       
       this.totalSapAmount = 0;
@@ -386,8 +396,8 @@ class Visitor extends Popup {
       adjustedArray.splice(adjustedArray.indexOf(this.currentReward), 1);
       return adjustedArray[randomInt(0, adjustedArray.length)];
    }
-   showPopup() {
-      super.showPopup();
+   showPopup(noMove = false, manualForce = false) {
+      super.showPopup(noMove, manualForce);
 
       if (!this.displayed) return;
       this.currentReward = "";
@@ -414,10 +424,13 @@ class Visitor extends Popup {
    runConfetti() {
       const confettiCount = randomInt(75, 150);
       const confettiList = [];
+      const confettiContainer = document.createDocumentFragment();
       for (let i = 0; i < confettiCount; i++) {
          const confetti = new Confetti();
+         confettiContainer.appendChild(confetti.displayObj);
          confettiList.push(confetti);
       }
+      getElement("visitor").appendChild(confettiContainer);
 
       this.confettiAnimation = setInterval(() => {
          confettiList.forEach((confetti, index) => {
@@ -444,7 +457,6 @@ class Visitor extends Popup {
 class Confetti {
    constructor() {
       this.displayObj = document.createElement("div");
-      getElement("visitor").appendChild(this.displayObj);
       this.displayObj.classList.add("visitor-confetti");
 
       this.top = randomInt(1, 99) + 10;
@@ -523,10 +535,10 @@ class Chunky extends Popup {
          progressBar.classList.remove("changed");
       }, 2500);
    }
-   showPopup() {
-      super.showPopup();
-
+   showPopup(noMove = false, manualForce = false) {
+      super.showPopup(noMove, manualForce);
       if (!this.displayed) return;
+
       // Reset the progress bar text colour.
       getElement("chunky-progress-text").classList.remove("red");
       // Make the buttons clickable.
@@ -703,8 +715,8 @@ class ChunkyVirus extends Popup {
       // Create a copy.
       const newPopup = new ChunkyVirusCopy();
    }
-   showPopup() {
-      super.showPopup();
+   showPopup(noMove = false, manualForce = false) {
+      super.showPopup(noMove, manualForce);
 
       if (!this.displayed) return;
       this.baseTime = 10;
@@ -779,8 +791,8 @@ class ChunkyPlantation extends Popup {
    constructor(popupDataName) {
       super(popupDataName);
    }
-   showPopup() {
-      super.showPopup();
+   showPopup(noMove = false, manualForce = false) {
+      super.showPopup(noMove, manualForce);
 
       if (!this.displayed) return;
       // Remove existing bananas
@@ -962,8 +974,8 @@ class RamDownload extends Popup {
          }
       }, 50);
    }
-   showPopup() {
-      super.showPopup();
+   showPopup(noMove = false, manualForce = false) {
+      super.showPopup(noMove, manualForce);
       this.displayObj.style.opacity = 1;
       getElement("ram-download-button").innerHTML = "Download";
       getElement("ram-download-progress-bar").style.width = "0px";
@@ -1113,8 +1125,8 @@ class BankDetails extends Popup {
       }
       return true;
    }
-   showPopup() {
-      super.showPopup();
+   showPopup(noMove = false, manualForce = false) {
+      super.showPopup(noMove, manualForce);
 
       this.checkType = randomInt(1, 3, true);
    }
@@ -1128,8 +1140,8 @@ class Expandinator extends Popup {
 
       getElement("expandinator-close").addEventListener("click", () => this.hidePopup());
    }
-   showPopup() {
-      super.showPopup();
+   showPopup(noMove = false, manualForce = false) {
+      super.showPopup(noMove, manualForce);
 
       if (!this.displayed) return;
       this.resetPopup();
@@ -1251,8 +1263,8 @@ class DevHire extends Popup {
       getElement(`dev-hire-prompt-${promptN}`).classList.remove("hidden");
       if (promptN > 1) getElement(`dev-hire-prompt-${promptN - 1}`).classList.add("hidden");
    }
-   showPopup() {
-      super.showPopup();
+   showPopup(noMove = false, manualForce = false) {
+      super.showPopup(noMove, manualForce);
 
       if (!this.displayed) return;
       // this.updatePrompt3();
@@ -1272,8 +1284,8 @@ class Clippy extends Popup {
       
       getElement("clippy-close").addEventListener("click", () => this.hidePopup());
    }
-   showPopup() {
-      super.showPopup();
+   showPopup(noMove = false, manualForce = false) {
+      super.showPopup(noMove, manualForce);
       if (!this.displayed) return;
    }
    hidePopup() {
