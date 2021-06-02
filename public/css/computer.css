@@ -8,7 +8,6 @@
    padding: 0.1em 0.3em;
    border: 1px solid black;
    border-radius: 3px;
-   margin-bottom: 0.6em;
 }
 .xp-input::placeholder {
    font-style: italic;

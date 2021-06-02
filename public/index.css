@@ -403,8 +403,12 @@ div#changelog {
    z-index: 3;
 }
 .devtool-unit {
-   margin-bottom: 0.2em;
+   margin-bottom: 0.2rem;
    z-index: 3;
+}
+#data-controls .xp-input {
+   margin-top: 0.1rem;
+   margin-bottom: 0.6rem;
 }
 #summon-popup {
    width: 10em;

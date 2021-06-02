@@ -926,7 +926,7 @@ function dataSetup() {
       appendToDevtools(getElement("data-controls"));
    });
 
-   getElement("reset-button").addEventListener("click", () => {
+   getElement('reset-button').addEventListener('click', () => {
       // Reset cookies when the reset button is clicked
       const cookies = ['lorem', 'packets', 'recievedPrompts', 'openedMessages', 'openedRewards', 'receivedMessages', 'unlockedMalware', 'receivedPrompts', 'unlockedShops', 'misc'];
       // Delete cookies
