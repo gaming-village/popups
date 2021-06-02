@@ -417,15 +417,18 @@ const blackMarketShops = {
 };
 
 dailyIndoctrinationEditions = {
+   // HOW IT WORKS:
+   // As much of the most current stage of text is generated, and then the remaining space is distributed to the other stages.
+
    // Default
    1: {
-      1: `We would have liked to welcome today's 3782 new employees, however after further investigation it has been found that they are all useless.`
+      1: `We would have liked to welcome today's 3782 new employees, however after further investigation it has been found that they are all far too useless to be worth mentioning.`
    },
    // After unlocking a popup
    2: {
       1: `The Lorem Corp. Department of Forensics has found that claims of "malware-infected computers" are false and evil in nature. Disregard further claims.`,
       2: `Breaking news - revolutionary new mining technique claims to increase lorem mining speed by up to 0.01%! The scientists involved have been appropriately awarded with several Nobel Peace prizes each.`,
-      3: `Criminal found hoarding lorem from the Corporation for supposed "alernative currencies". Luckily, the Department of Advanced Rehabilitation has issued him with the death penalty before any further damage could be caused. An investigation has been launched, and is going to find him guilty after 2 weeks.`
+      3: `Criminal found hoarding lorem from the Corporation for supposed "alernative currencies". The Department of Advanced Rehabilitation has issued him with the death penalty before any further damage could be caused. An investigation has been launched, and is going to find him guilty after 2 weeks.`
    }
 };
 
@@ -470,4 +473,8 @@ const loremQuotaData = {
       rewardTitle: `Antivirus`,
       rewardText: `Automatically remove one popup every 10 seconds.`
    }
+}
+
+const loremCorpData = {
+   jobs: ['Intern', 'Employee', 'Manager', 'Supervisor', 'Executive', 'CEO']
 }
