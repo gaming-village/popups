@@ -595,6 +595,9 @@ class Chunky extends Popup {
    activateChunky() {
       let potentialPopups = ["plagueOfChunky", "scourgeOfChunky", "wrathOfChunky", "hexOfChunky"];
 
+      console.log('semi popups');
+      console.log(semiPopups);
+
       // Show 3 random chunky debuffs.
       const popupDisplayAmount = 4;
       for (let i = 0; i < popupDisplayAmount; i++) {
@@ -652,8 +655,10 @@ class AnnualSurvey extends Popup {
    }
    createIncorrectPopups(currentPopup, maxPopups) {
       let copy = getElement("incorrectOG").cloneNode(true);
+      // Make the popup draggable
+      dragElement(copy, copy.querySelector('.popup-title'));
       copy.classList.remove("hidden");
-      document.body.appendChild(copy);
+      getElement('computer').appendChild(copy);
       copy.style.left = "calc(" + this.popupPixelsLeft + "px + " + currentPopup + "em)";
       copy.style.top = "calc(" + this.popupPixelsTop + "px + " + currentPopup / 2 + "em)";
       setTimeout(() => {
@@ -995,21 +1000,43 @@ class BankDetails extends Popup {
 
       const form = getElement("bank-details-form");
       form.addEventListener("submit", this.handleForm);
+
+      const textOptions = ['TERRIBLE', 'ABHORRENT', 'HOPELESS', 'PATHETIC', 'LAUGHABLE', 'ABYSMAL', 'INSUFFERABLE', 'ABOMINABLE', 'APPALLING', 'DREADFUL', 'AWFUL', 'AGONIZING', 'SICKENING', 'RANCID', 'REPULSIVE', 'HIDEOUS', 'REPUGNANT', 'ALARMING', 'ATROCIOUS'];
+      let currentArr = textOptions.slice();
+      console.log(getElement('bank-details-input'));
+      getElement('bank-details-input').addEventListener('input', () => {
+         const span = getElement('bank-details-strength').querySelector('span');
+
+         const nextIndex = randomInt(0, currentArr.length);
+         span.innerHTML = currentArr[nextIndex];
+         currentArr.splice(nextIndex, 1);
+         if (currentArr.length <= 0) {
+            currentArr = textOptions.slice();
+         }
+
+         const spanCol = `rgb(${randomInt(100, 255, true)}, 0, 0)`;
+         span.style.color = spanCol;
+      });
    }
    handleForm(event) {
       event.preventDefault();
    }
    submit() {
       const valid = this.checkDetails();
-      if (valid != true) {
+      if (valid !== true) {
          getElement("bank-details-error").innerHTML = valid;
       } else {
          getElement("bank-details-error").innerHTML = "Accepted.";
+         getElement('bank-details-submit').innerHTML = "Done!";
+         getElement('bank-details-error').classList.add('green');
 
          setTimeout(() => {
             this.hidePopup();
             getElement("bank-details-error").innerHTML = "";
-            getElement("bank-details-input").value = "";
+            getElement("bank-details-input").value = '';
+            getElement('bank-details-strength').querySelector('span').innerHTML = '';
+            getElement('bank-details-submit').innerHTML = "Submit";
+            getElement('bank-details-error').classList.remove('green');
          }, 2000);
       }
    }

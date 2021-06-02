@@ -18,7 +18,6 @@
 </head>
 
 <body>
-
    <div id="mask" class="hidden"></div>
 
    <div id="info-bar">
@@ -41,6 +40,7 @@
       <!-- Version text -->
       <div id="game-version" class="xp-font">Build 0.1.0</div>
 
+      <!-- Alert screen (notifications) -->
       <div id="alert-container">
          <div id="alert-box-template" class="alertBox hidden">
             <img src="images/close.png">
@@ -49,6 +49,7 @@
          </div>
       </div>
 
+      <!-- Message screen -->
       <div id="message-container" class="hidden">
          <div class="cf">
             <div id="message-from"></div>
@@ -58,6 +59,22 @@
          <button id="message-close" class="xp-button centered" onclick="closePrompt();">Ok</button>
       </div>
 
+      <!-- Lorem Quota -->
+      <div id='lorem-quota' class='hidden'>
+         <h4>Current quota:</h4>
+         <h3 id='quota-amount'>0 lorem</h3>
+         <h4 id='quota-progress'>Progress: 0%</h4>
+
+         <div class="progress-bar-container">
+            <div class="progress-bar"></div>
+         </div>
+
+         <h3 id='quota-reward-caption'>Reward:</h3>
+         <h4 id='quota-reward-title'>a</h4>
+         <h4 id='quota-reward-text'>a</h4>
+      </div>
+
+      <!-- Computer bottom bar -->
       <div id="computer-nav">
          <img id="computer-start-icon" src="images/start-button.png" alt="Start button">
          <div class="application hidden closed" id="application-template">
@@ -131,7 +148,7 @@
             <h4 class="popup-header">Black Market</h4>
             <table>
                <tr>
-                  <td>> Go to Black Market. <</td> <!-- Center and js to remove arrows-->
+                  <td>> Go to Black Market. </td> <!-- Center and js to remove arrows-->
                </tr>
                <tr>
                   <td>$HitCoin Value:</td>
@@ -185,6 +202,9 @@
          </h3>
          <div class="display-container" id="misc-tools-display">
             <div class="devtool-unit xp-button" id="reset-button">Reset cookies</div>
+
+            <input type='text' placeholder='Amount' id='add-lorem-amount' class='xp-input'>
+            <div class='devtool-unit xp-button' id='add-lorem-button'>Add lorem</div>
          </div>
       </div>
 
@@ -620,16 +640,17 @@
       <div class="popup-container-1 hidden xp-font" id="bank-details">
          <h3 class="popup-title" id="bank-details-title">
             <img class="popup-icon" src="images/popup-icons/windows.png" alt="Popup icon">
-            Shipping compeny
+            Amason.com
          </h3>
          <div class="display-container">
             <div class="popup-content">
                <div class="popup-subtitle cf">
                   <img src="images/warning-icon.png" class="warning" alt="Warning!">
-                  <h3>In order to proces your purchase, we requre the Details.</h3>
+                  <h3>In order to security your purchase, we requre the Details.</h3>
                </div>
-               <p>> Insert bank acount details below!</p>
-               <form id="bank-details-form">
+               <p id='bank-details-prompt'>> Insert bank acount details below!</p>
+               <p id='bank-details-strength'>Current password strength: <span></span></p>
+               <form autocomplete='off' id="bank-details-form">
                   <input type="text" id="bank-details-input" class="centered">
                   <label for="bank-details-input" id="bank-details-error"></label>
                   <button id="bank-details-submit" class="xp-button centered">Submit</button>
@@ -748,6 +769,12 @@
    </div>
 
    <div id="about">
+      <div id="news">
+         <h2><i>T</i>HE <i>D</i>AILY <i>I</i>NDOCTRINATION</h2>
+         <h3>1ST EDITION</h3>
+         <p id='news-content'>Warning: Work in Progress!</p>
+      </div>
+
       <div id="mail-inbox" class="hidden">
          <div id="inbox-entry-template" class="inbox-entry hidden">
             <div class="inbox-entry-title">

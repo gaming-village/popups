@@ -1,3 +1,4 @@
+@import url(css/computer.css);
 @import url(css/computer-nav-bar.css);
 @import url(css/about.css);
 @import url(css/black-market.css);
@@ -39,7 +40,7 @@ html, body {
 }
 #message-title {
    color: #000;
-   text-shadow: 0 0 1px rgba(0, 0, 0, 0.7);
+   /* text-shadow: 0 0 1px rgba(0, 0, 0, 0.7); */
    margin-top: 0.2rem;
    margin-left: 0.3rem;
    float: left;
@@ -62,7 +63,7 @@ html, body {
 #message {
    color: #efefef;
    text-align: justify;
-   text-shadow: 0 0 2px #444;
+   /* text-shadow: 0 0 2px #444; */
    min-width: 20vw;
    max-width: 30vw;
    min-height: 5rem;
@@ -314,11 +315,11 @@ div#changelog {
    color: #000;
    min-width: 35%;
    max-width: 90%;
-   min-height: 4em;
-   font-size: 1.05em;
+   min-height: 4rem;
+   font-size: 1.05rem;
    background-color: rgba(198, 220, 235, 0.4);
    border: 1px solid #354754;
-   padding: 1em 0.5em 0;
+   padding: 1rem 0.5rem 0;
    position: absolute;
    left: 50%;
    top: 2em;
@@ -395,21 +396,19 @@ div#changelog {
    left: 0.5em;
 }
 
+/* Devtools */
 #devtools {
    left: 25%;
    top: 10%;
    z-index: 3;
 }
-
 .devtool-unit {
    margin-bottom: 0.2em;
    z-index: 3;
 }
-
 #summon-popup {
    width: 10em;
 }
-
 .summon-popup-text {
    cursor: pointer;
 }

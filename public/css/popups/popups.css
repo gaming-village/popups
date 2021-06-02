@@ -108,12 +108,30 @@
 }
 
 /* BANK DETAILS */
+#bank-details {
+   width: 25rem;
+}
+#bank-details-prompt {
+   text-decoration: underline;
+   margin-top: 0;
+}
+#bank-details-strength {
+   color: #666;
+}
+#bank-details-strength span {
+   color: rgb(255, 0, 0);
+}
 #bank-details-input {
    display: table;
    margin-bottom: 0.5rem;
 }
 #bank-details-error {
    color: red;
+}
+#bank-details-error.green {
+   color: lime;
+   letter-spacing: 0.05rem;
+   text-shadow: 0 0 2px #000;
 }
 
 /* EXPANDINATOR */

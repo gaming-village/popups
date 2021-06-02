@@ -310,8 +310,17 @@ const messages = {
       from: "Lorem Corp",
       content: `<p>Greetings employees.</p>
       <p>The Motivation Department of Lorem Corp would like to send a reminder that any suspicious activity will result in your immediate termination.</p>
-      <p>We have also implemented a Lorem Quota. Those who fail to meet it will be terminated, and their presence expunged.</p>
+      <p>We have also implemented a Lorem Quota. Those who meet the quota shall be rewarded.</p>
       <p>- Lorem Corp.</p>`,
+      rewards: {
+         type: "box",
+         text: "Lorem Quota",
+         img: "images/coin-icon.png",
+         reward: () => {
+            Game.unlockLoremQuota();
+            updateMiscCookie();
+         }
+      },
       received: false,
       opened: false,
       reference: 2
@@ -344,8 +353,8 @@ const messages = {
          img: "images/coin-icon.png",
          opened: false,
          reward: () => {
-            getElement("nav-black-market").classList.remove("hidden");
-            setCookie("bm", "true", 31);
+            Game.blackMarket.unlockBlackMarket();
+            updateMiscCookie();
          }
       },
       received: false,
@@ -406,3 +415,59 @@ const blackMarketShops = {
       }
    }
 };
+
+dailyIndoctrinationEditions = {
+   // Default
+   1: {
+      1: `We would have liked to welcome today's 3782 new employees, however after further investigation it has been found that they are all useless.`
+   },
+   // After unlocking a popup
+   2: {
+      1: `The Lorem Corp. Department of Forensics has found that claims of "malware-infected computers" are false and evil in nature. Disregard further claims.`,
+      2: `Breaking news - revolutionary new mining technique claims to increase lorem mining speed by up to 0.01%! The scientists involved have been appropriately awarded with several Nobel Peace prizes each.`,
+      3: `Criminal found hoarding lorem from the Corporation for supposed "alernative currencies". Luckily, the Department of Advanced Rehabilitation has issued him with the death penalty before any further damage could be caused. An investigation has been launched, and is going to find him guilty after 2 weeks.`
+   }
+};
+
+const loremQuotaData = {
+   0: {
+      requirement: 50,
+      rewardTitle: `Branching out`,
+      rewardText: `Hire an unpaid intern to mine for you.`
+   },
+   1: {
+      requirement: 150,
+      rewardTitle: `Touch typing`,
+      rewardText: `Gain double lorem per key stroke.`
+   },
+   2: {
+      requirement: 300,
+      rewardTitle: `Antivirus`,
+      rewardText: `Automatically remove one popup every 10 seconds.`
+   },
+   3: {
+      requirement: 500,
+      rewardTitle: `More interns`,
+      rewardText: `Hire a tribe of interns to mine for you.`
+   },
+   4: {
+      requirement: 1000,
+      rewardTitle: `Promotion`,
+      rewardText: `Hire `
+   },
+   5: {
+      requirement: 2500,
+      rewardTitle: `Antivirus`,
+      rewardText: `Purchase a lorem generation machine`
+   },
+   6: {
+      requirement: 5000,
+      rewardTitle: `Antivirus`,
+      rewardText: `Automatically remove one popup every 10 seconds.`
+   },
+   7: {
+      requirement: 10000,
+      rewardTitle: `Antivirus`,
+      rewardText: `Automatically remove one popup every 10 seconds.`
+   }
+}

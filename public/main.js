@@ -9,8 +9,7 @@ function formatFloat(input) {
    const formattedFloat = Math.round((input + Number.EPSILON) * 100) / 100;
    return formattedFloat;
 }
-function randomInt(min, max, inclusive) {
-   inclusive = inclusive || false;
+function randomInt(min, max, inclusive = false) {
    const add = inclusive ? 1 : 0;
    const randomInt = Math.floor(Math.random() * (max - min + add)) + min;
    return randomInt;
@@ -38,6 +37,10 @@ function getCurve() {
    const result = Math.sin((rand * Math.PI + Math.PI) / 2);
    return result;
 }
+function randElem(arr) {
+   const elem = arr[randomInt(0, arr.length)];
+   return elem;
+}
 
 
 
@@ -52,6 +55,102 @@ function LoadData() {
    setReceivedPrompts();
    setOpenedRewards();
    setUnlockedShops();
+   setMiscCookie();
+}
+
+function setMiscCookie() {
+   // Break if in other pages (e.g. Malware Tree)
+   if (typeof Game === 'undefined') {
+      return;
+   }
+
+   // Bit 1: Black market (binary) (0/1 unlocked/locked)
+   // Bits 2-3: Lorem Promotion Status (hexadecimal)
+
+   let miscCookie = getCookie('misc');
+   console.log(miscCookie);
+   if (miscCookie == '') {
+      miscCookie = '0000';
+      setCookie('misc', miscCookie);
+   }
+
+   const bits = miscCookie.split('');
+   bits.forEach((bit, idx) => {
+      console.log('bit ' + idx);
+      let promotionHex = '';
+      switch (idx + 1) {
+         case 1:
+            // Black Market
+            if (bit == '1') {
+               Game.blackMarket.unlockBlackMarket();
+            }
+            break;
+         case 2:
+            // Lorem quota unlocked
+
+            // (Handled elsewhere)
+            break;
+         case 3:
+            // Lorem promotion status
+            promotionHex += bit;
+            break;
+         case 4:
+            // Lorem promotion status
+            promotionHex += bit;
+            console.log('hex: ' + promotionHex);
+            let quotaIndex = parseInt(promotionHex, 16);
+            console.log('int:');
+            console.log(quotaIndex);
+
+            console.log('boomer:')
+            console.log(loremQuotaData);
+
+            // If index is out of bounds
+            if (quotaIndex >= Object.keys(loremQuotaData).length) {
+               quotaIndex = Object.keys(loremQuotaData).length - 1;
+            }
+            console.log(quotaIndex);
+            console.log(Object.keys(loremQuotaData).length);
+            Game.nextLoremQuota = loremQuotaData[quotaIndex].requirement;
+            console.log('new quota:')
+            console.log(Game.nextLoremQuota)
+            break;
+         default:
+            console.warn('Bit not found!')
+      }
+   });
+}
+function updateMiscCookie() {
+   let newCookie = '';
+
+   // Black market
+   newCookie += Game.blackMarket.unlocked ? '1' : '0';
+
+   // Lorem quota unlocked
+   newCookie += Game.loremQuota.unlocked ? '1' : '0';
+
+   // Lorem promotion status
+   console.log('a ' + Game.nextLoremQuota);
+   // Find index of current quota
+   let quotaIndex = 0;
+   for (const quota of Object.values(loremQuotaData)) {
+      if (quota.requirement == Game.nextLoremQuota) {
+         break;
+      }
+      quotaIndex++;
+   }
+   console.log('index: ' + quotaIndex);
+   let quotaHex = quotaIndex.toString(16);
+   // Add additional 0 if malformed length
+   if (quotaHex.split('').length == 1) {
+      quotaHex = '0' + quotaHex;
+   }
+   console.log(quotaHex);
+   console.log('quota hex: ' + quotaHex)
+   newCookie += quotaHex;
+
+   console.log('cookie: ' + newCookie);
+   setCookie('misc', newCookie, 31);
 }
 
 function setReceivedMessages() {

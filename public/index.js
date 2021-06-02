@@ -4,6 +4,11 @@ const applications = {};
 
 const Game = {
    blackMarket: {
+      unlocked: false,
+      unlockBlackMarket: () => {
+         getElement("nav-black-market").classList.remove("hidden");
+         Game.blackMarket.unlocked = true;
+      },
       unlockShopAttempt: (shop) => {
          if (!shop.unlocked && Game.packetCount >= shop.cost) {
             Game.addPackets(-shop.cost, true);
@@ -43,7 +48,7 @@ const Game = {
             setCookie("lorem", 0, 31);
          } else {
             Game.loremCount = parseFloat(loremCookie);
-            displayPoints(Game.loremCount);
+            // displayPoints(Game.loremCount);
          }
       }, 
       setupPackets: () => {
@@ -72,7 +77,7 @@ const Game = {
          Game.updatePackets();
       },
       setupBlackMarket: () => {
-         Game.changeTransferRate();
+         // Game.changeTransferRate();
 
          // Setup each black market shop.
          Object.values(blackMarketShops).forEach(shop => {
@@ -124,14 +129,14 @@ const Game = {
       new PointIncrementText(add);
    },
 
-   transferRate: 0,
-   transferIdeal: 0.03,
-   transferBias: 3, // MAX OF 100
-   changeTransferRate: () => {
-      const randomBias = randomFloat(Game.transferBias/10, Game.transferBias);
-      Game.transferRate = Game.transferIdeal + randomFloat(0.2, 3) * randomBias / 100;
-      getElement("transfer-rate").innerHTML = formatFloat(Game.transferRate);
-   },
+   transferRate: 0.1,
+   // transferIdeal: 0.03,
+   // transferBias: 3, // MAX OF 100
+   // changeTransferRate: () => {
+   //    const randomBias = randomFloat(Game.transferBias/10, Game.transferBias);
+   //    Game.transferRate = Game.transferIdeal + randomFloat(0.2, 3) * randomBias / 100;
+   //    getElement("transfer-rate").innerHTML = formatFloat(Game.transferRate);
+   // },
 
    packetCount: 0,
    addPackets: (add, directAdd = false) => {
@@ -144,6 +149,25 @@ const Game = {
       setCookie("packets", Game.packetCount, 31);
    },
 
+   nextLoremQuota: 50,
+   quotaPromotions: [50, 100, 200, 350, 500, 1000, 2500, 5000, 10000],
+   updateQuotaFactor: () => {
+      console.trace();
+      // Increment the lorem quota by 1 from the quotaPromotions array
+      if (!Game.loremQuota.unlocked) return;
+
+      const quotaIndex = Game.quotaPromotions.indexOf(Game.nextLoremQuota);
+
+      Game.nextLoremQuota = Game.quotaPromotions[quotaIndex + 1];
+
+      updateMiscCookie();
+   },
+   unlockLoremQuota: () => {
+      console.log('UNLOCKERY');
+      Game.loremQuota.unlocked = true;
+      getElement('lorem-quota').classList.remove('hidden');
+   },
+
    newLetterCount: 0,
    updateLetterCount: () => {
       if (Game.newLetterCount > 0) {
@@ -153,7 +177,7 @@ const Game = {
       }
    },
    checkLoremLetters: () => {
-      if (Game.loremCount >= 2.5) receiveLetter("motivationalLetter");
+      if (Game.loremCount >= 2) receiveLetter("motivationalLetter");
       if (Game.loremCount >= 5) receiveLetter("rumors");
       if (Game.loremCount >= 8) receiveLetter("invitation");
    },
@@ -209,6 +233,59 @@ class alertBox {
    }
 }
 
+
+class LoremQuota {
+   constructor(quota) {
+      this.quota = quota;
+      this.unlocked = false;
+
+      this.displayObj = getElement('lorem-quota');
+
+      this.setupQuota();
+      this.setQuotaProgress();
+
+      console.log('soadasjldasjkda');
+      console.log(this.quota);
+
+      Object.values(loremQuotaData).forEach(reward => {
+         if (reward.requirement === this.quota) {
+            this.updateRewardText(reward);
+         }
+      })
+   }
+   updateRewardText(quota) {
+      getElement('quota-reward-title').innerHTML = quota.rewardTitle;
+      getElement('quota-reward-text').innerHTML = quota.rewardText;
+   }
+   setupQuota() {
+      this.displayObj.querySelector('h3').innerHTML = `${formatFloat(this.quota)} lorem`;
+   }
+   setQuotaProgress() {
+      let progress = Game.loremCount / this.quota * 100;
+      if (progress > 100 && typeof Game.loremQuota !== 'undefined') {
+         console.log('success! ' + progress)
+         this.reachQuota();
+         progress = Game.loremCount / this.quota * 100;
+      }
+
+      getElement('quota-progress').innerHTML = `Progress: ${formatFloat(progress)}%`;
+      
+      this.displayObj.querySelector('.progress-bar').style.width = `${progress}%`;
+   }
+   reachQuota() {
+      Game.updateQuotaFactor();
+      this.quota = Game.nextLoremQuota;
+
+      this.displayObj.classList.add('flashing');
+      setTimeout(() => {
+      this.displayObj.classList.remove('flashing');
+      }, 300);
+
+      this.setupQuota();
+   }
+}
+
+
 function showPrompt(prompt) {
    if (prompts[prompt].received) return;
 
@@ -228,7 +305,7 @@ function closePrompt() {
 }
 
 function instantiateClasses() {
-   let popupNames = ["chunkyMessage", "plagueOfChunky", "scourgeOfChunky", "wrathOfChunky", "hexOfChunky", "ad1", "ad2", "ad3", "ad4", "ad5", "loremWarning"];
+   let popupNames = [];
    // Generate the popup names
    for (const popup of Object.values(data)) {
       const camelCaseArray = popup.name.split("-").map((string, index) => {
@@ -266,6 +343,8 @@ function displayPoints(add) {
    getElement("black-market-lorem-transfer-amount").innerHTML = loremCount;
 
    getElement("packet-transfer-amount").innerHTML = formatFloat(Game.loremCount * Game.transferRate);
+
+   Game.loremQuota.setQuotaProgress();
 }
 
 function updateLoremCounter(add) {
@@ -317,7 +396,22 @@ window.onload = () => {
    LoadData();
    setupNavBar();
 
+   // Set the Game lorem count
    Game.setup.setupLorem();
+
+   // Setup the lorem quota
+   // Game.updateQuotaFactor();
+   Game.loremQuota = new LoremQuota(Game.nextLoremQuota);
+
+   // Unlock lorem quota. (Has to be done after LoadData because loremQuota doesn't exist until then)
+   {
+      const miscCookie = getCookie('misc');
+      if (miscCookie.split('')[1] === '1') {
+         console.warn('sdhfkhdsakhjlhfg kldahdglkmdghbklj');
+         Game.unlockLoremQuota();
+      }
+   }
+
    Game.setup.setupPackets();
    Game.setup.setupBlackMarket();
    displayPoints(0);
@@ -339,7 +433,7 @@ window.onload = () => {
 
    setupMailbox();
 
-   if (getCookie("bm") == "true") messages.invitation.rewards.reward();
+   if (getCookie('misc').split('')[0] == '1') messages.invitation.rewards.reward();
 }
 
 function changeViewHeights() {
@@ -381,18 +475,18 @@ function writeLorem(loremN = 1, giveLorem = true) {
       nextText += randomInt(60, 90);
 
       // Create the ad.
-      const ad = document.createElement("div");
+      const ad = document.createElement('div');
       loremContainer.appendChild(ad);
-      ad.classList.add("loremAd");
+      ad.classList.add('loremAd');
 
       ad.innerHTML = adTexts[randomInt(0, adTexts.length)];
       ad.addEventListener("click", () => loremAdClick(ad));
 
       // Update the current lorem text container.
-      currentText.id = "";
-      const newLoremContainer = document.createElement("span");
+      currentText.id = '';
+      const newLoremContainer = document.createElement('span');
       loremContainer.appendChild(newLoremContainer);
-      newLoremContainer.id = "current-lorem-text";
+      newLoremContainer.id = 'current-lorem-text';
    }
 
    if (iterationCount >= loremBlockSize) {
@@ -401,12 +495,10 @@ function writeLorem(loremN = 1, giveLorem = true) {
       iterationCount = 0;
 
       // Recreate the current-lorem-text
-      const currentLoremText = document.createElement("span");
-      currentLoremText.id = "current-lorem-text";
+      const currentLoremText = document.createElement('span');
+      currentLoremText.id = 'current-lorem-text';
       loremContainer.appendChild(currentLoremText);
    }
-
-   // if (loremN > 1) writeLorem(loremN - 1, giveLorem);
 }
 function keyPress() {
    if (!popups.luremImpsir.canLorem) return; // Stop if the lurem impsir popup is blocking production.
@@ -414,7 +506,6 @@ function keyPress() {
    writeLorem();
 }
 function showPopupsAttempt() {
-   // console.log(iterationCount - checkOffset);
    switch (iterationCount - checkOffset) {
       case 50:
          popups.microsoftAntivirus.showPopup();
@@ -455,12 +546,12 @@ function showPopupsAttempt() {
       case 400:
          popups.adblockBlocker.showPopup();
          break;
-      // default:
-      //    checkOffset--;
    }
-   // checkOffset++;
 }
 function loremAdClick(ad) {
+   // Don't click if Lurem Impsir is blocking
+   if (!popups.luremImpsir.canLorem) return;
+
    ad.remove();
    Game.addLorem(0.3);
 }
@@ -836,22 +927,18 @@ function dataSetup() {
    });
 
    getElement("reset-button").addEventListener("click", () => {
-      // Currencies
-      setCookie("lorem", "", 1);
-      Game.addLorem(-Game.loremCount);
-      setCookie("packets", "", 1);
+      // Reset cookies when the reset button is clicked
+      const cookies = ['lorem', 'packets', 'recievedPrompts', 'openedMessages', 'openedRewards', 'receivedMessages', 'unlockedMalware', 'receivedPrompts', 'unlockedShops', 'misc'];
+      // Delete cookies
+      cookies.forEach(cookie => document.cookie = cookie +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;');
+      // Reload the page
+      location.reload();
+   });
 
-      // Letters/Alerts
-      setCookie("receivedPrompts", "", 1);
-      setCookie("openedMessages", "", 1);
-      setCookie("openedRewards", "", 1);
-      setCookie("receivedMessages", "", 1);
-      setCookie("unlockedMalware", "", 1);
-      setCookie("receivedPrompts", "", 1);
-
-      // Black Market
-      setCookie("unlockedShops", "", 1);
-      setCookie("bm", "", 1);
+   // Add lorem functionality
+   getElement('add-lorem-button').addEventListener('click', () => {
+      const addAmount = parseFloat(getElement('add-lorem-amount').value);
+      Game.addLorem(addAmount);
    });
 }
 function appendToDevtools(element) {
