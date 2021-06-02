@@ -1040,11 +1040,11 @@ button.button-cost {
 }
 
 .loremAd {
-   color: #000101;
+   color: red;
+   text-decoration: underline;
    font: 500 0.85em "Open Sans";
    cursor: pointer;
    display: inline-block;
-   text-shadow: 0px 0px 2px white;
 }
 
 #visitor {
