@@ -407,7 +407,7 @@ const blackMarketShops = {
       cost: 10,
       unlocked: false,
       clickEvent: () => {
-
+         window.location = 'html/binaries.html';
       },
       display: {
          title: "Binaries",
