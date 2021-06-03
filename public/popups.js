@@ -296,7 +296,7 @@ class RainText {
 class Visitor extends Popup {
    constructor(popupDataName) {
       super(popupDataName);
-      this.rewards = [-4, -2, 4, 7, "Popup wave", "3x points (5s)"];
+      this.rewards = [-7, 7, "Popup wave", "3x points (5s)"];
       getElement("visitor-open-button").addEventListener("click", () => {
          this.spinBox();
          setTimeout(() => {

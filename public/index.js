@@ -378,6 +378,19 @@ function setupNavBar() {
    // Make buttons change the screen on click.
    views.forEach(view => getElement(`nav-${view}`).addEventListener("click", () => switchView(view)));
 }
+function keySwitchView(num) {
+   // When called by a number press
+   let views = [ ...document.querySelectorAll('.nav-element:not(.hidden)')];
+   
+   views = views.map(view => view.id.split('-'));
+   if (num > views.length) return;
+
+   let view = views[num - 1].slice();
+   view.splice(0, 1)
+   view = view.join('-');
+
+   switchView(view);
+}
 function switchView(view) {
    getElement(`nav-${view}`).classList.add("selected");
    getElement(view).classList.remove("hidden");
@@ -451,6 +464,10 @@ var nextText = 100;
 var checkOffset = 0;
 
 document.addEventListener("keydown", function (event) {
+   // If the input is a number (49 57) excluding 0
+   if (event.keyCode >= 49 && event.keyCode <= 57) {
+      keySwitchView(event.keyCode - 48);
+   }
    // If the input is a letter press or space
    if (event.keyCode >= 65 && event.keyCode <= 90 || event.keyCode === 32) keyPress();
 });
@@ -572,7 +589,7 @@ function showInbox() {
 }
 function hideInbox() {
    getElement("mail-inbox").classList.add("hidden");
-   getElement("mask").classList.add("hidden");
+   // getElement("mask").classList.add("hidden");
    hideLetter();
 }
 function createInboxEntry(letter, existingEntry = false) {
