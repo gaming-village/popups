@@ -464,6 +464,8 @@ var nextText = 100;
 var checkOffset = 0;
 
 document.addEventListener("keydown", function (event) {
+   if (document.activeElement !== document.body) return;
+
    // If the input is a number (49 57) excluding 0
    if (event.keyCode >= 49 && event.keyCode <= 57) {
       keySwitchView(event.keyCode - 48);

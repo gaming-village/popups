@@ -42,7 +42,7 @@ body {
    transform: translate(-50%, -50%);
 }
 .binary-notch {
-   --size: 4rem;
+   --size: 6rem;
    width: var(--size);
    height: var(--size);
    background-color: red;
