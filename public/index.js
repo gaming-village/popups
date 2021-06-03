@@ -599,8 +599,10 @@ function createInboxEntry(letter, existingEntry = false) {
    newEntry.querySelector(".inbox-entry-from").innerHTML = letter.from;
 
    newEntry.addEventListener("click", () => {
+      console.log('u');
+
       changeSelectedLetter(letter);
-      switchLetterVisibility(letter);
+      // switchLetterVisibility(letter);
    });
 }
 function showExistingEntries() {
@@ -623,15 +625,27 @@ function setupMailbox() {
       hideInbox();
    });
 }
-function changeSelectedLetter(message) {
-   selectedMessage = message.reference - 1;
-   const selectedEntry = getElement(`inbox-entry-${message.reference}`);
+function changeSelectedLetter(letter) {
+   console.log('a: ' + letter.reference)
+   // console.log(selectedLetter);
+   selectedMessage = letter.reference - 1;
+   console.log('a: ' + selectedMessage)
+   const selectedEntry = getElement(`inbox-entry-${letter.reference}`);
+   console.log('selected:');
+   console.log(selectedEntry);
+   console.log('selected2:');
+   console.log(document.querySelector('.selected-letter'));
+   const previousSelected = document.querySelector('.selected-letter');
+
+   console.log(previousSelected !== selectedEntry);
    selectedEntry.classList.add("selected-letter");
+   
    for (const entry of document.getElementsByClassName("inbox-entry")) {
       if (entry !== selectedEntry) {
          entry.classList.remove("selected-letter");
       }
    }
+   switchLetterVisibility(letter, previousSelected !== selectedEntry);
 }
 function openReward(letter) {
    letter.rewards.opened = true;
@@ -641,8 +655,10 @@ function openReward(letter) {
    letter.rewards.reward();
 }
 function showLetter(letter) {
+   console.log(letter);
+
    getElement("mail-container").classList.remove("hidden");
-   getElement("paper").innerHTML = `<h3>${letter.title}</h3> ${letter.content}`;
+   getElement('paper').innerHTML = `<h3>${letter.title}</h3> ${letter.content}`;
    if (letter.rewards != undefined) {
       getElement("paper").innerHTML += `
       <h2 class="reward-header">Rewards</h2>
@@ -677,12 +693,16 @@ function showLetter(letter) {
 function hideLetter() {
    getElement("mail-container").classList.add("hidden");
 }
-function switchLetterVisibility(letter) {
-   if (getElement("mail-container").classList.contains("hidden")) {
+function switchLetterVisibility(letter, forceShow = false) {
+   console.log('switch');
+   if (getElement("mail-container").classList.contains("hidden") || forceShow) {
       showLetter(letter);
    } else {
       hideLetter();
-      document.getElementsByClassName("selected-letter")[0].classList.remove("selected-letter");
+      const selectedLetter = document.querySelector('.selected-letter');
+      console.log(selectedLetter);
+      selectedLetter.classList.remove('selected-letter');
+      console.log('oeuf');
       selectedMessage = -1;
    }
 }
@@ -715,7 +735,12 @@ function openLetter(letter = false) {
    }
 
    currentLetter.opened = true;
-   getElement(`inbox-entry-${currentLetter.reference}`).classList.add("opened");
+   console.log(document.querySelectorAll('.inbox-entry'));
+   console.log(currentLetter);
+   console.log(currentLetter.reference);
+   console.log(selectedMessage);
+   // getElement(`inbox-entry-${currentLetter.reference}`).classList.add("opened");
+   getElement(`inbox-entry-${selectedMessage + 1}`).classList.add("opened");
    updateOpenedMessagesCookie();
 }
 function receiveLetter(letterName) {
