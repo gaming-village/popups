@@ -39,10 +39,10 @@ const data = {
         name: "rain",
         stats: {
             description: "Designed just in case users don't know their browser has occurred.",
-            special: "Leeches 1 point every 2 seconds. When closed, gives back 1.5x what was stolen.",
+            special: "Leeches 1 lorem every second. When closed, gives back 1.5x what was stolen.",
             points: 1,
             redisplayTime: 60000,
-            cost: 2,
+            cost: 3.5,
 
             sapAmount: 0.5
         },
@@ -78,9 +78,9 @@ const data = {
         stats: {
             description: "I wonder how effective these popups actually are...",
             special: "Tries to evade being clicked.",
-            points: 3,
+            points: 4,
             redisplayTime: 35000,
-            cost: 5
+            cost: 7.5
         },
         display: {
             top: 17,
@@ -245,7 +245,7 @@ const data = {
             special: "Expands to fill the screen if not clicked fast enough.",
             points: 30,
             redisplayTime: 40000,
-            cost: 55
+            cost: 35
         },
         display: {
             top: 20,
@@ -281,7 +281,7 @@ const data = {
             special: "Removes several popups when it appears.",
             points: -20,
             redisplayTime: 30000,
-            cost: 40
+            cost: 25
         },
         display: {
             top: -12,
@@ -360,6 +360,28 @@ const messages = {
       received: false,
       opened: false,
       reference: 5
+   },
+   promotion: {
+      title: 'Promotion',
+      from: 'Lorem Corp',
+      content: `<p>Greetings Employee.</p>
+      <p>It is Lorem Corp's pleasure to announce that you have been promoted from an Employee to a Lorem Technician.</p>
+      <p>Your annual salary has been increased from $1 to $15.
+      <p>You will now receive a new tab in which to manage your Lorem workflow.</p>
+      <p>- Lorem Corp.</p>`,
+      rewards: {
+         type: "box",
+         text: "Corporate Overview",
+         img: "images/coin-icon.png",
+         opened: false,
+         reward: () => {
+            Game.loremCorp.corporateOverview.unlocked = true;
+            updateMiscCookie();
+         }
+      },
+      received: false,
+      opened: false,
+      reference: 6
    }
 }
 
@@ -446,7 +468,7 @@ const loremQuotaData = {
    2: {
       requirement: 300,
       rewardTitle: `Antivirus`,
-      rewardText: `Automatically remove one popup every 10 seconds.`
+      rewardText: `Automatically remove one popup every 20 seconds.`
    },
    3: {
       requirement: 500,
@@ -476,5 +498,51 @@ const loremQuotaData = {
 }
 
 const loremCorpData = {
-   jobs: ['Intern', 'Employee', 'Manager', 'Supervisor', 'Executive', 'CEO']
+   techTree: {
+      row1: {
+         betterInterns: {
+            description: 'Interns upgrade from Windows 1.0 to Windows 95.',
+            effect: '+50% intern production speed.',
+            cost: 100,
+         }
+      },
+      row2: {
+         rigorousSelection: {
+            description: 'More thorough interviews are conducted, leading to better interns.',
+            effect: 'Some interns become Good interns.',
+            cost: 400
+         }
+      },
+      row3: {
+         massHiring: {
+
+         }
+      },
+      row4: {
+         geneticModification: {
+            description: 'Interns are genetically modified to produce more lorem.',
+            effect: 'Interns produce 1% more per intern.',
+         }
+      }
+   },
+   jobs: {
+      intern: {
+         
+      },
+      employee: {
+
+      },
+      manager: {
+
+      },
+      supervisor: {
+
+      },
+      executive: {
+
+      },
+      CEO: {
+
+      }
+   }
 }

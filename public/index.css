@@ -4,6 +4,7 @@
 @import url(css/black-market.css);
 @import url(fonts/windows-font.css);
 @import url(css/popups/popups.css);
+@import url(css/corporate-overview.css);
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap');
@@ -204,7 +205,7 @@ html, body {
    margin-left: 1em;
 }
 
-#computer, #about, #black-market {
+#computer, #about, #black-market, #corporate-overview {
    width: 100%;
    position: relative;
 }

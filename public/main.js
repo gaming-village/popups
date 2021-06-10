@@ -65,12 +65,14 @@ function setMiscCookie() {
    }
 
    // Bit 1: Black market (binary) (0/1 unlocked/locked)
-   // Bits 2-3: Lorem Promotion Status (hexadecimal)
+   // Bit 2: Lorem quota unlocked
+   // Bits 3-4: Lorem Promotion Status (hexadecimal)
+   // Bit 5: Corporate overview unlocked
+   
 
    let miscCookie = getCookie('misc');
-   console.log(miscCookie);
    if (miscCookie == '') {
-      miscCookie = '0000';
+      miscCookie = '00000';
       setCookie('misc', miscCookie);
    }
 
@@ -97,23 +99,19 @@ function setMiscCookie() {
          case 4:
             // Lorem promotion status
             promotionHex += bit;
-            console.log('hex: ' + promotionHex);
             let quotaIndex = parseInt(promotionHex, 16);
-            console.log('int:');
-            console.log(quotaIndex);
-
-            console.log('boomer:')
-            console.log(loremQuotaData);
 
             // If index is out of bounds
             if (quotaIndex >= Object.keys(loremQuotaData).length) {
                quotaIndex = Object.keys(loremQuotaData).length - 1;
             }
-            console.log(quotaIndex);
-            console.log(Object.keys(loremQuotaData).length);
             Game.nextLoremQuota = loremQuotaData[quotaIndex].requirement;
-            console.log('new quota:')
-            console.log(Game.nextLoremQuota)
+            break;
+         case 5:
+            if (bit == '1') {
+               getElement('nav-corporate-overview').classList.remove('hidden');
+               Game.loremCorp.corporateOverview.unlocked = true;
+            }
             break;
          default:
             console.warn('Bit not found!')
@@ -121,6 +119,7 @@ function setMiscCookie() {
    });
 }
 function updateMiscCookie() {
+   console.log("BBBBB");
    let newCookie = '';
 
    // Black market
@@ -130,7 +129,6 @@ function updateMiscCookie() {
    newCookie += Game.loremQuota.unlocked ? '1' : '0';
 
    // Lorem promotion status
-   console.log('a ' + Game.nextLoremQuota);
    // Find index of current quota
    let quotaIndex = 0;
    for (const quota of Object.values(loremQuotaData)) {
@@ -139,17 +137,16 @@ function updateMiscCookie() {
       }
       quotaIndex++;
    }
-   console.log('index: ' + quotaIndex);
    let quotaHex = quotaIndex.toString(16);
    // Add additional 0 if malformed length
    if (quotaHex.split('').length == 1) {
       quotaHex = '0' + quotaHex;
    }
-   console.log(quotaHex);
-   console.log('quota hex: ' + quotaHex)
    newCookie += quotaHex;
 
-   console.log('cookie: ' + newCookie);
+   // Corporate overview unlocked
+   newCookie += Game.loremCorp.corporateOverview.unlocked ? '1' : '0';
+
    setCookie('misc', newCookie, 31);
 }
 

@@ -3,6 +3,13 @@ const semiPopups = {};
 const applications = {};
 
 const Game = {
+   loremCorp: {
+      corporateOverview: {
+         unlocked: false
+      },
+      interns: 0
+   },
+
    blackMarket: {
       unlocked: false,
       unlockBlackMarket: () => {
@@ -150,7 +157,7 @@ const Game = {
    },
 
    nextLoremQuota: 50,
-   quotaPromotions: [50, 100, 200, 350, 500, 1000, 2500, 5000, 10000],
+   quotaPromotions: [50, 150, 300, 500, 1000, 2500, 5000, 10000],
    updateQuotaFactor: () => {
       console.trace();
       // Increment the lorem quota by 1 from the quotaPromotions array
@@ -177,15 +184,25 @@ const Game = {
       }
    },
    checkLoremLetters: () => {
-      if (Game.loremCount >= 2) receiveLetter("motivationalLetter");
-      if (Game.loremCount >= 5) receiveLetter("rumors");
-      if (Game.loremCount >= 8) receiveLetter("invitation");
+      if (Game.loremCount >= 2) receiveLetter('motivationalLetter');
+      if (Game.loremCount >= 5) receiveLetter('rumors');
+      if (Game.loremCount >= 8) receiveLetter('invitation');
+      if (Game.loremCount >= 40) receiveLetter('promotion');
    },
 
    loremPerWrite: 0.05,
 
    maxPopups: 7,
    popupQueue: [],
+   get maxPopupCount() {
+      let visibleCount = 0;
+      for (const bit of getCookie('unlockedMalware')) {
+         if (bit === '1') {
+            visibleCount++;
+         }
+      }
+      return visibleCount;
+   },
    get visiblePopupsCount() {
       let visiblePopupCount = 0;
       for (const popup of Object.values(popups)) if (popup.displayed) visiblePopupCount++;
@@ -373,7 +390,7 @@ function updateLoremCounter(add) {
    }, 30);
 }
 
-const views = ["computer", "about", "black-market"];
+const views = ['computer', "about", 'black-market', 'corporate-overview'];
 function setupNavBar() {
    // Make buttons change the screen on click.
    views.forEach(view => getElement(`nav-${view}`).addEventListener("click", () => switchView(view)));
@@ -397,11 +414,21 @@ function switchView(view) {
    // Hide all views but the one being shown.
    views.forEach(item => {
       if (item != view) {
-         getElement(`nav-${item}`).classList.remove("selected");
-         getElement(item).classList.add("hidden");
+         getElement(`nav-${item}`).classList.remove('selected');
+         getElement(item).classList.add('hidden');
       }
    });
 }
+
+window.addEventListener('beforeunload', e => {
+   // Confirmation thing if rain is open
+   if (popups.rain.displayed) {
+      popups.rain.hidePopup();
+
+      e.preventDefault();
+      e.returnValue = '';
+   }
+});
 
 window.onload = () => {
    instantiateClasses();
@@ -484,9 +511,7 @@ function writeLorem(loremN = 1, giveLorem = true) {
 
    if (!giveLorem) {
       checkOffset++;
-      // console.log(iterationCount - checkOffset);
    } else {
-
       showPopupsAttempt();
    }
    // Create a lorem ad sometimes.
@@ -508,10 +533,12 @@ function writeLorem(loremN = 1, giveLorem = true) {
       newLoremContainer.id = 'current-lorem-text';
    }
 
+   // Reset the block if block size is reached
    if (iterationCount >= loremBlockSize) {
-      for (const text of loremContainer.children) text.remove();
       Game.addLorem(10);
       iterationCount = 0;
+
+      for (const text of loremContainer.querySelectorAll('*')) text.remove();
 
       // Recreate the current-lorem-text
       const currentLoremText = document.createElement('span');
@@ -685,12 +712,19 @@ function showLetter(letter) {
 
       if (letter.rewards.type == "box") {
          const boxId = `letter-${letter.reference}-reward`;
-         getElement("paper").innerHTML += `
+         getElement('paper').innerHTML += `
          <div id="${boxId}" class="reward-type-box">
             <div class="reward-box"><img src="${letter.rewards.img}"></div>
             <div class="reward-text">${letter.rewards.text}</div>
          </div>
+         <button class='paper-button'>Claim all</button>
          `;
+ 
+         // Add claim all button functionality
+         getElement('paper').querySelector('.paper-button').addEventListener('click', () => {
+            console.log('ahfkhhaljhfjlhadljfhak;dlfj');
+         });
+
          if (letter.rewards.opened) {
             getElement(boxId).classList.add("opened");
          }

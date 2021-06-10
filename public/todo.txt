@@ -140,3 +140,9 @@ Seeds
 
 Chunky face on chukny popup icons
 cooldown message on transfer button
+
+Windows 95
+
+Binaries:
+- Create tech tree framework in data file
+- Create a system to dynamically generate 

@@ -1,0 +1,13 @@
+#corporate-overview {
+   background-color: #ccc;
+}
+
+#intern-container {
+   width: 100%;
+   height: 10rem;
+   background-color: #555;
+   position: absolute;
+   left: 0;
+   bottom: 0;
+   box-shadow: 0 0 60px 10px #000 inset;
+}

@@ -1,14 +1,17 @@
 class BaseStructure {
-   constructor() {
-
-   }
    moveToRandomPosition(randomRange) {
-      const newXPos = Math.random() * randomRange + 50 - randomRange / 2;
-      const newYPos = Math.random() * randomRange + 50 - randomRange / 2;
       const displayBounds = this.displayObj.getBoundingClientRect();
 
-      this.displayObj.style.top = "calc(" + newYPos + "% - " + displayBounds.height / 2 + "px)";
-      this.displayObj.style.left = "calc(" + newXPos + "% - " + displayBounds.width / 2 + "px)";
+      const xPixelBounds = window.innerWidth - displayBounds.width;
+      const yPixelBounds = window.innerHeight - displayBounds.height;
+
+      const newXPos = xPixelBounds * randomFloat(50 - randomRange, 50 + randomRange) / 100;
+      const xPos = scalePX(newXPos, 'vw');
+      this.displayObj.style.left = `calc(${xPos}%)`;
+
+      const newYPos = yPixelBounds * randomFloat(50 - randomRange, 50 + randomRange) / 100;
+      const yPos = scalePX(newYPos, 'vh');
+      this.displayObj.style.top = `calc(${yPos}%)`;
    }
 }
 
@@ -37,15 +40,20 @@ class Popup extends BaseStructure {
          if (!this.displayed) {
             // Display the popup
             console.log(`%c Displayed ${this.displayName}.`, "color: #999");
-            // console.trace();
+            
             clearTimeout(this.redisplayDelay);
             this.displayObj.classList.remove("hidden");
             this.displayed = true;
 
-            if (!noMove) this.moveToRandomPosition(80);
+            if (!noMove) this.moveToRandomPosition(30);
 
             // Clear all instances of the popup from the queue.
             Game.popupQueue = Game.popupQueue.filter(elem => elem !== this.popupDataName);
+
+            // Show clippy
+            if (Game.visiblePopupsCount >= (Game.maxPopupCount - 1) * 0.75) {
+               popups.clippy.showPopup(false, true);
+            }
          } else {
             console.warn(`Tried to show ${this.displayName}, but it was already visible.`);
          }
@@ -57,10 +65,10 @@ class Popup extends BaseStructure {
          // console.trace();
          console.log(`%c Added ${this.popupDataName} to the queue.`, "color: #999");
 
-         if (Game.popupQueue.length + Game.maxPopups >= Object.keys(popups).length * 0.75) {
-            // SHOW CLIPPY
-            if (Game.popupQueue.indexOf("clippy") == -1) popups.clippy.showPopup(false, true);
-         }
+         // if (Game.popupQueue.length + Game.maxPopups >= Object.keys(popups).length * 0.75) {
+         //    // SHOW CLIPPY
+         //    if (Game.popupQueue.indexOf("clippy") == -1) popups.clippy.showPopup(false, true);
+         // }
       }
    }
    hidePopup(givePoints = true) {
@@ -173,22 +181,22 @@ class LuremImpsir extends Popup {
 class BrowserError extends Popup {
    constructor(popupDataName) {
       super(popupDataName);
-      this.moveInterval;
-      getElement("browser-error-close").addEventListener("click", () => this.hidePopup());
+
+      getElement('browser-error-close').addEventListener('click', () => this.hidePopup());
    }
    showPopup(noMove = false, manualForce = false) {
       super.showPopup(noMove, manualForce);
       if (!this.displayed) return;
 
-      console.log("COMMITTING WIGGLe");
-
+      clearInterval(this.moveInterval);
       this.moveInterval = setInterval(() => {
-         this.moveToRandomPosition(80);
+         this.moveToRandomPosition(30);
       }, 1500);
    }
-   hidePopup() {
-      super.hidePopup();
+   hidePopup(givePoints = true) {
       clearInterval(this.moveInterval);
+
+      super.hidePopup(givePoints);
    }
 }
 class FreeIPhone extends Popup {
@@ -998,14 +1006,20 @@ class BankDetails extends Popup {
 
       getElement("bank-details-submit").addEventListener("click", () => this.submit());
 
-      const form = getElement("bank-details-form");
-      form.addEventListener("submit", this.handleForm);
+      const form = getElement('bank-details-form');
+      form.addEventListener('submit', this.handleForm);
+
 
       const textOptions = ['TERRIBLE', 'ABHORRENT', 'HOPELESS', 'PATHETIC', 'LAUGHABLE', 'ABYSMAL', 'INSUFFERABLE', 'ABOMINABLE', 'APPALLING', 'DREADFUL', 'AWFUL', 'AGONIZING', 'SICKENING', 'RANCID', 'REPULSIVE', 'HIDEOUS', 'REPUGNANT', 'ALARMING', 'ATROCIOUS'];
       let currentArr = textOptions.slice();
-      console.log(getElement('bank-details-input'));
-      getElement('bank-details-input').addEventListener('input', () => {
+      const input = getElement('bank-details-input');
+      input.addEventListener('input', () => {
          const span = getElement('bank-details-strength').querySelector('span');
+
+         if (input.value === '') {
+            span.innerHTML = '';
+            return;
+         }
 
          const nextIndex = randomInt(0, currentArr.length);
          span.innerHTML = currentArr[nextIndex];
