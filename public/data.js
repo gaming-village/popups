@@ -375,6 +375,7 @@ const messages = {
          img: "images/coin-icon.png",
          opened: false,
          reward: () => {
+            getElement('nav-corporate-overview').classList.remove('hidden');
             Game.loremCorp.corporateOverview.unlocked = true;
             updateMiscCookie();
          }
@@ -456,12 +457,12 @@ dailyIndoctrinationEditions = {
 
 const loremQuotaData = {
    0: {
-      requirement: 50,
+      requirement: 30,
       rewardTitle: `Branching out`,
       rewardText: `Hire an unpaid intern to mine for you.`
    },
    1: {
-      requirement: 150,
+      requirement: 100,
       rewardTitle: `Touch typing`,
       rewardText: `Gain double lorem per key stroke.`
    },

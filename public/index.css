@@ -97,7 +97,7 @@ html, body {
 #header {
    width: 100%;
    background-color: #444;
-   padding-top: 0.5em;
+   padding-top: 0.5rem;
 }
 
 #game-version {
@@ -125,11 +125,11 @@ html, body {
 
 #header h1 {
    color: #ddd;
-   font-size: 1.9em;
+   font-size: 1.9rem;
    background-color: #222;
    border-top-left-radius: 5px;
    border-top-right-radius: 5px;
-   padding: 0.1em 0.35em 0;
+   padding: 0.1rem 0.35rem 0;
    margin: 0 0 0 50%;
    display: inline-block;
    transform: translateX(-50%);
@@ -140,9 +140,9 @@ html, body {
 #header h2 {
    width: 100%;
    color: #777;
-   font-size: 1.15em;
+   font-size: 1.15rem;
    background-color: #222;
-   padding: 0.3em 0 0.2em;
+   padding: 0.3rem 0 0.2rem;
    margin: 0;
    display: inline-block;
    z-index: 1;
@@ -151,7 +151,7 @@ html, body {
 #nav {
    width: 100%;
    background-color: #222;
-   padding: 0.5em 0;
+   padding: 0.5rem 0;
    margin: 0 0 0 0;
 }
 
@@ -167,7 +167,7 @@ html, body {
    border: 3px solid;
    border-bottom-color: #000;
    border-right-color: #000;
-   padding: 0.1em 0.75em;
+   padding: 0.1rem 0.75rem;
    display: relative;
    display: inline-block;
    cursor: pointer;
@@ -202,7 +202,7 @@ html, body {
 }
 
 .nav-element:not(:first-child) {
-   margin-left: 1em;
+   margin-left: 1rem;
 }
 
 #computer, #about, #black-market, #corporate-overview {
@@ -304,10 +304,10 @@ div#changelog {
    color: azure;
    background-image: linear-gradient(to bottom, rgb(43, 82, 255) 0%, rgba(0, 255, 255, 0.3) 10%, rgb(43, 82, 255) 20%);
    border-radius: 3px;
-   padding: 0.2em 0.4em;
+   padding: 0.2rem 0.4rem;
    position: absolute;
-   top: 0.3em;
-   right: 0.5em;
+   top: 0.3rem;
+   right: 0.5rem;
    cursor: pointer;
    box-shadow: 0px 2px 3px 2px rgba(0, 0, 0, 0.3);
 }
@@ -323,7 +323,7 @@ div#changelog {
    padding: 1rem 0.5rem 0;
    position: absolute;
    left: 50%;
-   top: 2em;
+   top: 2rem;
    transform: translateX(-50%);
    box-shadow: 0px 0px 0px 1px rgba(243, 248, 252, 0.4) inset, 0px 0px 0px 1px #72a5cb;
 }
@@ -331,15 +331,15 @@ div#changelog {
 #loremContainer::before {
    /* The container's caption */
    content: attr(display-text);
-   font-size: 1em;
+   font-size: 1rem;
    font-weight: 400;
    background-color: #bbb;
-   padding: 0 0.35em;
+   padding: 0 0.35rem;
    border-radius: 2px;
    border: 2px solid #e0e0e0;
    position: absolute;
    left: 50%;
-   top: -0.65em;
+   top: -0.65rem;
    transform: translateX(-50%);
    white-space: nowrap;
    display: table;
@@ -357,13 +357,13 @@ div#changelog {
 }
 
 #loremStatus {
-   font-size: 1.05em;
+   font-size: 1.05rem;
    font-style: italic;
-   margin-left: 0.5em;
+   margin-left: 0.5rem;
 }
 
 #popupViewer {
-   top: 10.5em;
+   top: 10.5rem;
    left: 72.5%;
    cursor: pointer;
 }
@@ -371,7 +371,7 @@ div#changelog {
 #chunky-plantation-count {
    color: rgb(255, 0, 0);
    text-align: center;
-   font-size: 1.1em;
+   font-size: 1.1rem;
    margin-top: 0;
    pointer-events: none;
 }
@@ -382,19 +382,19 @@ div#changelog {
 }
 
 .chunky-invisible {
-   margin-left: 1em;
+   margin-left: 1rem;
    display: inline-block;
    opacity: 0.5;
 }
 
 #changelog img {
-   margin-bottom: -0.2em;
+   margin-bottom: -0.2rem;
 }
 
 #a {
    position: absolute;
-   top: 0.5em;
-   left: 0.5em;
+   top: 0.5rem;
+   left: 0.5rem;
 }
 
 /* Devtools */
@@ -412,7 +412,7 @@ div#changelog {
    margin-bottom: 0.6rem;
 }
 #summon-popup {
-   width: 10em;
+   width: 10rem;
 }
 .summon-popup-text {
    cursor: pointer;
@@ -451,7 +451,7 @@ div#changelog {
 
 .red {
    color: red;
-   font-size: 2.5em;
+   font-size: 2.5rem;
    font-weight: bolder;
    text-shadow: 10px 10px 0px black;
 }
@@ -486,7 +486,7 @@ input[type=checkbox] {
    border-top-left-radius: 7px;
    border-top-right-radius: 7px;
    background-color: rgb(43, 82, 255);
-   padding: 0 0.2em 0.2em;
+   padding: 0 0.2rem 0.2rem;
    position: absolute;
    overflow: hidden;
    z-index: 1;
@@ -497,12 +497,12 @@ input[type=checkbox] {
 }
 
 .popup-container-1 .popup-title, .popup-container-2 .popup-title {
-   width: calc(100% - 0.6em);
-   font-size: 1.05em;
+   width: calc(100% - 0.6rem);
+   font-size: 1.05rem;
    font-weight: normal;
-   padding: 0.3em 0.5em 0;
+   padding: 0.3rem 0.5rem 0;
    background-image: linear-gradient(to bottom, rgb(43, 82, 255) 0%, rgba(0, 204, 255, 0.45) 10%, rgb(43, 82, 255) 30%);
-   margin: 0 0 0 -0.2em;
+   margin: 0 0 0 -0.2rem;
    color: white;
    display: inline-block;
    cursor: move;
@@ -522,47 +522,47 @@ input[type=checkbox] {
 }
 
 .popup-container-1 .display-container {
-   padding-top: 1em;
-   padding-bottom: 0.5em;
+   padding-top: 1rem;
+   padding-bottom: 0.5rem;
 }
 
 .popup-container-1 .popup-content {
    border: 1px solid rgba(0, 0, 0, 0.3);
    border-radius: 3px;
-   margin: 0 2em;
-   padding: 0.5em 1em;
+   margin: 0 2rem;
+   padding: 0.5rem 1rem;
 }
 
 .popup-container-1 .popup-content h3 {
    /* The display-content h3's, not the title */
-   font-size: 1.05em;
+   font-size: 1.05rem;
    font-weight: 400;
-   margin: 1.5em 0 0.5em;
+   margin: 1.5rem 0 0.5rem;
    transform: translateY(-50%);
 }
 
 .popup-container-1 .popup-content p {
-   font-size: 1em;
-   line-height: 1.1em;
+   font-size: 1rem;
+   line-height: 1.1rem;
 }
 
 .popup-container-1 .popup-content img.warning {
-   width: 3em;
+   width: 3rem;
    float: left;
-   margin-right: 0.5em;
+   margin-right: 0.5rem;
 }
 
 .popup-container-1 .button-container {
    width: 100%;
    text-align: center;
-   margin: 0.5em 0 0 0;
+   margin: 0.5rem 0 0 0;
 }
 
 .button-container button {
    color: #1c1c1c;
    text-align: left;
    font-family: "Windows"; /* Needed for some reason */
-   font-size: 1em;
+   font-size: 1rem;
    border: 1px solid rgba(0, 0, 0, 0.9);
    border-radius: 3px;
    background-image: linear-gradient(to bottom, rgb(255, 255, 240) 0%, rgba(255, 255, 240, 0.1) 100%);
@@ -570,7 +570,7 @@ input[type=checkbox] {
    box-shadow: -1px -1px 5px 0px rgba(30, 30, 30, 0.3) inset;
 }
 .button-container button:not(.xp-button) {
-   min-width: 6.5em;
+   min-width: 6.5rem;
 }
 
 .button-container button:hover {
@@ -629,7 +629,7 @@ button.button-cost {
 /* Popup Type 2 */
 
 .popup-container-2 .display-container {
-   padding: 0.75em;
+   padding: 0.75rem;
 }
 
 .popup-container-2 p:first-child {
@@ -652,26 +652,26 @@ button.button-cost {
 
 .popup-container-3 {
    font-family: "Open Sans";
-   font-size: 0.8em;
+   font-size: 0.8rem;
    background-image: linear-gradient(to bottom, #77a9ce 0px, #fff 150px, #77a9ce 150px);
    border: 1px solid #f3f8fc;
-   padding: 0 0.25em 0.25em;
+   padding: 0 0.25rem 0.25rem;
    position: absolute;
    overflow: hidden;
 }
 
 .popup-container-3 .display-container {
-   padding: 0.2em 0.5em;
+   padding: 0.2rem 0.5rem;
    border: 1px solid #23455d;
    box-shadow: 0px 0px 0px 1px #e1ecf8;
    position: relative;
 }
 
 .popup-container-3 .top-bar {
-   width: calc(100% - 0.6em);
-   padding: 0.3em 0.5em;
+   width: calc(100% - 0.6rem);
+   padding: 0.3rem 0.5rem;
    background-image: linear-gradient(to right, #77a9ce 0%, #2d7db5 25%, #2d7db5 75%, #77a9ce 100%);
-   margin: 0 0 0 -0.2em;
+   margin: 0 0 0 -0.2rem;
    color: white;
    display: inline-block;
    cursor: move;
@@ -681,7 +681,7 @@ button.button-cost {
    width: 100%;
    color: #1b252b;
    background-color: #c6dceb;
-   padding: 0.1em 0;
+   padding: 0.1rem 0;
    border: 1px solid #354754;
    box-shadow: 0px 0px 0px 1px #f3f8fc inset, 0px 0px 0px 1px #72a5cb;
    cursor: default;
@@ -695,7 +695,7 @@ button.button-cost {
 
 .popup-container-3 .display-bar i {
    color: #000101;
-   margin-right: 0.3em;
+   margin-right: 0.3rem;
    margin-top: -1px;
    transform: rotate(90deg);
    display: inline-block;
@@ -703,11 +703,11 @@ button.button-cost {
 
 .popup-container-3 h4 {
    font-weight: 400;
-   margin: 0 0 0 0.3em;
+   margin: 0 0 0 0.3rem;
 }
 
 .popup-container-3 table {
-   margin-left: 2em;
+   margin-left: 2rem;
 }
 
 /* LOREM COUNTER */
@@ -744,29 +744,29 @@ button.button-cost {
 
 #mining-feed {
    font-family: "Windows";
-   font-size: 0.95em;
-   min-height: 1.05em;
+   font-size: 0.95rem;
+   min-height: 1.05rem;
    background-color: #c6dceb;
    border: 1px solid #354754;
    box-shadow: 0px 0px 0px 1px #f3f8fc inset, 0px 0px 0px 1px rgba(114, 165, 203, 0.5);
 }
 
 #mining-feed p {
-   margin: 0.2em 0 0.2em 0.2em;
+   margin: 0.2rem 0 0.2rem 0.2rem;
 }
 
 #mining-feed-open {
    font-size: 0.9rem !important;
-   margin-top: 0.2em;
-   margin-left: 2em;
-   margin-bottom: 0.6em;
+   margin-top: 0.2rem;
+   margin-left: 2rem;
+   margin-bottom: 0.6rem;
    display: inline-block;
 }
 
 /* Lorem Block */
 
 #lurem-impsir {
-   width: 20em;
+   width: 20rem;
    left: 25%;
    top: 25%;
 }
@@ -786,37 +786,24 @@ button.button-cost {
 /* Chunky */
 
 #chunky {
-   width: 20em;
+   width: 20rem;
 }
 
 #chunkyImg {
-   width: 7em;
+   width: 7rem;
    display: block;
    margin-left: 50%;
    transform: translateX(-50%);
 }
 
-/* #chunky-rage-meter {
-    width: 90%;
-    height: 1em;
-    border: 1px solid #333;
-    border-radius: 0.25em;
-    padding: 2px;
-    margin-top: 0.5em;
-    margin-left: 50%;
-    transform: translateX(-50%);
-    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.3) inset;
-    position: relative;
-} */
-
 .progress-bar-container {
    width: 90%;
-   height: 1em;
+   height: 1rem;
    border: 1px solid #333;
-   border-radius: 0.25em;
+   border-radius: 0.25rem;
    background-color: #fff;
    padding: 2px;
-   margin-top: 0.5em;
+   margin-top: 0.5rem;
    margin-left: 50%;
    transform: translateX(-50%);
    box-shadow: 0 1px 3px 1px rgba(0, 0, 0, 0.3) inset;
@@ -826,7 +813,7 @@ button.button-cost {
 .progress-bar {
    width: 0%;
    height: 100%;
-   border-radius: 0.25em;
+   border-radius: 0.25rem;
    background-color: rgb(43, 82, 255);
    background-size: 30px 30px;
    background-image: linear-gradient( 135deg, #fff 25%, transparent 25%, transparent 50%, #fff 50%, #fff 75%, transparent 75%, transparent);
@@ -835,7 +822,7 @@ button.button-cost {
 
 .progress-bar-text {
    color: #000;
-   font-size: 1em;
+   font-size: 1rem;
    text-shadow: 0 0 5px #fff;
    position: absolute;
    left: 50%;
@@ -894,7 +881,7 @@ button.button-cost {
 }
 
 .chunky-debuff {
-   max-width: 11em;
+   max-width: 11rem;
    z-index: 2;
 }
 
@@ -949,8 +936,8 @@ button.button-cost {
 .close-icon {
    float: right;
    opacity: 0.75;
-   margin-top: -0.1em;
-   margin-right: -0.2em;
+   margin-top: -0.1rem;
+   margin-right: -0.2rem;
    cursor: pointer;
 }
 
@@ -967,7 +954,7 @@ button.button-cost {
 }
 
 #pointCounterContainer {
-   top: 11em;
+   top: 11rem;
    left: 70%;
 }
 
@@ -976,7 +963,7 @@ button.button-cost {
 }
 
 .rainbow {
-   padding: 0.5em;
+   padding: 0.5rem;
    background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #e3e81d, #1de840, #1ddde8, #2b1de8, #dd00f3, #dd00f3);
    background-size: 1800% 1800%;
    -webkit-animation: rainbow 5s ease infinite;
@@ -1047,13 +1034,13 @@ button.button-cost {
 .loremAd {
    color: red;
    text-decoration: underline;
-   font: 500 0.85em "Open Sans";
+   font: 500 0.85rem "Open Sans";
    cursor: pointer;
    display: inline-block;
 }
 
 #visitor {
-   min-width: 18em;
+   min-width: 18rem;
 }
 
 #visitor p {
@@ -1062,9 +1049,9 @@ button.button-cost {
 }
 
 #visitor-box {
-   width: 4em;
-   height: 4em;
-   padding: 0.2em;
+   width: 4rem;
+   height: 4rem;
+   padding: 0.2rem;
    border: 2px solid rgb(43, 82, 255);
    border-radius: 3px;
    margin-left: 50%;
@@ -1075,8 +1062,8 @@ button.button-cost {
 
 #visitor-box-content {
    text-align: center;
-   width: 4em;
-   height: 4em;
+   width: 4rem;
+   height: 4rem;
    background-color: rgb(255, 255, 240);
 }
 

@@ -157,7 +157,13 @@ const Game = {
    },
 
    nextLoremQuota: 50,
-   quotaPromotions: [50, 150, 300, 500, 1000, 2500, 5000, 10000],
+   get quotaPromotions () {
+      let returnArr = [];
+      for (const quotaReward of Object.values(loremQuotaData)) {
+         returnArr.push(quotaReward.requirement)
+      }
+      return returnArr;
+   },
    updateQuotaFactor: () => {
       console.trace();
       // Increment the lorem quota by 1 from the quotaPromotions array
@@ -184,10 +190,10 @@ const Game = {
       }
    },
    checkLoremLetters: () => {
-      if (Game.loremCount >= 2) receiveLetter('motivationalLetter');
-      if (Game.loremCount >= 5) receiveLetter('rumors');
+      if (Game.loremCount >= 3) receiveLetter('motivationalLetter');
+      if (Game.loremCount >= 6) receiveLetter('rumors');
       if (Game.loremCount >= 8) receiveLetter('invitation');
-      if (Game.loremCount >= 40) receiveLetter('promotion');
+      if (Game.loremCount >= 30) receiveLetter('promotion');
    },
 
    loremPerWrite: 0.05,
@@ -699,11 +705,14 @@ function openReward(letter) {
    getElement(`letter-${letter.reference}-reward`).classList.add("opened");
 
    letter.rewards.reward();
+
+   const claimAllButton = getElement('paper').querySelector('.paper-button');
+   claimAllButton.classList.add('opened');
 }
 function showLetter(letter) {
    console.log(letter);
 
-   getElement("mail-container").classList.remove("hidden");
+   getElement('mail-container').classList.remove('hidden');
    getElement('paper').innerHTML = `<h3>${letter.title}</h3> ${letter.content}`;
    if (letter.rewards != undefined) {
       getElement("paper").innerHTML += `
@@ -719,17 +728,18 @@ function showLetter(letter) {
          </div>
          <button class='paper-button'>Claim all</button>
          `;
- 
+
+         const claimAllButton = getElement('paper').querySelector('.paper-button');
+         if (letter.rewards.opened) {
+            claimAllButton.classList.add('opened');
+            getElement(boxId).classList.add('opened');
+         }
          // Add claim all button functionality
-         getElement('paper').querySelector('.paper-button').addEventListener('click', () => {
-            console.log('ahfkhhaljhfjlhadljfhak;dlfj');
+         claimAllButton.addEventListener('click', () => {
+            openReward(letter)
          });
 
-         if (letter.rewards.opened) {
-            getElement(boxId).classList.add("opened");
-         }
-
-         getElement(boxId).addEventListener("click", () => {
+         getElement(boxId).addEventListener('click', () => {
             openReward(letter);
          });
       }
