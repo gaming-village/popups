@@ -1,0 +1,8 @@
+#event-viewer {
+   width: 15rem;
+}
+.event-viewer-entry {
+   width: 100%;
+   min-height: 1.4rem;
+   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
+}

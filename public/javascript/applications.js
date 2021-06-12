@@ -10,7 +10,7 @@ class Application {
     }
     createNavPresence() {
         this.navObject = getElement("application-template").cloneNode(true);
-        this.navObject.id = "";
+        this.navObject.id = '';
         this.navObject.classList.remove("hidden");
         getElement("computer-nav").appendChild(this.navObject);
 
@@ -44,5 +44,11 @@ class LoremController extends Application {
 class LoremCounter extends Application {
    constructor() {
       super("lorem-counter");
+   }
+}
+
+class EventViewer extends Application {
+   constructor() {
+
    }
 }
