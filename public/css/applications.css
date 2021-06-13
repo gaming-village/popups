@@ -1,8 +1,20 @@
+@import url(../fonts/windows-font.css);
+
 #event-viewer {
    width: 15rem;
 }
+#event-viewer-display {
+   background-color: #222;
+   padding: 0.1rem;
+}
 .event-viewer-entry {
+   font-family: 'Windows';
+   font-size: 1rem;
    width: 100%;
-   min-height: 1.4rem;
-   background-image: linear-gradient(to right, rgba(0, 0, 0, 0.6) 0%, rgba(0, 0, 0, 0.4) 50%, transparent 100%);
+   padding: 0.1rem 0.3rem 0;
+   background-image: linear-gradient(to right, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 65%, transparent 100%);
+   text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+}
+.event-viewer-entry:not(:last-child) {
+   margin-bottom: 0.2rem;
 }

@@ -348,7 +348,7 @@ function instantiateClasses() {
    generateClasses("popups", popupNames);
    const semiPopupNames = ["chunkyMessage", "plagueOfChunky", "scourgeOfChunky", "wrathOfChunky", "hexOfChunky", "ad1", "ad2", "ad3", "ad4", "ad5", "loremWarning"];
    generateClasses("semiPopups", semiPopupNames);
-   const applicationNames = ["loremController", "loremCounter"];
+   const applicationNames = ["loremController", "loremCounter", 'eventViewer'];
    generateClasses("applications", applicationNames);
 }
 
