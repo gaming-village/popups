@@ -11,6 +11,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500&display=swap');
+/* Terminal font */
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&display=swap');
 
 html, body {
    width: 100%;
@@ -25,8 +27,106 @@ html, body {
    outline: none;
 }
 
+/* Terminal */
+#terminal {
+   width: 100vw;
+   height: 100vh;
+   background-color: rgba(0, 0, 0, 0.4);
+   position: absolute;
+   top: 0;
+   left: 0;
+   z-index: 100;
+}
+#terminal h1 {
+   color: #fff;
+   letter-spacing: 0.05rem;
+   font-size: 2.1rem;
+   font-family: 'Abril Fatface';
+   text-align: center;
+   text-decoration: underline;
+   text-shadow: 0 0 5px #000, 0 0 4px #000, 0 0 3px #000, 0 0 2px #000, 0 0 1px #000;
+}
+#terminal-container {
+   --border-radius: 7px;
+   font-family: 'Inconsolata';
+   border-radius: var(--border-radius);
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+}
+#terminal-container h3 {
+   color: #ddd;
+   font-size: 1.05rem;
+   font-weight: 700;
+   text-align: center;
+   width: clamp(15vw, 30rem, 30vw);
+   background-color: #444;
+   padding: 0.1rem 0;
+   border-left: 1px solid #aaa;
+   border-top: 1px solid #ccc;
+   border-right: 1px solid #aaa;
+   border-top-left-radius: var(--border-radius);
+   border-top-right-radius: var(--border-radius);
+   margin: 0;
+}
+#terminal-display {
+   font-size: 1.1rem;
+   width: clamp(15vw, 30rem, 30vw);
+   height: clamp(10vh, 20rem, 20vh);
+   background-color: #050505;
+   border-right: 1px solid #777;
+   border-bottom: 1px solid #777;
+   border-left: 1px solid #777;
+   border-bottom-left-radius: var(--border-radius);
+   border-bottom-right-radius: var(--border-radius);
+   display: flex;
+   align-items: flex-end;
+   cursor: text;
+}
+#terminal-pointer {
+   --padding: 0.3rem;
+   color: #fff;
+   width: calc(100% - var(--padding) * 2);
+   padding: 0 var(--padding);
+   background-color: #191919;
+   position: relative;
+}
+#pointer-content {
+   /* width: clamp(15vw, 30rem, 30vw);
+   white-space: nowrap;
+   overflow: none; */
+   max-width: 100%;
+   text-overflow: ellipsis;
+   display: inline-block;
+   white-space: pre;
+   overflow: hidden;
+}
+#flashing-bar {
+   width: 7px;
+   height: 1.1rem;
+   margin-left: 0.2rem;
+   display: inline-block;
+   position: absolute;
+   animation: flash 1s forwards infinite linear;
+}
+@keyframes flash {
+   0% {
+      background-color: #ccc;
+   }
+   50% {
+      background-color: #ccc;
+   }
+   50.1% {
+      background-color: transparent;
+   }
+   100% {
+      background-color: transparent;
+   }
+}
+
 #message-container {
-   font-family: "Windows";
+   font-family: 'Windows';
    background-color: #aaa;
    border: 2px solid;
    border-top-color: #ccc;

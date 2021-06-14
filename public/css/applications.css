@@ -4,16 +4,38 @@
    width: 15rem;
 }
 #event-viewer-display {
-   background-color: #222;
+   min-height: 7.5rem;
+   background-color: #333;
    padding: 0.1rem;
+   box-shadow: 0 0 10px 4px #000 inset;
 }
 .event-viewer-entry {
    font-family: 'Windows';
    font-size: 1rem;
    width: 100%;
    padding: 0.1rem 0.3rem 0;
-   background-image: linear-gradient(to right, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 65%, transparent 100%);
+   background-image: linear-gradient(to right, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.6) 65%, rgba(255, 255, 255, 0.2) 100%);
    text-shadow: 0 0 5px rgba(255, 255, 255, 0.6);
+   animation: 5s eventAnim forwards linear;
+}
+@keyframes eventAnim {
+   0% {
+      opacity: 0;
+   }
+   7% {
+      opacity: 1;
+   }
+   85% {
+      opacity: 1;
+   }
+   95% {
+      font-size: 1rem;
+      opacity: 0;
+   }
+   100% {
+      font-size: 0;
+      opacity: 0;
+   }
 }
 .event-viewer-entry:not(:last-child) {
    margin-bottom: 0.2rem;

@@ -50,19 +50,12 @@ class LoremCounter extends Application {
 class EventViewer extends Application {
    constructor() {
       super('event-viewer');
-
-      setTimeout(() => {
-         this.createEvent(['This is gaminger']);
-      }, 500);
-      setTimeout(() => {
-         this.createEvent(['Gained '], ['0.5'], [' lorem!']);
-      }, 1000);
    }
    createEvent(...args) {
       // Create the event
       const newEvent = document.createElement('div');
       newEvent.classList.add('event-viewer-entry');
-      getElement('event-viewer-display').appendChild(newEvent);
+      getElement('event-viewer-display').prepend(newEvent);
 
       // Parse the text
       const displayText = document.createDocumentFragment();
@@ -72,14 +65,19 @@ class EventViewer extends Application {
 
          // Apply modifiers
          for (const modifier of text) {
+            if (typeof modifier !== 'string') continue;
+
             if (modifier.split('')[0] === '#') {
                textSegment.style.color = modifier;
-               textSegment.style.textShadow = '0 0 3px #000';
             }
          }
          displayText.appendChild(textSegment);
       }
       
       newEvent.appendChild(displayText);
+
+      setTimeout(() => {
+         newEvent.remove();
+      }, 5000);
    }
 }

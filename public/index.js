@@ -130,6 +130,7 @@ const Game = {
    updateLorem: (add) => {
       createMiningEntry(add);
       displayPoints(add);
+      applications.eventViewer.createEvent(['Gained ', '#888'], [add, '#555'], [' lorem!', '#888']);
       setCookie("lorem", Game.loremCount, 31);
       Game.checkLoremLetters();
 
@@ -224,6 +225,10 @@ const Game = {
    stats: {
       totalLoremMined: 0
    }
+};
+
+const terminal = {
+   displayed: true
 };
 
 class blackMarketShop {
@@ -496,15 +501,25 @@ var iterationCount = 0;
 var nextText = 100;
 var checkOffset = 0;
 
-document.addEventListener("keydown", function (event) {
+document.addEventListener('keypress', function (event) {
    if (document.activeElement !== document.body) return;
 
+   // Get the event key code
+   const keyCode = event.keyCode;
+
+   if (terminal.displayed) {
+      // event.preventDefault();
+      // Add the character to the terminal pointer
+      getElement('pointer-content').innerHTML += String.fromCharCode(keyCode);
+      return;
+   }
+
    // If the input is a number (49 57) excluding 0
-   if (event.keyCode >= 49 && event.keyCode <= 57) {
-      keySwitchView(event.keyCode - 48);
+   if (keyCode >= 49 && keyCode <= 57) {
+      keySwitchView(keyCode - 48);
    }
    // If the input is a letter press or space
-   if (event.keyCode >= 65 && event.keyCode <= 90 || event.keyCode === 32) keyPress();
+   if (keyCode >= 65 && keyCode <= 90 || keyCode === 32) keyPress();
 });
 
 function writeLorem(loremN = 1, giveLorem = true) {
