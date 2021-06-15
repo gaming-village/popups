@@ -264,7 +264,11 @@ const terminal = {
                return;
             }
             // Summon a popup
-            popups[str].showPopup();
+            if (!data[name].unlocked) {
+               terminal.writeLine(['WARNING: ', '#ffbb29'], ['Popup ', '#888'], [`'${name}'`, '#aaa'], [' is not unlocked yet.', '#888'])
+               return;
+            }
+            popups[name].showPopup();
          }
       },
       js: {
@@ -686,17 +690,18 @@ var iterationCount = 0;
 var nextText = 100;
 var checkOffset = 0;
 
-document.addEventListener('keypress', function(event) {
+document.addEventListener('keydown', function(event) {
    if (document.activeElement !== document.body) return;
 
+   
    // Get the event key code
    const keyCode = event.keyCode;
-
+   
    if (terminal.displayed) {
       getElement('pointer-content').focus();
       return;
    }
-
+   
    // If the input is a number (49 57) excluding 0
    if (keyCode >= 49 && keyCode <= 57) {
       keySwitchView(keyCode - 48);
