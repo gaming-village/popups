@@ -227,6 +227,24 @@ const Game = {
    }
 };
 
+const fileSystem = {
+   files: [],
+   addApplication: function(application) {
+      const newFile = getElement('file-template').cloneNode(true);
+      newFile.id = '';
+      newFile.classList.remove('hidden');
+      newFile.querySelector('span').innerHTML = `${application.name}.app`;
+
+      getElement('file-system').appendChild(newFile);
+      console.log(application);
+   },
+   startApplications: function() {
+      for (const application of Object.values(applications)) {
+         this.addApplication(application);
+      }
+   }
+}
+
 const terminal = {
    displayed: false,
    commands: {
@@ -674,6 +692,9 @@ window.onload = () => {
          terminal.enterCommand(command);
       }
    });
+
+   // File system setup
+   fileSystem.startApplications();
 }
 
 function changeViewHeights() {

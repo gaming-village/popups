@@ -115,7 +115,7 @@ html, body {
 #flashing-bar.flashing {
    animation: flash 1s infinite linear;
 }
-@keyframes flash {
+/* @keyframes flash {
    0% {
       background-color: #ccc;
    }
@@ -128,7 +128,7 @@ html, body {
    100% {
       background-color: transparent;
    }
-}
+} */
 
 #message-container {
    font-family: 'Windows';

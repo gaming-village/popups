@@ -78,3 +78,34 @@
    font-size: 1.1rem;
    margin-bottom: 0.3rem;
 }
+
+#file-system {
+   width: 100%;
+   height: 100%;
+   position: absolute;
+   top: 0;
+   left: 0;
+}
+.file {
+   --size: calc(0.8vh + 0.8vw + 32px);
+   width: var(--size);
+   height: var(--size);
+   background-image: url(../images/popup-icons/paper.png);
+   background-size: 100% 100%;
+   margin: 24px;
+   position: relative;
+   cursor: pointer;
+}
+.file span {
+   width: 200%;
+   font-family: 'Times New Roman', Times, serif;
+   font-size: 1rem;
+   position: absolute;
+   bottom: -0.8rem;
+   left: 50%;
+   transform: translateX(-50%);
+   /* text-shadow: 0 0 3px #fff, 0 0 2px #fff, 0 0 1px #fff; */
+   white-space: nowrap;
+   overflow: hidden;
+   text-overflow: ellipsis;
+}
