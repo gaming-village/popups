@@ -40,15 +40,23 @@
    </div>
 
    <!-- Terminal (Accessible through Devtools panel) -->
-   <div id='terminal'>
+   <div id='terminal' class='hidden'>
       <h1>The Terminal</h1>
 
       <div id='terminal-container'>
          <h3>Terminal</h3>
          <div id='terminal-display'>
             <div id='terminal-pointer'>
-               <span id='pointer-content'>> </span>
-               <span id='flashing-bar'></span>
+               <!-- <div id='pointer-content-formatter'>
+                  <input id='pointer-content' />
+               </div> -->
+               <div contenteditable='true' spellcheck='off' id='pointer-content'>
+               </div>
+               <span id='flashing-bar' class='flashing'></span>
+               <!-- <textarea id='pointer-content'>
+                  <span id='flashing-bar'></span>
+               </textarea>
+                -->
             </div>
          </div>
       </div>
@@ -151,7 +159,7 @@
          </div>
       </div>
 
-      <div id='event-viewer' class='popup-container-3 hidde'>
+      <div id='event-viewer' class='popup-container-3 hidden'>
          <div class='top-bar' id='event-viewer-top'>
             <div class='display-bar'>
                <img src='images/xp-icons/home-icon.png' alt='Home icon'>

@@ -130,7 +130,7 @@ const Game = {
    updateLorem: (add) => {
       createMiningEntry(add);
       displayPoints(add);
-      applications.eventViewer.createEvent(['Gained ', '#888'], [add, '#555'], [' lorem!', '#888']);
+      applications.eventViewer.createEvent(['Gained ', '#888'], [add, '#555'], [' lorem', '#888']);
       setCookie("lorem", Game.loremCount, 31);
       Game.checkLoremLetters();
 
@@ -151,6 +151,7 @@ const Game = {
       const packets = add * (directAdd ? 1 : Game.transferRate);
       Game.packetCount += packets;
       Game.updatePackets();
+      applications.eventViewer.createEvent(['Gained ', '#888'], [add, '#555'], [' packets', '#888'])
    },
    updatePackets: () => {
       getElement("packet-count").innerHTML = formatFloat(Game.packetCount);
@@ -177,7 +178,6 @@ const Game = {
       updateMiscCookie();
    },
    unlockLoremQuota: () => {
-      console.log('UNLOCKERY');
       Game.loremQuota.unlocked = true;
       getElement('lorem-quota').classList.remove('hidden');
    },
@@ -228,7 +228,175 @@ const Game = {
 };
 
 const terminal = {
-   displayed: true
+   displayed: false,
+   commands: {
+      help: {
+         get path() {
+
+         },
+         returnVal: () => {
+            terminal.writeLine(['Available commands:', '#aaa']);
+            Object.entries(terminal.commands).forEach(command => {
+               if (command[0] === 'help') return;
+               terminal.writeLine(['- ', '#777'], [command[0], '#999']);
+            })
+         }
+      },
+      hello: {
+         returnVal: 'Hello there!'
+      },
+      give: {
+         lorem: {
+            anyNum: (num) => {
+               terminal.writeLine(['Gave ', '#888'], [num, '#bbb'], [' lorem', '#888']);
+               Game.addLorem(num);
+            }
+         },
+         packets: {
+            anyNum: (num) => {
+               terminal.writeLine(['Gave ', '#888'], [num, '#bbb'], [' packets', '#888']);
+               Game.addPackets(num / Game.transferRate);
+            }
+         }
+      },
+      summon: {
+         anyStr: (str) => {
+            if (popups[str] === undefined) {
+               terminal.writeLine(['Popup ', '#888'], [`'${str}'`, '#aaa'], [' does not exist.', '#888'])
+               return;
+            }
+            // Summon a popup
+            popups[str].showPopup();
+         }
+      },
+      exit: {
+         returnVal: () => {
+            terminal.hide();
+         }
+      }
+   },
+   reflash: () => {
+      const flashingBar = getElement('flashing-bar');
+      flashingBar.classList.remove('flashing');
+      flashingBar.classList.add('flashing');
+   },
+   writeLine: function(...args) {
+      console.log(args);
+      const newLine = document.createElement('div');
+      newLine.classList.add('terminal-line');
+      console.log(newLine);
+
+      const displayText = document.createDocumentFragment();
+      for (const segment of args) {
+         const newText = document.createElement('span');
+         newText.innerHTML = segment[0];
+         // Apply properties
+         for (const property of segment) {
+            if (property === segment[0]) continue;
+
+            if (property === 'italic') {
+               newText.style.fontStyle = 'italic';
+            } else if (property.split('')[0] === '#') {
+               // Hex colour
+               newText.style.color = property;
+            }
+         }
+         displayText.appendChild(newText);
+      }
+      newLine.appendChild(displayText);
+
+      // Append it to the display.
+      getElement('terminal-pointer').before(newLine);
+   },
+   searchCommand: function(searchObject, args, rootObject) {
+      console.log('##########################');
+      console.log('Params:')
+      console.log(searchObject);
+      console.log(args);
+      for (const property of Object.entries(searchObject)) {
+         console.log(property);
+         if (property[0] === args[0]) {
+            console.log('Found comand: ' + property[0]);
+            rootObject = rootObject || property;
+
+            // If the requested command has an extra parameter.
+            console.log(args[1]);
+            if (args[1] !== undefined) {
+               console.log('Found a requested property: ' + args[1]);
+
+               if (!isNaN(args[1])) {
+                  // If it has a return param of a number
+                  property[1].anyNum(parseInt(args[1]));
+               } else if (property[1][args[1]] === undefined) {
+                  // If the parameter doesn't exist
+                  if (typeof property[1].anyStr === 'function') {
+                     property[1].anyStr(args[1]);
+                  } else {
+                     this.writeLine(['Parameter ', '#888'], [`'${args[1]}'`, 'italic', '#aaa'], [' does not exist for the command ', '#888'], [rootObject[0], '#aaa'], ['.', '#888']);
+                  }
+               } else {
+                  const nextArgs = args.slice();
+                  nextArgs.splice(0, 1);
+                  this.searchCommand(property[1], nextArgs, rootObject);
+               }
+               return;
+            } else {
+               // If it presumably has a return value
+               if (typeof property[1].returnVal === 'string') {
+                  this.writeLine([property[1].returnVal]);
+               } else if (typeof property[1].returnVal === 'function') {
+                  property[1].returnVal();
+               } else {
+                  // When a parameter is missing
+                  this.writeLine(['Command ', '#999'], [`'${rootObject[0]}'`, '#bbb'], [' is missing a parameter. Available parameters include:', '#999']);
+
+                  for (const parameter of Object.entries(property[1])) {
+                     this.writeLine(['- ', '#666'], [parameter[0], '#aaa'])
+                  }
+               }
+               return;
+            }
+         }
+      }
+
+      this.writeLine([`'${args[0]}'`, 'italic', '#aaa'], [' is not a command.', '#999']);
+   },
+   getPath: function(commandName) {
+      
+   },
+   enterCommand: function(command) {
+      getElement('pointer-content').innerHTML = '';
+
+      // Stop if the command does not have ascii characters
+      const ascii = 'abcdefghijklmnopqrstuvwxyz';
+      let hasAscii = false;
+      for (const char of command.split('')) {
+         if (ascii.split('').indexOf(char) !== -1) {
+            hasAscii = true;
+            break;
+         }
+      }
+      if (!hasAscii) {
+         return;
+      }
+
+      let subCommand = command.split(' ').slice();
+      subCommand.splice(0, 1);
+      this.writeLine(['> ', '#1ed93a'], [command.split(' ')[0], '#1ed93a'], [' ' + subCommand.join(' ')]);
+      
+      this.searchCommand(this.commands, command.split(' '));
+   },
+   show: function() {
+      this.displayed = true;
+      getElement('terminal').classList.remove('hidden');
+
+      this.writeLine(['Welcome to the ', '#eee'], ['Terminal!', '#03fc28'])
+      this.writeLine([`Type 'help' to get started.`, '#eee'])
+   },
+   hide: function() {
+      this.displayed = false;
+      getElement('terminal').classList.add('hidden');
+   }
 };
 
 class blackMarketShop {
@@ -485,6 +653,19 @@ window.onload = () => {
    setupMailbox();
 
    if (getCookie('misc').split('')[0] == '1') messages.invitation.rewards.reward();
+
+   // Terminal setup
+   getElement('pointer-content').addEventListener('keydown', function(event) {
+      const keyCode = event.keyCode;
+      if (keyCode === 13) {
+         // Enter key
+         event.preventDefault();
+         let command = getElement('pointer-content').innerHTML;
+         // Remove whitespace
+         command = command.trim().replace(/&nbsp;/g, '');
+         terminal.enterCommand(command);
+      }
+   });
 }
 
 function changeViewHeights() {
@@ -501,16 +682,14 @@ var iterationCount = 0;
 var nextText = 100;
 var checkOffset = 0;
 
-document.addEventListener('keypress', function (event) {
+document.addEventListener('keypress', function(event) {
    if (document.activeElement !== document.body) return;
 
    // Get the event key code
    const keyCode = event.keyCode;
 
    if (terminal.displayed) {
-      // event.preventDefault();
-      // Add the character to the terminal pointer
-      getElement('pointer-content').innerHTML += String.fromCharCode(keyCode);
+      getElement('pointer-content').focus();
       return;
    }
 
@@ -960,6 +1139,10 @@ function setupDevtools() {
          getElement("devtools").classList.add("hidden");
       }
    });
+
+   getElement('devtools-terminal').addEventListener('click', () => {
+      terminal.show();
+   })
 }
 function switchVisibility(elem) {
    getElement(elem).classList.contains("hidden") ? getElement(elem).classList.remove("hidden") : getElement(elem).classList.add("hidden");
