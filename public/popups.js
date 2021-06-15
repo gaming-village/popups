@@ -240,7 +240,7 @@ class Rain extends Popup {
    }
    showPopup(noMove = false, manualForce = false) {
       super.showPopup(noMove, manualForce);
-      if (!this.displayed) return;
+      if (!this.displayed || this.createLetterInterval) return;
       
       this.totalSapAmount = 0;
       this.createLetterInterval = setInterval(() => {
@@ -262,6 +262,7 @@ class Rain extends Popup {
    hidePopup() {
       super.hidePopup();
       clearInterval(this.createLetterInterval);
+      this.createLetterInterval = null;
       clearInterval(this.updateTextInterval);
 
       Game.addLorem(this.totalSapAmount * 1.5);
@@ -406,8 +407,8 @@ class Visitor extends Popup {
    }
    showPopup(noMove = false, manualForce = false) {
       super.showPopup(noMove, manualForce);
-
       if (!this.displayed) return;
+
       this.currentReward = "";
       this.displayObj.style.opacity = 1;
       getElement("visitor-open-button").style.pointerEvents = "visible";
