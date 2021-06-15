@@ -9,7 +9,7 @@ class SemiPopup extends BaseStructure {
 
       dragElement(this.displayObj, getElement(`${this.slugCase}-title`));
    }
-   showPopup(range) {
+   showPopup(range = 40) {
       this.displayObj.classList.remove("hidden");
       this.moveToRandomPosition(range);
       this.displayed = true;

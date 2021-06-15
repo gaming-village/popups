@@ -439,13 +439,14 @@ class blackMarketShop {
    }
 }
 
-class alertBox {
+class AlertBox {
    constructor(title = "", content = "") {
       // Create the alert box
       const alertBox = getElement("alert-box-template").cloneNode(true);
       getElement("alert-container").appendChild(alertBox);
       alertBox.classList.remove("hidden");
       alertBox.id = "";
+      this.displayObj = alertBox;
 
       alertBox.querySelector("h3").innerHTML = title;
       alertBox.querySelector("h2").innerHTML = content;
@@ -878,8 +879,7 @@ function createInboxEntry(letter, existingEntry = false) {
       newEntry.classList.add("opened");
    } else if (existingEntry) {
       // Entry already exists but has not been opened.
-      getElement('nav-about').classList.add('new-mail');
-      new alertBox("New letter received!", letter.title);
+      newLetterAlert(letter);
    }
 
    newEntry.querySelector('.inbox-entry-title').innerHTML = letter.title;
@@ -939,7 +939,6 @@ function showLetter(letter) {
 
    const letterEntry = getElement(`inbox-entry-${letter.reference}`);
    letterEntry.classList.add('opened');
-   console.log(getElement(`inbox-entry-${letter.reference}`));
    
    // Remember it as opened
    letter.opened = true;
@@ -1001,10 +1000,23 @@ function receiveLetter(letterName) {
    updateReceivedMessagesCookie();
 
    if (!letter.opened) {
-      getElement('nav-about').classList.add('new-mail');
-      new alertBox("New letter received!", letter.title);
+      newLetterAlert(letter);
    }
 }
+function newLetterAlert(letter) {
+   getElement('nav-about').classList.add('new-mail');
+   const alertBox = new AlertBox("New letter received!", letter.title);
+   // Remove the close button.
+   const letterAlert = alertBox.displayObj;
+   letterAlert.querySelector('img').remove();
+   letterAlert.classList.add('letter-alert');
+
+   letterAlert.addEventListener('click', () => {
+      switchView('about');
+      showInbox();
+   });
+}
+
 
 /*
 MINING FEED

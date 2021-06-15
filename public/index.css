@@ -360,6 +360,9 @@ html, body {
    right: 0.1rem;
    cursor: pointer;
 }
+.letter-alert {
+   cursor: pointer;
+}
 
 .popup-icon {
    height: 24px;
