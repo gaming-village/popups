@@ -277,9 +277,9 @@ const data = {
     clippy: {
         name: "clippy",
         stats: {
-            description: "Removes points in order to cull the popup population",
+            description: "Culls the popup population.",
             special: "Removes several popups when it appears.",
-            points: -20,
+            points: 0,
             redisplayTime: 30000,
             cost: 25
         },
