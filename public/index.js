@@ -231,11 +231,8 @@ const terminal = {
    displayed: false,
    commands: {
       help: {
-         get path() {
-
-         },
          returnVal: () => {
-            terminal.writeLine(['Available commands:', '#aaa']);
+            terminal.writeLine(['Available commands:', '#bbb']);
             Object.entries(terminal.commands).forEach(command => {
                if (command[0] === 'help') return;
                terminal.writeLine(['- ', '#777'], [command[0], '#999']);
@@ -273,8 +270,19 @@ const terminal = {
       js: {
          anyStr: (arr) => {
             const js = arr.join(' ');
-            eval(js);
+            try {
+               eval(js);
+            } catch (e) {
+               terminal.writeLine(['WARNING: ', '#ffbb29'], ['Command was not successfully executed.', '#888']);
+               return;
+            }
             terminal.writeLine(['Executed command ', '#ccc'], [js, '#59ff8b', 'bold']);
+         }
+      },
+      clear: {
+         returnVal: () => {
+            // Remove all lines
+            for (const line of document.querySelectorAll('.terminal-line')) line.remove();
          }
       },
       exit: {
@@ -282,11 +290,6 @@ const terminal = {
             terminal.hide();
          }
       }
-   },
-   reflash: () => {
-      const flashingBar = getElement('flashing-bar');
-      flashingBar.classList.remove('flashing');
-      flashingBar.classList.add('flashing');
    },
    writeLine: function(...args) {
       const newLine = document.createElement('div');
@@ -349,7 +352,7 @@ const terminal = {
                   property[1].returnVal();
                } else {
                   // When a parameter is missing
-                  this.writeLine(['ERROR: ', '#f53527'], ['Command ', '#999'], [`'${rootObject[0]}'`, '#bbb'], [' is missing a parameter. Available parameters include:', '#999']);
+                  this.writeLine(['ERROR: ', '#f53527'], ['Command ', '#888'], [`'${rootObject[0]}'`, '#bbb'], [' is missing a parameter. Available parameters include:', '#888']);
 
                   for (const parameter of Object.entries(property[1])) {
                      this.writeLine(['- ', '#666'], [parameter[0], '#aaa'])
@@ -360,7 +363,7 @@ const terminal = {
          }
       }
 
-      this.writeLine([`'${args[0]}'`, 'italic', '#aaa'], [' is not a command.', '#999']);
+      this.writeLine([`'${args[0]}'`, 'italic', '#aaa'], [' is not a command.', '#888']);
    },
    getPath: function(commandName) {
       
