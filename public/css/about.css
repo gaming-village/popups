@@ -293,7 +293,7 @@
    top: 2vh;
    visibility: hidden;
 }
-@keyframes openLetter {
+/* @keyframes openLetter {
    50% {
       opacity: 0.85;
       top: 0;
@@ -303,24 +303,24 @@
       top: 2vh;
       visibility: hidden;
    }
-}
+} */
 #paper {
    --scale: 1.5;
+   --size: 10rem;
    font-family: "Windows";
    font-size: 1rem;
-   color: transparent;
-   width: calc(var(--size) * 1.414);
-   /* min-height: var(--size); */
+   width: clamp(10vw, 25rem, 30vw);
+   min-height: var(--size);
    background-color: rgb(240, 240, 225);
    border-radius: 1px;
    box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.3);
    position: absolute;
-   top: 0;
-   left: 0;
-   z-index: 1;
-   opacity: 0;
+   top: 50%;
+   left: 75%;
+   z-index: 5;
    box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.3);
-   transform: translateX(0%);
+   transform: translate(-50%, -50%);
+   pointer-events: all;
 }
 #paper h3 {
    text-align: center;
@@ -424,7 +424,7 @@
    transform: translateY(37.5%);
 }
 
-#mail-container.opening #paper {
+/* #mail-container.opening #paper {
    animation: openPaper 0.8s forwards ease-in-out;
 }
 #mail-container.opened:not(.opening) #paper {
@@ -434,8 +434,8 @@
    top: 2vh;
    opacity: 1;
    transform: translateX(-25%);
-}
-@keyframes openPaper {
+} */
+/* @keyframes openPaper {
    0% {
       top: 0;
       opacity: 0;
@@ -456,4 +456,4 @@
       opacity: 1;
       transform: translateX(-25%);
    }
-}
+} */

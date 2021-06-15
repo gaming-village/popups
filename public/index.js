@@ -182,14 +182,6 @@ const Game = {
       getElement('lorem-quota').classList.remove('hidden');
    },
 
-   newLetterCount: 0,
-   updateLetterCount: () => {
-      if (Game.newLetterCount > 0) {
-         getElement("nav-about").classList.add("new-mail");
-      } else {
-         getElement("nav-about").classList.remove("new-mail");
-      }
-   },
    checkLoremLetters: () => {
       if (Game.loremCount >= 3) receiveLetter('motivationalLetter');
       if (Game.loremCount >= 6) receiveLetter('rumors');
@@ -606,6 +598,11 @@ function updateLoremCounter(add) {
 }
 
 const views = ['computer', "about", 'black-market', 'corporate-overview'];
+const viewEvents = {
+   about: function() {
+      getElement('nav-about').classList.remove('new-mail');
+   }
+}
 function setupNavBar() {
    // Make buttons change the screen on click.
    views.forEach(view => getElement(`nav-${view}`).addEventListener("click", () => switchView(view)));
@@ -624,8 +621,13 @@ function keySwitchView(num) {
    switchView(view);
 }
 function switchView(view) {
+   // Switch to the view.
    getElement(`nav-${view}`).classList.add("selected");
    getElement(view).classList.remove("hidden");
+   // Run any functions specific to that view.
+   if (viewEvents[view] !== undefined) {
+      viewEvents[view]();
+   }
    // Hide all views but the one being shown.
    views.forEach(item => {
       if (item != view) {
@@ -870,25 +872,21 @@ function createInboxEntry(letter, existingEntry = false) {
    getElement("mail-inbox").appendChild(newEntry);
    newEntry.id = `inbox-entry-${letter.reference}`;
    newEntry.classList.remove("hidden");
+   console.log(newEntry);
 
    if (letter.opened) {
       newEntry.classList.add("opened");
    } else if (existingEntry) {
-      console.log("inc");
-      Game.newLetterCount++;
-      Game.updateLetterCount();
-
+      // Entry already exists but has not been opened.
+      getElement('nav-about').classList.add('new-mail');
       new alertBox("New letter received!", letter.title);
    }
 
-   newEntry.querySelector(".inbox-entry-title").innerHTML = letter.title;
-   newEntry.querySelector(".inbox-entry-from").innerHTML = letter.from;
+   newEntry.querySelector('.inbox-entry-title').innerHTML = letter.title;
+   newEntry.querySelector('.inbox-entry-from').innerHTML = letter.from;
 
-   newEntry.addEventListener("click", () => {
-      console.log('u');
-
+   newEntry.addEventListener('click', () => {
       changeSelectedLetter(letter);
-      // switchLetterVisibility(letter);
    });
 }
 function showExistingEntries() {
@@ -899,7 +897,6 @@ function showExistingEntries() {
    }
 }
 function setupMailbox() {
-   getElement("mail-container").addEventListener("click", () => openLetter());
    getElement("open-mail").addEventListener("click", () => showInbox());
 
    showExistingEntries();
@@ -912,18 +909,10 @@ function setupMailbox() {
    });
 }
 function changeSelectedLetter(letter) {
-   console.log('a: ' + letter.reference)
-   // console.log(selectedLetter);
    selectedMessage = letter.reference - 1;
-   console.log('a: ' + selectedMessage)
    const selectedEntry = getElement(`inbox-entry-${letter.reference}`);
-   console.log('selected:');
-   console.log(selectedEntry);
-   console.log('selected2:');
-   console.log(document.querySelector('.selected-letter'));
    const previousSelected = document.querySelector('.selected-letter');
 
-   console.log(previousSelected !== selectedEntry);
    selectedEntry.classList.add("selected-letter");
    
    for (const entry of document.getElementsByClassName("inbox-entry")) {
@@ -944,18 +933,28 @@ function openReward(letter) {
    claimAllButton.classList.add('opened');
 }
 function showLetter(letter) {
-   console.log(letter);
+   // Show the paper
+   const paper = getElement('paper');
+   paper.classList.remove('hidden');
 
-   getElement('mail-container').classList.remove('hidden');
-   getElement('paper').innerHTML = `<h3>${letter.title}</h3> ${letter.content}`;
+   const letterEntry = getElement(`inbox-entry-${letter.reference}`);
+   letterEntry.classList.add('opened');
+   console.log(getElement(`inbox-entry-${letter.reference}`));
+   
+   // Remember it as opened
+   letter.opened = true;
+   updateOpenedMessagesCookie();
+
+   // Update the paper's text
+   paper.innerHTML = `<h3>${letter.title}</h3> ${letter.content}`;
    if (letter.rewards != undefined) {
-      getElement("paper").innerHTML += `
+      paper.innerHTML += `
       <h2 class="reward-header">Rewards</h2>
       `;
 
       if (letter.rewards.type == "box") {
          const boxId = `letter-${letter.reference}-reward`;
-         getElement('paper').innerHTML += `
+         paper.innerHTML += `
          <div id="${boxId}" class="reward-type-box">
             <div class="reward-box"><img src="${letter.rewards.img}"></div>
             <div class="reward-text">${letter.rewards.text}</div>
@@ -963,7 +962,7 @@ function showLetter(letter) {
          <button class='paper-button'>Claim all</button>
          `;
 
-         const claimAllButton = getElement('paper').querySelector('.paper-button');
+         const claimAllButton = paper.querySelector('.paper-button');
          if (letter.rewards.opened) {
             claimAllButton.classList.add('opened');
             getElement(boxId).classList.add('opened');
@@ -978,67 +977,20 @@ function showLetter(letter) {
          });
       }
    }
-
-   if (letter.opened) {
-      getElement("mail-container").classList.add("opened");
-      getElement("mail-container").classList.remove("opening");
-   } else {
-      getElement("mail-container").classList.remove("opened");
-      getElement("mail-container").classList.remove("opening");
-   }
 }
 function hideLetter() {
-   getElement("mail-container").classList.add("hidden");
+   getElement('paper').classList.add('hidden');
 }
 function switchLetterVisibility(letter, forceShow = false) {
-   console.log('switch');
-   if (getElement("mail-container").classList.contains("hidden") || forceShow) {
+   if (getElement("paper").classList.contains("hidden") || forceShow) {
+      // Show the letter and update the letter text.
       showLetter(letter);
    } else {
       hideLetter();
       const selectedLetter = document.querySelector('.selected-letter');
-      console.log(selectedLetter);
       selectedLetter.classList.remove('selected-letter');
-      console.log('oeuf');
       selectedMessage = -1;
    }
-}
-function openLetter(letter = false) {
-   let currentLetter = letter;
-   if (!letter) {
-      console.log(selectedMessage);
-      for (const letter of Object.values(messages)) {
-         console.log(letter.reference);
-         if (letter.reference == selectedMessage + 1) {
-            console.log("AEF");
-            console.log(letter);
-            currentLetter = letter;
-            break;
-         }
-      }
-   }
-
-   console.log(currentLetter);
-
-   if (currentLetter.opened) {
-      getElement("mail-container").classList.add("opened");
-      getElement("mail-container").classList.remove("opening");
-   } else {
-      console.log("dec");
-      Game.newLetterCount--;
-      Game.updateLetterCount();
-      getElement("mail-container").classList.remove("opened");
-      getElement("mail-container").classList.add("opening");
-   }
-
-   currentLetter.opened = true;
-   console.log(document.querySelectorAll('.inbox-entry'));
-   console.log(currentLetter);
-   console.log(currentLetter.reference);
-   console.log(selectedMessage);
-   // getElement(`inbox-entry-${currentLetter.reference}`).classList.add("opened");
-   getElement(`inbox-entry-${selectedMessage + 1}`).classList.add("opened");
-   updateOpenedMessagesCookie();
 }
 function receiveLetter(letterName) {
    const letter = messages[letterName];
@@ -1049,10 +1001,7 @@ function receiveLetter(letterName) {
    updateReceivedMessagesCookie();
 
    if (!letter.opened) {
-      console.log("inc");
-      Game.newLetterCount++;
-      Game.updateLetterCount();
-
+      getElement('nav-about').classList.add('new-mail');
       new alertBox("New letter received!", letter.title);
    }
 }
