@@ -260,13 +260,21 @@ const terminal = {
          }
       },
       summon: {
-         anyStr: (str) => {
-            if (popups[str] === undefined) {
-               terminal.writeLine(['Popup ', '#888'], [`'${str}'`, '#aaa'], [' does not exist.', '#888'])
+         anyStr: (arr) => {
+            const name = arr.join(' ');
+            if (popups[name] === undefined) {
+               terminal.writeLine(['Popup ', '#888'], [`'${name}'`, '#aaa'], [' does not exist.', '#888'])
                return;
             }
             // Summon a popup
             popups[str].showPopup();
+         }
+      },
+      js: {
+         anyStr: (arr) => {
+            const js = arr.join(' ');
+            eval(js);
+            terminal.writeLine(['Executed command ', '#ccc'], [js, '#59ff8b', 'bold']);
          }
       },
       exit: {
@@ -294,6 +302,8 @@ const terminal = {
 
             if (property === 'italic') {
                newText.style.fontStyle = 'italic';
+            } else if (property === 'bold') {
+               newText.style.fontWeight = 'bold';
             } else if (property.split('')[0] === '#') {
                // Hex colour
                newText.style.color = property;
@@ -319,9 +329,11 @@ const terminal = {
                } else if (property[1][args[1]] === undefined) {
                   // If the parameter doesn't exist
                   if (typeof property[1].anyStr === 'function') {
-                     property[1].anyStr(args[1]);
+                     let subCommand = args.slice();
+                     subCommand.splice(0, 1);
+                     property[1].anyStr(subCommand);
                   } else {
-                     this.writeLine(['Parameter ', '#888'], [`'${args[1]}'`, 'italic', '#aaa'], [' does not exist for the command ', '#888'], [rootObject[0], '#aaa'], ['.', '#888']);
+                     this.writeLine(['ERROR: ', '#f53527'], [' The command ', '#888'], [`'${rootObject[0]}'`, '#bbb'], [' has no parameter ', '#888'], [`'${args[1]}'`, 'italic', '#bbb'], ['.', '#888']);
                   }
                } else {
                   const nextArgs = args.slice();
@@ -337,7 +349,7 @@ const terminal = {
                   property[1].returnVal();
                } else {
                   // When a parameter is missing
-                  this.writeLine(['Command ', '#999'], [`'${rootObject[0]}'`, '#bbb'], [' is missing a parameter. Available parameters include:', '#999']);
+                  this.writeLine(['ERROR: ', '#f53527'], ['Command ', '#999'], [`'${rootObject[0]}'`, '#bbb'], [' is missing a parameter. Available parameters include:', '#999']);
 
                   for (const parameter of Object.entries(property[1])) {
                      this.writeLine(['- ', '#666'], [parameter[0], '#aaa'])

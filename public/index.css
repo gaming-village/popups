@@ -85,6 +85,7 @@ html, body {
    flex-direction: column;
    justify-content: flex-end;
    cursor: text;
+   user-select: all;
 }
 .terminal-line {
    width: clamp(15vw, 50rem, 50vw);
@@ -105,7 +106,7 @@ html, body {
    text-shadow: 0 0 0 #fff;
 }
 #flashing-bar {
-   width: 7px;
+   width: 8px;
    height: 1.1rem;
    margin-left: 0.1rem;
    display: inline-block;
