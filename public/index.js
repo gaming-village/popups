@@ -1116,7 +1116,6 @@ function dragElement(elmnt, start) {
 
    function dragMouseDown(e) {
       e = e || window.event;
-      console.log(e);
       e.preventDefault();
       path = e.path || (e.composedPath && e.composedPath());
       // Check that the clicked element is the move element.
