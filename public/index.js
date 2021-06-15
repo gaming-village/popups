@@ -289,6 +289,13 @@ const terminal = {
             popups[name].showPopup();
          }
       },
+      killall: {
+         returnVal: () => {
+            for (const popup of Object.values(popups)) {
+               if (popup.displayed) popup.hidePopup();
+            }
+         }
+      },
       js: {
          anyStr: (arr) => {
             const js = arr.join(' ');
@@ -415,6 +422,9 @@ const terminal = {
    show: function() {
       this.displayed = true;
       getElement('terminal').classList.remove('hidden');
+
+      // Hide all previous lines
+      this.commands.clear.returnVal();
 
       this.writeLine(['Welcome to the ', '#eee'], ['Terminal!', '#03fc28'])
       this.writeLine([`Type 'help' to get started.`, '#eee'])

@@ -1,4 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto&display=swap');
 
 /* Input styles */
 .xp-input {
@@ -87,25 +89,28 @@
    left: 0;
 }
 .file {
-   --size: calc(0.8vh + 0.8vw + 32px);
+   --size: calc(0.7vh + 0.7vw + 24px);
    width: var(--size);
    height: var(--size);
    background-image: url(../images/popup-icons/paper.png);
    background-size: 100% 100%;
-   margin: 24px;
+   margin: 48px 24px;
    position: relative;
    cursor: pointer;
 }
+.file:first-child {
+   margin-top: 24px;
+}
 .file span {
+   color: white;
+   text-align: center;
    width: 200%;
-   font-family: 'Times New Roman', Times, serif;
-   font-size: 1rem;
+   font-family: 'Roboto';
+   font-size: 0.9rem;
    position: absolute;
-   bottom: -0.8rem;
+   bottom: -2rem;
    left: 50%;
    transform: translateX(-50%);
-   /* text-shadow: 0 0 3px #fff, 0 0 2px #fff, 0 0 1px #fff; */
-   white-space: nowrap;
-   overflow: hidden;
-   text-overflow: ellipsis;
+   z-index: 2;
+   text-shadow: 0 0 3px #000, 0 0 2px #000, 0 0 1px #000;
 }

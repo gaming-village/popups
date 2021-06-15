@@ -1342,9 +1342,5 @@ class Clippy extends Popup {
             popup.hidePopup();
          }
       });
-
-      // setTimeout(() => {
-      //    super.hidePopup();
-      // }, 2000);
    }
 }
