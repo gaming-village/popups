@@ -229,10 +229,10 @@ class Rain extends Popup {
    constructor(popupDataName) {
       super(popupDataName);
 
-      this.createLetterInterval;
-      this.checkLetterInterval;
-      this.updateTextInterval;
-      this.sapPointInterval;
+      this.createLetterInterval = null;
+      this.checkLetterInterval = null;
+      this.updateTextInterval = null;
+      this.sapPointInterval = null;
       this.letters = [];
       this.totalSapAmount = 0;
 

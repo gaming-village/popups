@@ -105,7 +105,7 @@ const Game = {
                }
                Game.blackMarket.clickShop(shop);
             });
-         })
+         });
       }
    },
    loremCount: 0,
@@ -162,7 +162,7 @@ const Game = {
    get quotaPromotions () {
       let returnArr = [];
       for (const quotaReward of Object.values(loremQuotaData)) {
-         returnArr.push(quotaReward.requirement)
+         returnArr.push(quotaReward.requirement);
       }
       return returnArr;
    },
@@ -1116,9 +1116,11 @@ function dragElement(elmnt, start) {
 
    function dragMouseDown(e) {
       e = e || window.event;
+      console.log(e);
       e.preventDefault();
+      path = e.path || (e.composedPath && e.composedPath());
       // Check that the clicked element is the move element.
-      if (e.path[0] == start) {
+      if (path[0] == start) {
          // get the mouse cursor position at startup:
          pos3 = e.clientX;
          pos4 = e.clientY;
