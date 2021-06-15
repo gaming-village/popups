@@ -704,7 +704,7 @@ window.onload = () => {
    });
 
    // File system setup
-   fileSystem.startApplications();
+   // fileSystem.startApplications();
 }
 
 function changeViewHeights() {

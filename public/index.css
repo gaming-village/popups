@@ -168,13 +168,13 @@ html, body {
    float: right;
 }
 #message {
-   color: #efefef;
+   color: #000;
    text-align: justify;
-   /* text-shadow: 0 0 2px #444; */
+   text-shadow: 0 0 2px #888, 0 0 1px #888;
    min-width: 20vw;
    max-width: 30vw;
    min-height: 5rem;
-   background-color: #777;
+   background-color: #999;
    padding: 0 0.5rem;
    border: 2px solid;
    border-top-color: #555;
