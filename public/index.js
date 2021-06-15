@@ -281,10 +281,8 @@ const terminal = {
       flashingBar.classList.add('flashing');
    },
    writeLine: function(...args) {
-      console.log(args);
       const newLine = document.createElement('div');
       newLine.classList.add('terminal-line');
-      console.log(newLine);
 
       const displayText = document.createDocumentFragment();
       for (const segment of args) {
@@ -309,21 +307,12 @@ const terminal = {
       getElement('terminal-pointer').before(newLine);
    },
    searchCommand: function(searchObject, args, rootObject) {
-      console.log('##########################');
-      console.log('Params:')
-      console.log(searchObject);
-      console.log(args);
       for (const property of Object.entries(searchObject)) {
-         console.log(property);
          if (property[0] === args[0]) {
-            console.log('Found comand: ' + property[0]);
             rootObject = rootObject || property;
 
             // If the requested command has an extra parameter.
-            console.log(args[1]);
             if (args[1] !== undefined) {
-               console.log('Found a requested property: ' + args[1]);
-
                if (!isNaN(args[1])) {
                   // If it has a return param of a number
                   property[1].anyNum(parseInt(args[1]));
