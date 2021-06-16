@@ -527,7 +527,7 @@ div#changelog {
    cursor: pointer;
 }
 
-#computer .xp-button {
+.xp-button {
    font: 400 1rem "Windows";
    background-color: #ccc;
    background-image: none;
@@ -541,12 +541,10 @@ div#changelog {
    white-space: nowrap;
    display: table;
 }
-
-#computer .xp-button:hover:not(.unclickable):not(:active) {
+.xp-button:hover:not(.unclickable):not(:active) {
    background-color: #d5d5d5;
 }
-
-#computer .xp-button:active {
+.xp-button:active {
    background-color: #c2c2c2;
 }
 

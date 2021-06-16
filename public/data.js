@@ -369,17 +369,6 @@ const messages = {
       <p>Your annual salary has been increased from $1 to $15.
       <p>You will now receive a new tab in which to manage your Lorem workflow.</p>
       <p>- Lorem Corp.</p>`,
-      rewards: {
-         type: "box",
-         text: "Corporate Overview",
-         img: "images/coin-icon.png",
-         opened: false,
-         reward: () => {
-            getElement('nav-corporate-overview').classList.remove('hidden');
-            Game.loremCorp.corporateOverview.unlocked = true;
-            updateMiscCookie();
-         }
-      },
       received: false,
       opened: false,
       reference: 6
@@ -392,7 +381,7 @@ const prompts = {
       from: "Lorem Corp",
       content: `
       <p>Welcome new employee.</p>
-      <p>Congratulations on your entry into Lorem Corp. You have been supplied with a virtual machine on which to conduct your mining. See the About page for further information.</p>
+      <p>Congratulations on your entry into Lorem Corp. You have been supplied with a virtual Windows 95 machine on which to conduct your mining. See the About page for further information.</p>
       <p>You are dispensable and will be removed if you step out of line.</p>
       <p>- Lorem Corp.</p>
       `,

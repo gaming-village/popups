@@ -67,12 +67,11 @@ function setMiscCookie() {
    // Bit 1: Black market (binary) (0/1 unlocked/locked)
    // Bit 2: Lorem quota unlocked
    // Bits 3-4: Lorem Promotion Status (hexadecimal)
-   // Bit 5: Corporate overview unlocked
    
 
    let miscCookie = getCookie('misc');
    if (miscCookie == '') {
-      miscCookie = '00000';
+      miscCookie = '0000';
       setCookie('misc', miscCookie);
    }
 
@@ -107,19 +106,12 @@ function setMiscCookie() {
             }
             Game.nextLoremQuota = loremQuotaData[quotaIndex].requirement;
             break;
-         case 5:
-            if (bit == '1') {
-               getElement('nav-corporate-overview').classList.remove('hidden');
-               Game.loremCorp.corporateOverview.unlocked = true;
-            }
-            break;
          default:
             console.warn('Bit not found!')
       }
    });
 }
 function updateMiscCookie() {
-   console.log("BBBBB");
    let newCookie = '';
 
    // Black market

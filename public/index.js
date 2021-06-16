@@ -167,7 +167,6 @@ const Game = {
       return returnArr;
    },
    updateQuotaFactor: () => {
-      console.trace();
       // Increment the lorem quota by 1 from the quotaPromotions array
       if (!Game.loremQuota.unlocked) return;
 
@@ -1014,6 +1013,7 @@ function newLetterAlert(letter) {
    letterAlert.addEventListener('click', () => {
       switchView('about');
       showInbox();
+      letterAlert.remove();
    });
 }
 

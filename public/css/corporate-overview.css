@@ -1,13 +1,84 @@
 #corporate-overview {
-   background-color: #ccc;
+   font-family: 'Windows';
 }
-
-#intern-container {
+#corporate-overview .top-bar {
    width: 100%;
-   height: 10rem;
-   background-color: #555;
+   background-color: #ccc;
+   padding: 0.3rem;
+   box-shadow: 0 2px 0 0 #000;
+}
+#corporate-overview .top-bar h1 {
+   color: #fff;
+   width: calc(100% - 0.6rem);
+   text-align: center;
+   font-size: 1.5rem;
+   background-color: #777;
+   margin: 0;
+}
+#corporate-overview .left-bar {
+   width: clamp(15%, 15rem, 30%);
+   height: 100%;
+   background-color: #ccc;
+   float: left;
+   box-shadow: 2px 0 0 0 #000;
+}
+#corporate-overview .left-bar h2 {
+   text-decoration: underline;
+   font-size: 1.3rem;
+   margin: 1rem 0 0.5rem 0.7rem;
+}
+#corporate-overview .left-bar ul {
+   list-style-type: none;
+   padding: 0;
+   margin: 0;
+}
+#corporate-overview .left-bar li.xp-button {
+   margin: 0 0 0.3rem 1rem;
+}
+#corporate-overview .left-bar li:not(.xp-button) {
+   padding: 0 0.1rem;
+   margin: 0.2rem 1rem;
+   border: 2px solid;
+   border-top-color: #888;
+   border-right-color: #eee;
+   border-bottom-color: #eee;
+   border-left-color: #888;
+   display: table;
+}
+#salary-format {
+   padding-right: 1.75rem !important;
+}
+#corporate-overview .left-bar span {
    position: absolute;
-   left: 0;
-   bottom: 0;
-   box-shadow: 0 0 60px 10px #000 inset;
+   margin-top: -5px;
+   margin-left: 5px;
+}
+#corporate-overview .right-bar {
+   width: calc(100% - clamp(15%, 15rem, 30%) - 2px);
+   height: calc(100% - 2px);
+   background-image: url(../images/backgrounds/windows-95-bg-2.jpeg);
+   margin-top: 2px;
+   float: right;
+   position: relative;
+}
+#welcome {
+   max-width: 50%;
+   background-color: #ccc;
+   border: 2px solid;
+   border-top-color: #fff;
+   border-right-color: #000;
+   border-bottom-color: #000;
+   border-left-color: #fff;
+   padding: 0.3rem;
+   position: absolute;
+   left: 50%;
+   top: 25%;
+   transform: translate(-50%, -50%);
+}
+#welcome h1 {
+   color: #fff;
+   text-align: center;
+   font-size: 1.5rem;
+   background-color: #777;
+   margin: 0;
 }
