@@ -127,6 +127,8 @@
    transform: translate(-50%, -50%);
    z-index: 5;
    box-shadow: 0 0 20px 5px #000 inset, 0 0 10px 5px rgba(0, 0, 0, 0.6);
+   overflow-x: hidden;
+   overflow-y:scroll;
 }
 #mail-inbox::before {
    font: 1.3rem "Windows";
