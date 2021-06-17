@@ -67,11 +67,12 @@ function setMiscCookie() {
    // Bit 1: Black market (binary) (0/1 unlocked/locked)
    // Bit 2: Lorem quota unlocked
    // Bits 3-4: Lorem Promotion Status (hexadecimal)
+   // Bit 5: Job (0 = intern, etc.)
    
 
    let miscCookie = getCookie('misc');
    if (miscCookie == '') {
-      miscCookie = '0000';
+      miscCookie = '00000';
       setCookie('misc', miscCookie);
    }
 
@@ -106,6 +107,11 @@ function setMiscCookie() {
             }
             Game.nextLoremQuota = loremQuotaData[quotaIndex].requirement;
             break;
+         case 5:
+            const idx = parseInt(bit);
+            const jobArr = Object.entries(loremCorpData.jobs);
+            Game.loremCorp.job = jobArr[idx][0];
+            break;
          default:
             console.warn('Bit not found!')
       }
@@ -136,8 +142,16 @@ function updateMiscCookie() {
    }
    newCookie += quotaHex;
 
-   // Corporate overview unlocked
-   newCookie += Game.loremCorp.corporateOverview.unlocked ? '1' : '0';
+   // Lorem Corp Job
+   let jobIndex = -1;
+   Object.keys(loremCorpData.jobs).every((position, idx) => {
+      if (position === Game.loremCorp.job) {
+         jobIndex = idx;
+         return false;
+      }
+      return true;
+   });
+   newCookie += jobIndex;
 
    setCookie('misc', newCookie, 31);
 }

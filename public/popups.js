@@ -654,7 +654,9 @@ class AnnualSurvey extends Popup {
       }
 
       // Create 3-8 error popups
-      let maxPopupCount = randomInt(3, 8);
+      const min = data.annualSurvey.stats.points.min;
+      const max = data.annualSurvey.stats.points.max;
+      let maxPopupCount = randomInt(min, max);
       let popupBounds = this.displayObj.getBoundingClientRect();
       this.popupPixelsLeft = popupBounds.x;
       this.popupPixelsTop = popupBounds.y;

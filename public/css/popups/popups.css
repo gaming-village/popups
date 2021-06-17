@@ -58,12 +58,10 @@
 #ad1 {
    left: 25%;
    top: 75%;
-   transform: translate(-50%, -50%);
 }
 #ad2 {
    left: 80%;
    top: 75%;
-   transform: translate(-50%, -50%);
 }
 #ad2 div.display-container img {
    max-width: 30vw;
@@ -71,7 +69,6 @@
 #ad3 {
    left: 70%;
    top: 10%;
-   transform: translate(-50%, -50%);
 }
 #ad3 div.display-container img {
    width: 12em;
@@ -79,7 +76,6 @@
 #ad4 {
    left: 45%;
    top: 55%;
-   transform: translate(-50%, -50%);
 }
 #ad4 div.display-container img {
    width: 17em;

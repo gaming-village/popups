@@ -97,10 +97,10 @@ const data = {
             description: "The survey is cold. Unfeeling. It does not care for your input. It cares only for hard, efficient autonomy.",
             special: "Creates 3-8 error popups when submitted.",
             points: {
-                min: 3,
+                min: 4,
                 max: 8
             },
-            redisplayTime: 45000,
+            redisplayTime: 55000,
             cost: 10
         },
         display: {
@@ -380,7 +380,7 @@ const prompts = {
       title: "Application",
       from: "Lorem Corp",
       content: `
-      <p>Welcome new employee.</p>
+      <p>Welcome intern.</p>
       <p>Congratulations on your entry into Lorem Corp. You have been supplied with a virtual Windows 95 machine on which to conduct your mining. See the About page for further information.</p>
       <p>You are dispensable and will be removed if you step out of line.</p>
       <p>- Lorem Corp.</p>
@@ -517,22 +517,35 @@ const loremCorpData = {
    },
    jobs: {
       intern: {
-         
+         welcomeText: `<h1>Welcome</h1>
+         <p>Greetings worker.</p>
+         <p>This is the Corporate Overview, where you can manage your work more effectively.</p>
+         <p>Being a puny intern, you are useless and will have no subordinates.</p>
+         <p>To rise up the Heirarchy, you must mine more lorem.</p>
+         <p>Good luck.</p>`,
+         displayText: 'Intern',
+         buttonText: 'Interns'
       },
       employee: {
-
+         displayText: 'Employee',
+         buttonText: 'Employees'
       },
       manager: {
-
+         displayText: 'Manager',
+         buttonText: 'Managers'
       },
       supervisor: {
-
+         displayText: 'Supervisor',
+         buttonText: 'Supervisors'
       },
       executive: {
-
+         displayText: 'Executive',
+         buttonText: 'Executives'
       },
       CEO: {
-
+         displayText: 'CEO',
+         welcomeText: `ceo of cring`,
+         buttonText: 'CEOs'
       }
    }
 }

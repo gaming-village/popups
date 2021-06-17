@@ -7,7 +7,40 @@ const Game = {
       corporateOverview: {
          unlocked: false
       },
-      interns: 0
+      interns: 0,
+      job_internal: 'intern',
+      updateJobButtons: function() {
+         for (const button of [...document.querySelectorAll('.job-button:not(#job-template)')]) {
+            button.remove();
+         }
+         
+         const frag = document.createDocumentFragment();
+         getElement('job-title').classList.add('hidden');
+         for (const job of Object.entries(loremCorpData.jobs)) {
+            if (job[0] === this.job_internal) break;
+            
+            getElement('job-title').classList.remove('hidden');
+            const button = getElement('job-template').cloneNode(true);
+            button.id = '';
+            button.classList.remove('hidden');
+            frag.appendChild(button);
+            button.innerHTML = job[1].buttonText;
+         }
+         getElement('job-button-container').appendChild(frag);
+      },
+      set job(newJob) {
+         this.job_internal = newJob;
+
+         getElement('welcome').innerHTML = loremCorpData.jobs[newJob].welcomeText;
+
+         // Update buttons
+         this.updateJobButtons();
+
+         getElement('job-position').innerHTML = 'Position: ' + loremCorpData.jobs[newJob].displayText;
+      },
+      get job() {
+         return this.job_internal;
+      }
    },
 
    blackMarket: {
@@ -789,7 +822,8 @@ function writeLorem(loremN = 1, giveLorem = true) {
    }
 }
 function keyPress() {
-   if (!popups.luremImpsir.canLorem) return; // Stop if the lurem impsir popup is blocking production.
+   // Stop if the lurem impsir popup is blocking production.
+   if (!popups.luremImpsir.canLorem) return;
 
    writeLorem();
 }
