@@ -42,6 +42,17 @@ function randElem(arr) {
    return elem;
 }
 
+const hf = {
+   capitalize: function(str) {
+      const first = str.split('')[0].toUpperCase();
+      const rest = str.substring(1, str.split('').length);
+      return first + rest;
+   },
+   plural: function(str) {
+      return str + 's';
+   }
+};
+
 
 
 

@@ -4,11 +4,43 @@ const applications = {};
 
 const Game = {
    loremCorp: {
+      changeProgressInterval: null,
       corporateOverview: {
          unlocked: false
       },
+      unlockCorporateOverview: function() {
+         getElement('corporate-overview').classList.remove('hidden')
+         Game.loremCorp.corporateOverview.unlocked = true;
+      },
       interns: 0,
       job_internal: 'intern',
+      get jobIdx() {
+         let jobIndex = -1;
+         Object.keys(loremCorpData.jobs).every((position, idx) => {
+            if (position === this.job) {
+               jobIndex = idx;
+               return false;
+            }
+            return true;
+         });
+         return jobIndex;
+      },
+      showView: function(viewID) {
+         console.log('a');
+         const view = getElement(viewID);
+         if (!view.classList.contains('hidden')) {
+            // If view is visible
+            view.classList.add('hidden');
+            getElement('home-page').classList.remove('hidden');
+         }
+         else {
+            // If view is not visible, show view.
+            for (const container of document.querySelectorAll('.section-container')) {
+               container.classList.add('hidden');
+            }
+            view.classList.remove('hidden');
+         }
+      },
       updateJobButtons: function() {
          for (const button of [...document.querySelectorAll('.job-button:not(#job-template)')]) {
             button.remove();
@@ -23,20 +55,75 @@ const Game = {
             const button = getElement('job-template').cloneNode(true);
             button.id = '';
             button.classList.remove('hidden');
-            frag.appendChild(button);
             button.innerHTML = job[1].buttonText;
+
+            button.addEventListener('click', () => {
+               this.showView(job[0] + '-section');
+            })
+
+            frag.appendChild(button);
          }
          getElement('job-button-container').appendChild(frag);
       },
+      createJobViews: function() {
+         // For each of the jobs, create a new view
+         for (const job of Object.entries(loremCorpData.jobs)) {
+            if (job[0] === this.job) break;
+            console.log(job);
+
+            const jobView = getElement('job-view-template').cloneNode(true);
+            jobView.id = job[0] + '-section';
+            document.querySelector('.content-container').appendChild(jobView);
+
+            for (const text of jobView.querySelectorAll('.job-name')) {
+               text.innerHTML = job[1].buttonText;
+            }
+            for (const text of jobView.querySelectorAll('.job-name-p')) {
+               text.innerHTML = job[1].displayText;
+            }
+
+            // Update the costs
+            for (const cost of Object.entries(job[1].cost)) {
+               const nameObj = document.createElement('p');
+               nameObj.innerHTML = hf.capitalize(cost[0]);
+
+               jobView.querySelector('.cost-container').querySelector('.left-column').appendChild(nameObj);
+
+               const costObj = document.createElement('p');
+               costObj.innerHTML = cost[1];
+
+               jobView.querySelector('.cost-container').querySelector('.right-column').appendChild(costObj);
+            }
+         }
+      },
       set job(newJob) {
          this.job_internal = newJob;
+         const jobData = loremCorpData.jobs[newJob];
 
-         getElement('welcome').innerHTML = loremCorpData.jobs[newJob].welcomeText;
+         getElement('welcome').innerHTML = jobData.welcomeText;
+
+         // Create job views (e.g. intern)
+         this.createJobViews();
 
          // Update buttons
          this.updateJobButtons();
 
-         getElement('job-position').innerHTML = 'Position: ' + loremCorpData.jobs[newJob].displayText;
+         // Update the summary on the left
+         getElement('job-position').innerHTML = 'Position: ' + jobData.displayText;
+         getElement('job-salary').innerHTML = 'Salary: ' + jobData.salary;
+
+         // Update the home text
+         let nextJob = ' ' + Object.values(loremCorpData.jobs)[this.jobIdx + 1].displayText;
+         let currentJob = ' ' + jobData.displayText;
+         // change 'a' to 'an' when applicable
+         const vowels = ['a', 'e', 'i', 'o', 'u'];
+         if (vowels.indexOf(nextJob.split('')[1].toLowerCase()) !== -1) {
+            nextJob = 'n' + nextJob;
+         }
+         if (vowels.indexOf(currentJob.split('')[1].toLowerCase()) !== -1) {
+            currentJob = 'n' + currentJob;
+         }
+         getElement('job-status').querySelector('.change').innerHTML = `You are currently a${currentJob}. Your next position is a${nextJob}.`;
       },
       get job() {
          return this.job_internal;
@@ -216,9 +303,9 @@ const Game = {
 
    checkLoremLetters: () => {
       if (Game.loremCount >= 3) receiveLetter('motivationalLetter');
-      if (Game.loremCount >= 6) receiveLetter('rumors');
       if (Game.loremCount >= 8) receiveLetter('invitation');
-      if (Game.loremCount >= 30) receiveLetter('promotion');
+      if (Game.loremCount >= 15) receiveLetter('rumors');
+      if (Game.loremCount >= 20) receiveLetter('promotion');
    },
 
    loremPerWrite: 0.05,
@@ -632,9 +719,11 @@ function updateLoremCounter(add) {
 
 const views = ['computer', "about", 'black-market', 'corporate-overview'];
 const viewEvents = {
-   about: function() {
-      getElement('nav-about').classList.remove('new-mail');
-   }
+   about: {
+      open: function() {
+         getElement('nav-about').classList.remove('new-mail');
+      },
+   },
 }
 function setupNavBar() {
    // Make buttons change the screen on click.
@@ -658,14 +747,21 @@ function switchView(view) {
    getElement(`nav-${view}`).classList.add("selected");
    getElement(view).classList.remove("hidden");
    // Run any functions specific to that view.
-   if (viewEvents[view] !== undefined) {
-      viewEvents[view]();
+   const newViewName = view.replace('-', '');
+   if (viewEvents[newViewName] !== undefined && viewEvents[newViewName].open !== undefined) {
+      viewEvents[newViewName].open();
    }
    // Hide all views but the one being shown.
    views.forEach(item => {
-      if (item != view) {
+      if (item !== view) {
          getElement(`nav-${item}`).classList.remove('selected');
          getElement(item).classList.add('hidden');
+
+         // Run any close effects
+         const viewName = item.replace('-', '');
+         if (viewEvents[viewName] !== undefined && viewEvents[viewName].close !== undefined) {
+            viewEvents[viewName].close();
+         }
       }
    });
 }

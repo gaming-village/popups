@@ -45,14 +45,6 @@
    border-left-color: #888;
    display: table;
 }
-#salary-format {
-   padding-right: 1.5rem !important;
-}
-#corporate-overview .left-bar span {
-   position: absolute;
-   margin-top: -5px;
-   margin-left: 5px;
-}
 #corporate-overview .right-bar {
    width: calc(100% - clamp(15%, 15rem, 30%) - 2px);
    height: calc(100% - 2px);
@@ -62,8 +54,66 @@
    float: right;
    position: relative;
 }
-#welcome {
+.right-bar .content-container {
    max-width: 50%;
+   height: 100%;
+   position: absolute;
+   left: 50%;
+   top: 0;
+   transform: translateX(-50%);
+   overflow-y: scroll;
+   overflow-x: visible;
+}
+#corporate-overview .section {
+   background-color: #ccc;
+   border: 2px solid;
+   border-top-color: #fff;
+   border-right-color: #000;
+   border-bottom-color: #000;
+   border-left-color: #fff;
+   padding: 0.3rem;
+   margin-bottom: 1rem;
+   box-shadow: 2px 2px 0 0 #000;
+}
+#corporate-overview .first-section {
+   margin-top: 5rem;
+}
+#corporate-overview .section h1 {
+   color: #fff;
+   text-align: center;
+   font-size: 1.5rem;
+   background-color: #777;
+   margin: 0;
+}
+#corporate-overview .section h2 {
+   font-size: 1.2rem;
+   text-decoration: underline;
+   margin: 0.4rem 0;
+}
+.section :is(.left-column, .right-column) {
+   width: 50%;
+   display: inline-block;
+}
+.section :is(.left-column, .right-column) p {
+   margin: 0;
+}
+.section .left-column {
+   float: left;
+}
+.section .right-column {
+   float: right;
+}
+.section h3 {
+   text-align: center;
+   text-decoration: underline;
+   margin: 0;
+}
+.section .xp-button {
+   margin: 0.3rem 0 0;
+   float: right;
+}
+
+#corporate-lorem-count {
    background-color: #ccc;
    border: 2px solid;
    border-top-color: #fff;
@@ -72,14 +122,18 @@
    border-left-color: #fff;
    padding: 0.3rem;
    position: absolute;
-   left: 50%;
-   top: 25%;
-   transform: translate(-50%, -50%);
+   bottom: 5rem;
+   right: 5rem;
+   box-shadow: 2px 2px 0 0 #000;
 }
-#welcome h1 {
+#corporate-lorem-count h3 {
    color: #fff;
-   text-align: center;
    font-size: 1.5rem;
    background-color: #777;
+   padding: 0 0.5rem;
    margin: 0;
+}
+#corporate-lorem-count p {
+   font-size: 1.1rem;
+   margin: 0.3rem 0 0;
 }

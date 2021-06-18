@@ -59,7 +59,7 @@ const data = {
         name: "chunky",
         stats: {
             description: "The Lord, precursor of His peoples.",
-            special: "",
+            special: 'Becomes enraged when closed too many times - appeasement is required.',
             points: 0,
             redisplayTime: 60000,
             cost: 10
@@ -95,7 +95,7 @@ const data = {
         name: "annual-survey",
         stats: {
             description: "The survey is cold. Unfeeling. It does not care for your input. It cares only for hard, efficient autonomy.",
-            special: "Creates 3-8 error popups when submitted.",
+            special: "Creates 4-8 error popups when submitted.",
             points: {
                 min: 4,
                 max: 8
@@ -366,9 +366,19 @@ const messages = {
       from: 'Lorem Corp',
       content: `<p>Greetings Employee.</p>
       <p>It is Lorem Corp's pleasure to announce that you have been promoted from an Employee to a Lorem Technician.</p>
-      <p>Your annual salary has been increased from $1 to $15.
-      <p>You will now receive a new tab in which to manage your Lorem workflow.</p>
+      <p>Your annual salary has been increased from $0 to $15.
       <p>- Lorem Corp.</p>`,
+      rewards: {
+         type: 'box',
+         text: 'Promotion',
+         img: "images/warning-icon.png",
+         opened: false,
+         reward: () => {
+            Game.loremCorp.job = 'employee';
+            console.trace();
+            updateMiscCookie();
+         }
+      },
       received: false,
       opened: false,
       reference: 6
@@ -524,28 +534,88 @@ const loremCorpData = {
          <p>To rise up the Heirarchy, you must mine more lorem.</p>
          <p>Good luck.</p>`,
          displayText: 'Intern',
-         buttonText: 'Interns'
+         salary: '<span>🤣</span>',
+         buttonText: 'Interns',
+
+         cost: {
+            lorem: 10,
+            workforce: 1
+         },
+
+         upgrades: {
+            
+         }
       },
       employee: {
+         welcomeText: `<h1>Welcome</h1>
+         <p>Greetings worker.</p>
+         <p>As an employee, you have access to command your lesser Interns.</p>
+         <p>As seen on the left-most tab, you are able to command their work by clicking on the 'Intern' button.</p>`,
          displayText: 'Employee',
-         buttonText: 'Employees'
+         salary: '$15',
+         buttonText: 'Employees',
+
+         cost: {
+            lorem: 140,
+            workforce: 3
+         },
+
+         upgrades: {
+            
+         }
       },
       manager: {
          displayText: 'Manager',
-         buttonText: 'Managers'
+         buttonText: 'Managers',
+
+         cost: {
+            lorem: 610,
+            workforce: 1
+         },
+
+         upgrades: {
+            
+         }
       },
       supervisor: {
          displayText: 'Supervisor',
-         buttonText: 'Supervisors'
+         buttonText: 'Supervisors',
+
+         cost: {
+            lorem: 2300,
+            workforce: 1
+         },
+
+         upgrades: {
+            
+         }
       },
       executive: {
          displayText: 'Executive',
-         buttonText: 'Executives'
+         buttonText: 'Executives',
+
+         cost: {
+            lorem: 7310,
+            workforce: 1
+         },
+
+         upgrades: {
+            
+         }
       },
       CEO: {
          displayText: 'CEO',
          welcomeText: `ceo of cring`,
-         buttonText: 'CEOs'
+         buttonText: 'CEOs',
+
+         cost: {
+            lorem: 31600,
+            workforce: 1
+         },
+
+         upgrades: {
+            
+         }
       }
    }
 }

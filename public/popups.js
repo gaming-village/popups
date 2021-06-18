@@ -281,7 +281,7 @@ class RainText {
       this.displayObj = document.createElement("div");
       getElement("computer").appendChild(this.displayObj);
       this.displayObj.classList.add("letter");
-      this.displayObj.style.left = Math.random() * 100 + "vw";
+      this.displayObj.style.left = Math.random() * 100 + 'vw';
       const letterCharacters = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")"];
       this.displayObj.innerHTML = letterCharacters[randomInt(0, letterCharacters.length)];
       popups.rain.letters.push(this);
