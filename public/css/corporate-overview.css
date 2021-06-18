@@ -55,14 +55,20 @@
    position: relative;
 }
 .right-bar .content-container {
-   max-width: 50%;
+   width: 100%;
    height: 100%;
    position: absolute;
-   left: 50%;
+   left: 0;
    top: 0;
-   transform: translateX(-50%);
    overflow-y: scroll;
-   overflow-x: visible;
+   overflow-x: hidden;
+}
+.right-bar .section-container {
+   max-width: 50%;
+   position: absolute;
+   top: 0;
+   left: 50%;
+   transform: translateX(-50%);
 }
 #corporate-overview .section {
    background-color: #ccc;

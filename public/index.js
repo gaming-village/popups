@@ -175,7 +175,6 @@ const Game = {
             setCookie("lorem", 0, 31);
          } else {
             Game.loremCount = parseFloat(loremCookie);
-            // displayPoints(Game.loremCount);
          }
       }, 
       setupPackets: () => {
@@ -680,6 +679,8 @@ function displayPoints(add) {
 
    getElement("pointCounter").innerHTML = loremCount;
    getElement("pointCounterContainer").classList.remove("hidden");
+
+   getElement('corporate-lorem-count').querySelector('p').innerHTML = loremCount;
 
    getElement("lorem-count").innerHTML = loremCount;
    updateLoremCounter(add);
