@@ -143,3 +143,8 @@
    font-size: 1.1rem;
    margin: 0.3rem 0 0;
 }
+#job-status .progress-bar-container {
+   width: 70%;
+   margin-left: 50%;
+   transform: translateX(-50%);
+}

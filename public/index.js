@@ -8,11 +8,43 @@ const Game = {
       corporateOverview: {
          unlocked: false
       },
+      setup: function() {
+         for (const worker of Object.entries(loremCorpData.jobs)) {
+            const name = worker[0];
+            const workerCount = getCookie(name);
+            
+            if (workerCount == '') {
+               // If the worker is not stored
+               setCookie(name, 0);
+            } else {
+               // If the worker is stored, update its value in the obj
+               this.workers[name] = parseInt(workerCount);
+            }
+         }
+      },
+      workers: {},
+      getNewWorkerCost: function(workerName, n) {
+         // $ = b * 1.1^(n-1) + (b/10 * (n-1))
+         // Gets the cost of the n-th worker
+         const baseCost = loremCorpData.jobs[workerName].cost.lorem;
+         const cost = baseCost * Math.pow(1.1, n - 1) + baseCost / 10 * (n - 1);
+         return cost;
+      },
+      updateWorkers: function(workerName = 'none') {
+         if (workerName === 'none') {
+            // Update all values
+            for (const worker of Object.entries(this.workers)) {
+               setCookie(worker[0], worker[1]);
+            }
+         } else {
+            // Only update supplied worker
+            setCookie(workerName, this.workers[workerName]);
+         }
+      },
       unlockCorporateOverview: function() {
          getElement('corporate-overview').classList.remove('hidden')
          Game.loremCorp.corporateOverview.unlocked = true;
       },
-      interns: 0,
       job_internal: 'intern',
       get jobIdx() {
          let jobIndex = -1;
@@ -90,10 +122,30 @@ const Game = {
                jobView.querySelector('.cost-container').querySelector('.left-column').appendChild(nameObj);
 
                const costObj = document.createElement('p');
+               costObj.classList.add(cost[0] + '-cost');
                costObj.innerHTML = cost[1];
 
                jobView.querySelector('.cost-container').querySelector('.right-column').appendChild(costObj);
             }
+
+            // Buy button functionality
+            jobView.querySelector('.buy-button').addEventListener('click', () => {
+               const currentWorkerCount = this.workers[job[0]];
+               console.log(currentWorkerCount);
+               const cost = this.getNewWorkerCost(job[0], currentWorkerCount + 1);
+               console.log(cost);
+
+               if (Game.loremCount >= cost) {
+                  this.workers[job[0]] += 1;
+                  Game.addLorem(-cost);
+
+                  // Update the data
+                  const nextCost = formatFloat(this.getNewWorkerCost(job[0], currentWorkerCount + 2));
+
+                  jobView.querySelector('.lorem-cost').innerHTML = nextCost;
+                  jobView.querySelector('.worker-count').innerHTML = currentWorkerCount + 1;
+               }
+            });
          }
       },
       set job(newJob) {
@@ -837,6 +889,9 @@ window.onload = () => {
 
    // File system setup
    // fileSystem.startApplications();
+
+   // Lorem corp setup
+   Game.loremCorp.setup();
 }
 
 function changeViewHeights() {
