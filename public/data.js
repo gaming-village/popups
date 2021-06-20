@@ -536,6 +536,9 @@ const loremCorpData = {
          displayText: 'Intern',
          salary: '<span>🤣</span>',
          buttonText: 'Interns',
+         stats: {
+            loremProduction: 1
+         },
          cost: {
             lorem: 10,
             workforce: 1
@@ -552,6 +555,9 @@ const loremCorpData = {
          displayText: 'Employee',
          salary: '$15',
          buttonText: 'Employees',
+         stats: {
+            loremProduction: 10
+         },
          cost: {
             lorem: 140,
             workforce: 3
@@ -563,6 +569,9 @@ const loremCorpData = {
       manager: {
          displayText: 'Manager',
          buttonText: 'Managers',
+         stats: {
+            loremProduction: 100
+         },
          cost: {
             lorem: 610,
             workforce: 1
@@ -574,6 +583,9 @@ const loremCorpData = {
       supervisor: {
          displayText: 'Supervisor',
          buttonText: 'Supervisors',
+         stats: {
+            loremProduction: 1000
+         },
          cost: {
             lorem: 2300,
             workforce: 1
@@ -585,6 +597,9 @@ const loremCorpData = {
       executive: {
          displayText: 'Executive',
          buttonText: 'Executives',
+         stats: {
+            loremProduction: 10000
+         },
          cost: {
             lorem: 7310,
             workforce: 1
@@ -597,6 +612,9 @@ const loremCorpData = {
          displayText: 'CEO',
          welcomeText: `ceo of cring`,
          buttonText: 'CEOs',
+         stats: {
+            loremProduction: 100000
+         },
          cost: {
             lorem: 31600,
             workforce: 1

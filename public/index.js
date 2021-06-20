@@ -30,7 +30,7 @@ const Game = {
          const cost = baseCost * Math.pow(1.1, n - 1) + baseCost / 10 * (n - 1);
          return cost;
       },
-      updateWorkers: function(workerName = 'none') {
+      updateWorkerData: function(workerName = 'none') {
          if (workerName === 'none') {
             // Update all values
             for (const worker of Object.entries(this.workers)) {
@@ -57,8 +57,11 @@ const Game = {
          });
          return jobIndex;
       },
-      showView: function(viewID) {
-         console.log('a');
+      showView: function(viewID, button) {
+         // Remove all selected button styles
+         const selectedButton = document.querySelector('#job-button-container .xp-button.selected');
+         if (selectedButton != undefined) selectedButton.classList.remove('selected');
+         console.log(button);
          const view = getElement(viewID);
          if (!view.classList.contains('hidden')) {
             // If view is visible
@@ -70,6 +73,7 @@ const Game = {
             for (const container of document.querySelectorAll('.section-container')) {
                container.classList.add('hidden');
             }
+            button.classList.add('selected');
             view.classList.remove('hidden');
          }
       },
@@ -90,18 +94,27 @@ const Game = {
             button.innerHTML = job[1].buttonText;
 
             button.addEventListener('click', () => {
-               this.showView(job[0] + '-section');
+               this.showView(job[0] + '-section', button);
             })
 
             frag.appendChild(button);
          }
          getElement('job-button-container').appendChild(frag);
       },
+      updateWorkerInfo(view, job) {
+         // Overview
+         view.querySelector('.lorem-production').innerHTML = loremCorpData.jobs[job[0]].stats.loremProduction * this.workers[job[0]];
+         view.querySelector('.worker-count').innerHTML = this.workers[job[0]];
+         view.querySelector('.workforce-count').innerHTML = job[1].cost.workforce * this.workers[job[0]];
+
+         // Buy info
+         const nextCost = formatFloat(this.getNewWorkerCost(job[0], this.workers[job[0]]));
+         view.querySelector('.lorem-cost').innerHTML = nextCost;
+      },
       createJobViews: function() {
          // For each of the jobs, create a new view
          for (const job of Object.entries(loremCorpData.jobs)) {
             if (job[0] === this.job) break;
-            console.log(job);
 
             const jobView = getElement('job-view-template').cloneNode(true);
             jobView.id = job[0] + '-section';
@@ -123,27 +136,26 @@ const Game = {
 
                const costObj = document.createElement('p');
                costObj.classList.add(cost[0] + '-cost');
-               costObj.innerHTML = cost[1];
+               if (cost[0] !== 'lorem') {
+                  costObj.innerHTML = cost[1];
+               }
 
                jobView.querySelector('.cost-container').querySelector('.right-column').appendChild(costObj);
             }
 
+            this.updateWorkerInfo(jobView, job);
+
             // Buy button functionality
             jobView.querySelector('.buy-button').addEventListener('click', () => {
                const currentWorkerCount = this.workers[job[0]];
-               console.log(currentWorkerCount);
                const cost = this.getNewWorkerCost(job[0], currentWorkerCount + 1);
-               console.log(cost);
 
                if (Game.loremCount >= cost) {
                   this.workers[job[0]] += 1;
                   Game.addLorem(-cost);
 
-                  // Update the data
-                  const nextCost = formatFloat(this.getNewWorkerCost(job[0], currentWorkerCount + 2));
-
-                  jobView.querySelector('.lorem-cost').innerHTML = nextCost;
-                  jobView.querySelector('.worker-count').innerHTML = currentWorkerCount + 1;
+                  this.updateWorkerData(job[0]);
+                  this.updateWorkerInfo(jobView, job);
                }
             });
          }
@@ -889,9 +901,6 @@ window.onload = () => {
 
    // File system setup
    // fileSystem.startApplications();
-
-   // Lorem corp setup
-   Game.loremCorp.setup();
 }
 
 function changeViewHeights() {

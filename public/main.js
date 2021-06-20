@@ -119,6 +119,9 @@ function setMiscCookie() {
             Game.nextLoremQuota = loremQuotaData[quotaIndex].requirement;
             break;
          case 5:
+            // Lorem corp setup
+            Game.loremCorp.setup();
+
             const idx = parseInt(bit);
             const jobArr = Object.entries(loremCorpData.jobs);
             Game.loremCorp.job = jobArr[idx][0];
