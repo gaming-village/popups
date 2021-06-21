@@ -25,11 +25,14 @@ const Game = {
          getElement('promote-button').addEventListener('click', () => {
             if (Game.loremCount > loremCorpData.jobs[this.job].requirement) {
                // Promote
+               if (this.jobIdx + 1 >= Object.keys(loremCorpData.jobs).length) return;
                const nextJob = Object.entries(loremCorpData.jobs)[this.jobIdx + 1];
                const nextJobName = nextJob[0];
                this.job = nextJobName;
                updateMiscCookie();
                this.updatePromotionProgress();
+
+               Game.addLorem(-Game.loremCount);
 
                // Receive the promotion letter
                const letterName = nextJob[1].letterName;
@@ -199,6 +202,7 @@ const Game = {
          }
       },
       set job(newJob) {
+         console.log(newJob);
          this.job_internal = newJob;
          const jobData = loremCorpData.jobs[newJob];
 
@@ -215,17 +219,21 @@ const Game = {
          getElement('job-salary').innerHTML = 'Salary: ' + jobData.salary;
 
          // Update the home text
-         let nextJob = ' ' + Object.values(loremCorpData.jobs)[this.jobIdx + 1].displayText;
          let currentJob = ' ' + jobData.displayText;
-         // change 'a' to 'an' when applicable
-         const vowels = ['a', 'e', 'i', 'o', 'u'];
-         if (vowels.indexOf(nextJob.split('')[1].toLowerCase()) !== -1) {
-            nextJob = 'n' + nextJob;
+         if (this.jobIdx + 1 >= Object.keys(loremCorpData.jobs).length) {
+            getElement('job-status').querySelector('.change').innerHTML = `You are currently a${currentJob}. You are at the highest position currently available.`;
+         } else {
+            let nextJob = ' ' + Object.values(loremCorpData.jobs)[this.jobIdx + 1].displayText;
+            // change 'a' to 'an' when applicable
+            const vowels = ['a', 'e', 'i', 'o', 'u'];
+            if (vowels.indexOf(nextJob.split('')[1].toLowerCase()) !== -1) {
+               nextJob = 'n' + nextJob;
+            }
+            if (vowels.indexOf(currentJob.split('')[1].toLowerCase()) !== -1) {
+               currentJob = 'n' + currentJob;
+            }
+            getElement('job-status').querySelector('.change').innerHTML = `You are currently a${currentJob}. Your next position is a${nextJob}.`;
          }
-         if (vowels.indexOf(currentJob.split('')[1].toLowerCase()) !== -1) {
-            currentJob = 'n' + currentJob;
-         }
-         getElement('job-status').querySelector('.change').innerHTML = `You are currently a${currentJob}. Your next position is a${nextJob}.`;
       },
       get job() {
          return this.job_internal;

@@ -450,7 +450,7 @@ const messages = {
       title: 'Promotion',
       from: 'Lorem Corp',
       content: `<p>Greetings Supervisor.</p>
-      <p>It is Lorem Corp's pleasure to announce that you have been promoted from a Supervisor to a CEO.</p>
+      <p>It is Lorem Corp's pleasure to announce that you have been promoted from a Supervisor to an Executive.</p>
       <p>Your annual salary has been increased from $17500 to $52500.</p>
       <p>You have been given an extra 1 lorem in funding - use it wisely.</p>
       <p>- Lorem Corp.</p>`,
@@ -466,6 +466,27 @@ const messages = {
       received: false,
       opened: false,
       reference: 10
+   },
+   executivePromotion: {
+      title: 'Promotion',
+      from: 'Lorem Corp',
+      content: `<p>Greetings Supervisor.</p>
+      <p>It is Lorem Corp's pleasure to announce that you have been promoted from an Executive to a CEO.</p>
+      <p>Your annual salary has been increased from $52500 to $215000.</p>
+      <p>You have been given an extra 1 lorem in funding - use it wisely.</p>
+      <p>- Lorem Corp.</p>`,
+      rewards: {
+         type: 'box',
+         text: 'Funding',
+         img: "images/coin-icon.png",
+         opened: false,
+         reward: () => {
+            Game.addLorem(1);
+         }
+      },
+      received: false,
+      opened: false,
+      reference: 11
    }
 }
 
@@ -620,7 +641,7 @@ const loremCorpData = {
          displayText: 'Intern',
          salary: '<span>🤣</span>',
          buttonText: 'Interns',
-         requirement: 20,
+         requirement: 40,
          stats: {
             loremProduction: 1,
          },
@@ -640,13 +661,13 @@ const loremCorpData = {
          displayText: 'Employee',
          salary: '$15',
          buttonText: 'Employees',
-         requirement: 50,
+         requirement: 250,
          letterName: 'internPromotion',
          stats: {
             loremProduction: 10
          },
          cost: {
-            lorem: 140,
+            lorem: 250,
             workforce: 3
          },
          upgrades: {
@@ -655,15 +676,16 @@ const loremCorpData = {
       },
       technician: {
          displayText: 'Technician',
+         salary: '$200',
          buttonText: 'Technicians',
-         requirement: 250,
+         requirement: 1000,
          letterName: 'employeePromotion',
          stats: {
-            loremProduction: 100
+            loremProduction: 50
          },
          cost: {
-            lorem: 610,
-            workforce: 1
+            lorem: 1000,
+            workforce: 5
          },
          upgrades: {
             
@@ -671,15 +693,16 @@ const loremCorpData = {
       },
       manager: {
          displayText: 'Manager',
+         salary: '$2500',
          buttonText: 'Managers',
-         requirement: 500,
+         requirement: 5000,
          letterName: 'technicianPromotion',
          stats: {
-            loremProduction: 200
+            loremProduction: 250
          },
          cost: {
-            lorem: 1000,
-            workforce: 1
+            lorem: 5000,
+            workforce: 10
          },
          upgrades: {
             
@@ -687,15 +710,16 @@ const loremCorpData = {
       },
       supervisor: {
          displayText: 'Supervisor',
+         salary: '$17500',
          buttonText: 'Supervisors',
-         requirement: 1000,
+         requirement: 30000,
          letterName: 'managerPromotion',
          stats: {
             loremProduction: 1000
          },
          cost: {
-            lorem: 2300,
-            workforce: 1
+            lorem: 30000,
+            workforce: 15
          },
          upgrades: {
             
@@ -703,15 +727,16 @@ const loremCorpData = {
       },
       executive: {
          displayText: 'Executive',
+         salary: '$52500',
          buttonText: 'Executives',
-         requirement: 2500,
+         requirement: 100000,
          letterName: 'supervisorPromotion',
          stats: {
-            loremProduction: 10000
+            loremProduction: 4000
          },
          cost: {
-            lorem: 7310,
-            workforce: 1
+            lorem: 100000,
+            workforce: 25
          },
          upgrades: {
             
@@ -719,16 +744,17 @@ const loremCorpData = {
       },
       CEO: {
          displayText: 'CEO',
+         salary: '$215000',
          welcomeText: `ceo of cring`,
          buttonText: 'CEOs',
-         requirement: 10000,
+         requirement: 250000,
          letterName: 'executivePromotion',
          stats: {
-            loremProduction: 100000
+            loremProduction: 10000
          },
          cost: {
-            lorem: 31600,
-            workforce: 1
+            lorem: 250000,
+            workforce: 40
          },
          upgrades: {
             
