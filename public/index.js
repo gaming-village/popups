@@ -55,14 +55,10 @@ const Game = {
          // Update the progress bar and text
          const req = loremCorpData.jobs[this.job].requirement;
          const progress = Game.loremCount / req * 100;
-
-         // If ready to promote
-         if (progress >= 100) {
-
-         }
          
-         getElement('job-status').querySelector('.progress-bar').style.width = progress + '%';
          getElement('job-status').querySelector('h2.center').innerHTML = formatFloat(progress) + '%';
+         const displayProgress = progress <= 100 ? progress : 100;
+         getElement('job-status').querySelector('.progress-bar').style.width = displayProgress + '%';
       },
       workers: {},
       getNewWorkerCost: function(workerName, n) {
@@ -707,8 +703,6 @@ class LoremQuota {
    setupQuota() {
       this.displayObj.querySelector('h3').innerHTML = `${formatFloat(this.quota)} lorem`;
       this.updateRewards();
-
-      const alertBox = new AlertBox('Quota reached!', 'Go to the Corporate Overview to claim your reward!');
    }
    setQuotaProgress() {
       let progress = Game.loremCount / this.quota * 100;
@@ -732,6 +726,7 @@ class LoremQuota {
       }, 300);
 
       this.setupQuota();
+      const alertBox = new AlertBox('Quota reached!', 'Go to the Corporate Overview to claim your reward!');
    }
 }
 

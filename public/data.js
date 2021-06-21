@@ -389,7 +389,7 @@ const messages = {
       content: `<p>Greetings Employee.</p>
       <p>It is Lorem Corp's pleasure to announce that you have been promoted from an Employee to a Lorem Technician.</p>
       <p>Your annual salary has been increased from $15 to $200.</p>
-      <p>You have been given an extra 100 lorem in funding - use it wisely.</p>
+      <p>You have been given an extra 1 lorem in funding - use it wisely.</p>
       <p>- Lorem Corp.</p>`,
       rewards: {
          type: 'box',
@@ -397,12 +397,75 @@ const messages = {
          img: "images/coin-icon.png",
          opened: false,
          reward: () => {
-            Game.addLorem(100);
+            Game.addLorem(1);
          }
       },
       received: false,
       opened: false,
       reference: 7
+   },
+   technicianPromotion: {
+      title: 'Promotion',
+      from: 'Lorem Corp',
+      content: `<p>Greetings Technician.</p>
+      <p>It is Lorem Corp's pleasure to announce that you have been promoted from a Lorem Technician to a Manager.</p>
+      <p>Your annual salary has been increased from $200 to $2500.</p>
+      <p>You have been given an extra 1 lorem in funding - use it wisely.</p>
+      <p>- Lorem Corp.</p>`,
+      rewards: {
+         type: 'box',
+         text: 'Funding',
+         img: "images/coin-icon.png",
+         opened: false,
+         reward: () => {
+            Game.addLorem(1);
+         }
+      },
+      received: false,
+      opened: false,
+      reference: 8
+   },
+   managerPromotion: {
+      title: 'Promotion',
+      from: 'Lorem Corp',
+      content: `<p>Greetings Manager.</p>
+      <p>It is Lorem Corp's pleasure to announce that you have been promoted from a Manager to a Supervisor.</p>
+      <p>Your annual salary has been increased from $2500 to $17500.</p>
+      <p>You have been given an extra 1 lorem in funding - use it wisely.</p>
+      <p>- Lorem Corp.</p>`,
+      rewards: {
+         type: 'box',
+         text: 'Funding',
+         img: "images/coin-icon.png",
+         opened: false,
+         reward: () => {
+            Game.addLorem(1);
+         }
+      },
+      received: false,
+      opened: false,
+      reference: 9
+   },
+   supervisorPromotion: {
+      title: 'Promotion',
+      from: 'Lorem Corp',
+      content: `<p>Greetings Supervisor.</p>
+      <p>It is Lorem Corp's pleasure to announce that you have been promoted from a Supervisor to a CEO.</p>
+      <p>Your annual salary has been increased from $17500 to $52500.</p>
+      <p>You have been given an extra 1 lorem in funding - use it wisely.</p>
+      <p>- Lorem Corp.</p>`,
+      rewards: {
+         type: 'box',
+         text: 'Funding',
+         img: "images/coin-icon.png",
+         opened: false,
+         reward: () => {
+            Game.addLorem(1);
+         }
+      },
+      received: false,
+      opened: false,
+      reference: 10
    }
 }
 
