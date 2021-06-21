@@ -4,7 +4,19 @@ const applications = {};
 
 const Game = {
    loremCorp: {
-      changeProgressInterval: null,
+      setWorkerGainInterval: function() {
+         const ms = 500;
+         setInterval(() => {
+            if (this.workers === {}) return;
+   
+            let loremGain = 0;
+            for (const worker of Object.entries(loremCorpData.jobs)) {
+               const workerCount = this.workers[worker[0]];
+               loremGain += worker[1].stats.loremProduction * workerCount / (1000 / ms);
+            }
+            Game.addLorem(loremGain);
+         }, ms);
+      },
       corporateOverview: {
          unlocked: false
       },
@@ -876,7 +888,6 @@ window.onload = () => {
    Game.setup.setupLorem();
 
    // Setup the lorem quota
-   // Game.updateQuotaFactor();
    Game.loremQuota = new LoremQuota(Game.nextLoremQuota);
 
    // Unlock lorem quota. (Has to be done after LoadData because loremQuota doesn't exist until then)
@@ -926,6 +937,9 @@ window.onload = () => {
 
    // File system setup
    // fileSystem.startApplications();
+
+   // Set the workers to make lorem
+   Game.loremCorp.setWorkerGainInterval();
 }
 
 function changeViewHeights() {
