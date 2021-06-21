@@ -299,7 +299,8 @@ const messages = {
       title: "A Friendly Introduction",
       from: "Lorem Corp",
       content: `<p>Greetings employee.</p>
-      <p>If you have received this letter, you have been successfully integrated into Lorem Corp. You will go to the Generator and begin mining. You will do so until you are told to stop.</p>
+      <p>If you have received this letter, you have been successfully integrated into Lorem Corp. You will go to the Generator and begin mining.</p>
+      <p>If you wish to see your position in the company, see the Corporate Overview tab.</p>
       <p>- Lorem Corp</p>`,
       received: false,
       opened: false,
