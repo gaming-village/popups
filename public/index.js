@@ -1209,7 +1209,7 @@ function receiveLetter(letterName) {
 }
 function newLetterAlert(letter) {
    getElement('nav-about').classList.add('new-mail');
-   const alertBox = new AlertBox("New letter received!", letter.title);
+   const alertBox = new AlertBox('New letter received!', letter.title);
    // Remove the close button.
    const letterAlert = alertBox.displayObj;
    letterAlert.querySelector('img').remove();
@@ -1218,7 +1218,10 @@ function newLetterAlert(letter) {
    letterAlert.addEventListener('click', () => {
       switchView('about');
       showInbox();
-      letterAlert.remove();
+      
+      for (const alert of document.querySelectorAll('.letter-alert')) {
+         alert.remove();
+      }
    });
 }
 
