@@ -121,6 +121,7 @@ function setMiscCookie() {
          case 5:
             // Lorem corp setup
             Game.loremCorp.setup();
+            console.log(bit);
 
             const idx = parseInt(bit);
             const jobArr = Object.entries(loremCorpData.jobs);

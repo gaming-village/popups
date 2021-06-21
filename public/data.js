@@ -361,22 +361,21 @@ const messages = {
       opened: false,
       reference: 5
    },
-   promotion: {
+   internPromotion: {
       title: 'Promotion',
       from: 'Lorem Corp',
       content: `<p>Greetings Employee.</p>
       <p>It is Lorem Corp's pleasure to announce that you have been promoted from an Employee to a Lorem Technician.</p>
-      <p>Your annual salary has been increased from $0 to $15.
+      <p>Your annual salary has been increased from $0 to $15.</p>
+      <p>You have been given an extra 10 lorem in funding to perhaps acquire an intern in the Corporate Overview tab.</p>
       <p>- Lorem Corp.</p>`,
       rewards: {
          type: 'box',
-         text: 'Promotion',
-         img: "images/warning-icon.png",
+         text: 'Funding',
+         img: "images/coin-icon.png",
          opened: false,
          reward: () => {
-            Game.loremCorp.job = 'employee';
-            console.trace();
-            updateMiscCookie();
+            Game.addLorem(10);
          }
       },
       received: false,
@@ -536,7 +535,7 @@ const loremCorpData = {
          displayText: 'Intern',
          salary: '<span>🤣</span>',
          buttonText: 'Interns',
-         requirement: 50,
+         requirement: 20,
          stats: {
             loremProduction: 1,
          },
@@ -557,6 +556,7 @@ const loremCorpData = {
          salary: '$15',
          buttonText: 'Employees',
          requirement: 50,
+         letterName: 'internPromotion',
          stats: {
             loremProduction: 10
          },

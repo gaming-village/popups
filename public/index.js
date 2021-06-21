@@ -9,6 +9,22 @@ const Game = {
          unlocked: false
       },
       setup: function() {
+         // Setup the promote button
+         getElement('promote-button').addEventListener('click', () => {
+            if (Game.loremCount > loremCorpData.jobs[this.job].requirement) {
+               // Promote
+               const nextJob = Object.entries(loremCorpData.jobs)[this.jobIdx + 1];
+               const nextJobName = nextJob[0];
+               this.job = nextJobName;
+               updateMiscCookie();
+               this.updatePromotionProgress();
+
+               // Receive the promotion letter
+               const letterName = nextJob[1].letterName;
+               receiveLetter(letterName);
+            }
+         });
+
          for (const worker of Object.entries(loremCorpData.jobs)) {
             const name = worker[0];
             const workerCount = getCookie(name);
@@ -24,7 +40,7 @@ const Game = {
       },
       updatePromotionProgress: function() {
          // Update the progress bar and text
-         const req = loremCorpData.jobs[this.job_internal].requirement;
+         const req = loremCorpData.jobs[this.job].requirement;
          const progress = Game.loremCount / req * 100;
 
          // If ready to promote
@@ -381,7 +397,6 @@ const Game = {
       if (Game.loremCount >= 3) receiveLetter('motivationalLetter');
       if (Game.loremCount >= 8) receiveLetter('invitation');
       if (Game.loremCount >= 15) receiveLetter('rumors');
-      if (Game.loremCount >= 20) receiveLetter('promotion');
    },
 
    loremPerWrite: 0.05,
