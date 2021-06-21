@@ -7,9 +7,10 @@ const Game = {
       setWorkerGainInterval: function() {
          const ms = 500;
          setInterval(() => {
-            if (this.workers === {}) return;
+            if (this.workers.intern <= 0) return;
    
             let loremGain = 0;
+            console.log(this.workers);
             for (const worker of Object.entries(loremCorpData.jobs)) {
                const workerCount = this.workers[worker[0]];
                loremGain += worker[1].stats.loremProduction * workerCount / (1000 / ms);
@@ -38,12 +39,16 @@ const Game = {
          });
 
          for (const worker of Object.entries(loremCorpData.jobs)) {
+            console.log(worker);
             const name = worker[0];
+            console.log(name);
             const workerCount = getCookie(name);
+            console.log(workerCount);
             
             if (workerCount == '') {
                // If the worker is not stored
                setCookie(name, 0);
+               this.workers[name] = 0;
             } else {
                // If the worker is stored, update its value in the obj
                this.workers[name] = parseInt(workerCount);
