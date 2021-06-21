@@ -10,7 +10,6 @@ const Game = {
             if (this.workers.intern <= 0) return;
    
             let loremGain = 0;
-            console.log(this.workers);
             for (const worker of Object.entries(loremCorpData.jobs)) {
                const workerCount = this.workers[worker[0]];
                loremGain += worker[1].stats.loremProduction * workerCount / (1000 / ms);
@@ -39,11 +38,8 @@ const Game = {
          });
 
          for (const worker of Object.entries(loremCorpData.jobs)) {
-            console.log(worker);
             const name = worker[0];
-            console.log(name);
             const workerCount = getCookie(name);
-            console.log(workerCount);
             
             if (workerCount == '') {
                // If the worker is not stored
@@ -695,15 +691,14 @@ class LoremQuota {
 
       this.setupQuota();
       this.setQuotaProgress();
-
-      console.log('soadasjldasjkda');
-      console.log(this.quota);
-
+      this.updateRewards();
+   }
+   updateRewards() {
       Object.values(loremQuotaData).forEach(reward => {
          if (reward.requirement === this.quota) {
             this.updateRewardText(reward);
          }
-      })
+      });
    }
    updateRewardText(quota) {
       getElement('quota-reward-title').innerHTML = quota.rewardTitle;
@@ -711,6 +706,9 @@ class LoremQuota {
    }
    setupQuota() {
       this.displayObj.querySelector('h3').innerHTML = `${formatFloat(this.quota)} lorem`;
+      this.updateRewards();
+
+      const alertBox = new AlertBox('Quota reached!', 'Go to the Corporate Overview to claim your reward!');
    }
    setQuotaProgress() {
       let progress = Game.loremCount / this.quota * 100;

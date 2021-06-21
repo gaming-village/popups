@@ -402,7 +402,7 @@ const messages = {
       },
       received: false,
       opened: false,
-      reference: 6
+      reference: 7
    }
 }
 
@@ -478,13 +478,13 @@ dailyIndoctrinationEditions = {
 const loremQuotaData = {
    0: {
       requirement: 30,
-      rewardTitle: `Branching out`,
-      rewardText: `Hire an unpaid intern to mine for you.`
+      rewardTitle: `Touch typing`,
+      rewardText: `Gain double lorem per key stroke.`
    },
    1: {
       requirement: 100,
-      rewardTitle: `Touch typing`,
-      rewardText: `Gain double lorem per key stroke.`
+      rewardTitle: `Branching out`,
+      rewardText: `Hire an unpaid intern to mine for you.`
    },
    2: {
       requirement: 300,
