@@ -26,6 +26,11 @@ const Game = {
          // Update the progress bar and text
          const req = loremCorpData.jobs[this.job_internal].requirement;
          const progress = Game.loremCount / req * 100;
+
+         // If ready to promote
+         if (progress >= 100) {
+
+         }
          
          getElement('job-status').querySelector('.progress-bar').style.width = progress + '%';
          getElement('job-status').querySelector('h2.center').innerHTML = formatFloat(progress) + '%';
@@ -1415,8 +1420,14 @@ function dataSetup() {
    });
 
    getElement('reset-button').addEventListener('click', () => {
+      let workerCookies = Object.entries(loremCorpData.jobs);
+      workerCookies = workerCookies.map(cookie => cookie[0]);
+
       // Reset cookies when the reset button is clicked
-      const cookies = ['lorem', 'packets', 'recievedPrompts', 'openedMessages', 'openedRewards', 'receivedMessages', 'unlockedMalware', 'receivedPrompts', 'unlockedShops', 'misc'];
+      const otherCookies = ['lorem', 'packets', 'recievedPrompts', 'openedMessages', 'openedRewards', 'receivedMessages', 'unlockedMalware', 'receivedPrompts', 'unlockedShops', 'misc'];
+      console.log(otherCookies);
+      const cookies = [...workerCookies, ...otherCookies];
+      console.log(cookies);
       // Delete cookies
       cookies.forEach(cookie => document.cookie = cookie +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;');
       // Reload the page
