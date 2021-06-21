@@ -22,6 +22,14 @@ const Game = {
             }
          }
       },
+      updatePromotionProgress: function() {
+         // Update the progress bar and text
+         const req = loremCorpData.jobs[this.job_internal].requirement;
+         const progress = Game.loremCount / req * 100;
+         
+         getElement('job-status').querySelector('.progress-bar').style.width = progress + '%';
+         getElement('job-status').querySelector('h2.center').innerHTML = formatFloat(progress) + '%';
+      },
       workers: {},
       getNewWorkerCost: function(workerName, n) {
          // $ = b * 1.1^(n-1) + (b/10 * (n-1))
@@ -737,23 +745,20 @@ function instantiateClasses() {
 }
 
 function displayPoints(add) {
-   getElement("total-lorem-mined").innerHTML = formatFloat(Game.stats.totalLoremMined);
-
    const loremCount = formatFloat(Game.loremCount);
-
-   getElement("pointCounter").innerHTML = loremCount;
-   getElement("pointCounterContainer").classList.remove("hidden");
+   
+   // Update all listed element's text using their ID's
+   const loremElements = ['total-lorem-mined', 'pointCounter', 'lorem-count', 'black-market-lorem-transfer-amount'];
+   for (const elemID of loremElements) {
+      getElement(elemID).innerHTML = loremCount;
+   }
 
    getElement('corporate-lorem-count').querySelector('p').innerHTML = loremCount;
-
-   getElement("lorem-count").innerHTML = loremCount;
+   getElement('packet-transfer-amount').innerHTML = formatFloat(Game.loremCount * Game.transferRate);
+   
    updateLoremCounter(add);
-
-   getElement("black-market-lorem-transfer-amount").innerHTML = loremCount;
-
-   getElement("packet-transfer-amount").innerHTML = formatFloat(Game.loremCount * Game.transferRate);
-
    Game.loremQuota.setQuotaProgress();
+   Game.loremCorp.updatePromotionProgress();
 }
 
 function updateLoremCounter(add) {
