@@ -37,10 +37,10 @@ const Game = {
       },
       workers: {},
       getNewWorkerCost: function(workerName, n) {
-         // $ = b * 1.1^(n-1) + (b/10 * (n-1))
+         // $ = b * 1.1^n + (b/10 * n)
          // Gets the cost of the n-th worker
          const baseCost = loremCorpData.jobs[workerName].cost.lorem;
-         const cost = baseCost * Math.pow(1.1, n - 1) + baseCost / 10 * (n - 1);
+         const cost = baseCost * Math.pow(1.1, n) + baseCost / 10 * n;
          return cost;
       },
       updateWorkerData: function(workerName = 'none') {

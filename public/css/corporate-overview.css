@@ -41,21 +41,21 @@
    border-left-color: #d6d6d6;
    border-bottom-color: #444;
    border-right-color: #444;
-   background-color: #aaa;
+   background-color: #b5b5b5;
 }
 #corporate-overview .left-bar li.xp-button:not(.selected):hover {
    border-top-color: #dedede;
    border-left-color: #dedede;
    border-bottom-color: #555;
    border-right-color: #555;
-   background-color: #afafaf;
+   background-color: #bababa;
 }
 #corporate-overview .left-bar li.xp-button:not(.selected):active {
    border-top-color: #d0d0d0;
    border-left-color: #d0d0d0;
    border-bottom-color: #444;
    border-right-color: #444;
-   background-color: #9a9a9a;
+   background-color: #b0b0b0;
 }
 #corporate-overview .left-bar li:not(.xp-button) {
    padding: 0 0.2rem;
@@ -136,9 +136,13 @@
    text-decoration: underline;
    margin: 0;
 }
-.section .xp-button {
+.section:not(#job-status) .xp-button {
    margin: 0.3rem 0 0;
    float: right;
+}
+#job-status .xp-button {
+   margin: 0.5rem 0 0 50%;
+   transform: translateX(-50%);
 }
 
 #corporate-lorem-count {
