@@ -307,12 +307,6 @@ html, body {
    width: 100%;
    position: relative;
 }
-#computer {
-   background-image: url(images/xp-background.jpeg);
-   background-size: cover;
-   background-repeat: no-repeat;
-   background-position: center center;
-}
 
 #alert-container {
    position: absolute;
@@ -362,10 +356,6 @@ html, body {
    width: 24px;
    margin-right: 5px;
    float: left;
-}
-
-.inline-block {
-   display: inline-block;
 }
 
 #pointCounterContainer {
@@ -472,7 +462,7 @@ div#changelog {
    cursor: pointer;
 }
 
-/* Devtools */
+/***** DEVTOOLS *****/
 #devtools {
    left: 25%;
    top: 10%;
@@ -493,8 +483,16 @@ div#changelog {
    cursor: pointer;
 }
 
-.xp-button {
-   font: 400 1rem "Windows";
+/***** BUTTONS *****/
+.button {
+   font: 400 1rem 'Windows';
+   margin: 0.5rem 0;
+   user-select: none;
+   cursor: pointer;
+   white-space: nowrap;
+   display: table;
+}
+.ct-xp .button {
    background-color: #ccc;
    background-image: none;
    padding: 0.1rem 0.3rem;
@@ -503,15 +501,32 @@ div#changelog {
    border-left-color: #eee;
    border-right-color: #444;
    border-bottom-color: #444;
-   cursor: pointer;
-   white-space: nowrap;
-   display: table;
 }
-.xp-button:hover:not(.unclickable):not(:active) {
+.ct-xp .button:hover {
    background-color: #d5d5d5;
 }
-.xp-button:active {
+.ct-xp .button:active {
    background-color: #c2c2c2;
+}
+.ct-95 .button {
+   min-width: 5rem;
+   text-align: center;
+   background-color: #ccc;
+   border: 2px solid;
+   border-radius: 1px;
+   border-top-color: #fff;
+   border-left-color: #fff;
+   border-right-color: #666;
+   border-bottom-color: #666;
+   padding: 0.1rem 0.5rem;
+   text-shadow: 0 0 1px #000;
+   box-shadow: 0 0 0 2px #000;
+}
+.ct-95 .button:hover {
+   background-color: #d5d5d5;
+}
+.ct-95 .button:active {
+   background-color: #c5c5c5;
 }
 
 .letter {
@@ -522,12 +537,6 @@ div#changelog {
    text-shadow: 0px 0px 2px black;
 }
 
-.red {
-   color: red;
-   font-size: 2.5rem;
-   font-weight: bolder;
-   text-shadow: 10px 10px 0px black;
-}
 
 input[type=checkbox] {
    cursor: pointer;
@@ -552,37 +561,57 @@ input[type=checkbox] {
 }
 
 .popup-container-1, .popup-container-2 {
-   border-top-left-radius: 7px;
-   border-top-right-radius: 7px;
-   background-color: rgb(43, 82, 255);
-   padding: 0 0.2rem 0.2rem;
    position: absolute;
    overflow: hidden;
    z-index: 1;
+}
+.ct-xp :is(.popup-container-1, .popup-container-2) {
+   background-color: rgb(43, 82, 255);
+   border-top-left-radius: 7px;
+   border-top-right-radius: 7px;
+   padding: 0 0.2rem 0.2rem;
+}
+.ct-95 :is(.popup-container-1, .popup-container-2) {
+   background-color: #ccc;
+   border: 2px solid;
+   border-top-color: #fff;
+   border-left-color: #fff;
+   border-right-color: #000;
+   border-bottom-color: #000;
+   padding: 0.2rem;
 }
 
 .popup-container-2.dark-popup {
    background-color: rgb(28, 65, 228);
 }
 
+
 .popup-container-1 .popup-title, .popup-container-2 .popup-title {
+   color: #fff;
+}
+.ct-xp :is(.popup-container-1, .popup-container-2) .popup-title {
    width: calc(100% - 0.6rem);
    font-size: 1.05rem;
    font-weight: normal;
-   padding: 0.3rem 0.5rem 0;
    background-image: linear-gradient(to bottom, rgb(43, 82, 255) 0%, rgba(0, 204, 255, 0.45) 10%, rgb(43, 82, 255) 30%);
+   padding: 0.3rem 0.5rem 0;
    margin: 0 0 0 -0.2rem;
-   color: white;
    display: inline-block;
    cursor: move;
 }
-
+.ct-95 :is(.popup-container-1, .popup-container-2) .popup-title {
+   background-color: rgb(26, 57, 197);
+   padding: 0.1rem 0.2rem;
+   margin: 0;
+}
 #computer .dark-popup .popup-title {
    background-image: none;
    background-color: rgb(28, 65, 228);
 }
-
-.popup-container-1 .display-container, .popup-container-2 .display-container, .popup-container-3 .display-container {
+.ct-95 :is(.popup-container-1, .popup-container-2, .popup-container-3) .display-container {
+   background-color: #fff;
+}
+.ct-xp :is(.popup-container-1, .popup-container-2, .popup-container-3) .display-container {
    background-color: rgb(255, 255, 240);
 }
 
@@ -596,10 +625,12 @@ input[type=checkbox] {
 }
 
 .popup-container-1 .popup-content {
+   padding: 0.5rem 1rem;
+}
+.ct-xp .popup-container-1 .popup-content {
    border: 1px solid rgba(0, 0, 0, 0.3);
    border-radius: 3px;
    margin: 0 2rem;
-   padding: 0.5rem 1rem;
 }
 
 .popup-container-1 .popup-content h3 {
@@ -627,10 +658,10 @@ input[type=checkbox] {
    margin: 0.5rem 0 0 0;
 }
 
-.button-container button {
+/* .button-container button {
    color: #1c1c1c;
    text-align: left;
-   font-family: "Windows"; /* Needed for some reason */
+   font-family: "Windows";
    font-size: 1rem;
    border: 1px solid rgba(0, 0, 0, 0.9);
    border-radius: 3px;
@@ -650,7 +681,7 @@ input[type=checkbox] {
 .button-container button:active {
    color: #555;
    background-color: rgba(0, 0, 0, 0.05);
-}
+} */
 
 button.close-button {
    padding: 1px 8px 1px 4px;
@@ -839,16 +870,6 @@ button.button-cost {
    transform: translate(-50%, -50%);
 }
 
-#clippy {
-   width: 20rem;
-}
-#clippy .popup-subtitle img {
-   max-width: 5rem;
-   float: right;
-}
-
-
-
 .chunky-debuff {
    max-width: 11rem;
    z-index: 2;
@@ -858,7 +879,6 @@ button.button-cost {
    color: #666;
    font-style: italic;
 }
-
 #chunky-message {
    font-style: italic;
 }
@@ -940,7 +960,6 @@ button.button-cost {
    -o-animation: rainbow 5s ease infinite;
    animation: rainbow 5s ease infinite;
 }
-
 @-webkit-keyframes rainbow {
    0% {
       background-position: 0% 82%
@@ -952,7 +971,6 @@ button.button-cost {
       background-position: 0% 82%
    }
 }
-
 @-moz-keyframes rainbow {
    0% {
       background-position: 0% 82%
@@ -964,7 +982,6 @@ button.button-cost {
       background-position: 0% 82%
    }
 }
-
 @-o-keyframes rainbow {
    0% {
       background-position: 0% 82%
@@ -976,7 +993,6 @@ button.button-cost {
       background-position: 0% 82%
    }
 }
-
 @keyframes rainbow {
    0% {
       background-position: 0% 82%
@@ -990,50 +1006,11 @@ button.button-cost {
 }
 
 .cf:before, .cf:after {
-   content: " ";
-   /* 1 */
+   content: ' ';
    display: table;
-   /* 2 */
 }
-
 .cf:after {
    clear: both;
-}
-
-.loremAd {
-   color: red;
-   text-decoration: underline;
-   font: 500 0.85rem "Open Sans";
-   cursor: pointer;
-   display: inline-block;
-}
-
-#visitor {
-   min-width: 18rem;
-}
-
-#visitor p {
-   white-space: nowrap;
-   text-align: center;
-}
-
-#visitor-box {
-   width: 4rem;
-   height: 4rem;
-   padding: 0.2rem;
-   border: 2px solid rgb(43, 82, 255);
-   border-radius: 3px;
-   margin-left: 50%;
-   display: block;
-   overflow: hidden;
-   transform: translateX(-50%);
-}
-
-#visitor-box-content {
-   text-align: center;
-   width: 4rem;
-   height: 4rem;
-   background-color: rgb(255, 255, 240);
 }
 
 @keyframes roll {
@@ -1044,7 +1021,6 @@ button.button-cost {
       transform: rotate(360deg);
    }
 }
-
 @keyframes slide {
    0% {
       background-size: 100% 80%;

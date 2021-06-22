@@ -106,11 +106,18 @@
    color: rgb(0, 255, 0);
 }
 
-/* CHUNKY */
+/***** CHUNKY *****/
 #chunky {
    width: 20rem;
    z-index: 2;
 }
+#chunky-progress-text.red {
+   color: red;
+   font-size: 2.5rem;
+   font-weight: bolder;
+   text-shadow: 10px 10px 0px black;
+}
+
 #chunkyImg {
    width: 7rem;
    display: block;
@@ -200,6 +207,30 @@
 }
 
 /* VISITOR */
+#visitor {
+   width: 18rem;
+}
+#visitor p {
+   white-space: nowrap;
+   text-align: center;
+}
+#visitor-box {
+   width: 4rem;
+   height: 4rem;
+   padding: 0.2rem;
+   border: 2px solid rgb(43, 82, 255);
+   border-radius: 3px;
+   margin-left: 50%;
+   display: block;
+   overflow: hidden;
+   transform: translateX(-50%);
+}
+#visitor-box-content {
+   text-align: center;
+   width: 4rem;
+   height: 4rem;
+   background-color: rgb(255, 255, 240);
+}
 .visitor-confetti {
    width: 10px;
    height: 5px;
@@ -215,7 +246,7 @@
    transform: translateY(-50%);
 }
 
-/* CHUNKY PLANTATION */
+/***** CHUNKY PLANTATION *****/
 #chunky-plantation {
    width: 25em;
 }
@@ -311,4 +342,13 @@
 }
 .dev-hire-prompt p {
    margin: 0 0 0.5rem 0;
+}
+
+/* CLIPPY */
+#clippy {
+   width: 20rem;
+}
+#clippy .popup-subtitle img {
+   max-width: 5rem;
+   float: right;
 }

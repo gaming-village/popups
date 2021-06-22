@@ -592,7 +592,7 @@ class Chunky extends Popup {
          Game.multLorem(1.2);
       }
 
-      getElement("chunky-progress-text").classList.add("red");
+      getElement('chunky-progress-text').classList.add('red');
 
       this.displayObj.querySelector(".button-container").classList.remove("clickable");
       // Hide the buttons

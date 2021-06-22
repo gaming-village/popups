@@ -65,7 +65,7 @@ const Game = {
          getElement('job-status').querySelector('.progress-bar').style.width = displayProgress + '%';
       },
       workers: {},
-      getNewWorkerCost: function(workerName, n) {
+      getWorkerCost: function(workerName, n) {
          // $ = b * 1.1^n + (b/10 * n)
          // Gets the cost of the n-th worker
          const baseCost = loremCorpData.jobs[workerName].cost.lorem;
@@ -150,7 +150,7 @@ const Game = {
          view.querySelector('.workforce-count').innerHTML = job[1].cost.workforce * this.workers[job[0]];
 
          // Buy info
-         const nextCost = formatFloat(this.getNewWorkerCost(job[0], this.workers[job[0]]));
+         const nextCost = formatFloat(this.getWorkerCost(job[0], this.workers[job[0]]));
          view.querySelector('.lorem-cost').innerHTML = nextCost;
       },
       createJobViews: function() {
@@ -190,7 +190,7 @@ const Game = {
             // Buy button functionality
             jobView.querySelector('.buy-button').addEventListener('click', () => {
                const currentWorkerCount = this.workers[job[0]];
-               const cost = this.getNewWorkerCost(job[0], currentWorkerCount + 1);
+               const cost = this.getWorkerCost(job[0], currentWorkerCount);
 
                if (Game.loremCount >= cost) {
                   this.workers[job[0]] += 1;
@@ -839,22 +839,9 @@ const viewEvents = {
       },
    },
 }
-function setupNavBar() {
+const setupNavBar = () => {
    // Make buttons change the screen on click.
    views.forEach(view => getElement(`nav-${view}`).addEventListener("click", () => switchView(view)));
-}
-function keySwitchView(num) {
-   // When called by a number press
-   let views = [ ...document.querySelectorAll('.nav-element:not(.hidden)')];
-   
-   views = views.map(view => view.id.split('-'));
-   if (num > views.length) return;
-
-   let view = views[num - 1].slice();
-   view.splice(0, 1)
-   view = view.join('-');
-
-   switchView(view);
 }
 function switchView(view) {
    // Switch to the view.
@@ -969,6 +956,19 @@ var iterationCount = 0;
 var nextText = 100;
 var checkOffset = 0;
 
+const keySwitchView = (num) => {
+   // When called by a number press
+   let views = [...document.querySelectorAll('.nav-element:not(.hidden)')];
+   
+   views = views.map(view => view.id.split('-'));
+   if (num > views.length) return;
+
+   let view = views[num - 1].slice();
+   view.splice(0, 1);
+   view = view.join('-');
+
+   switchView(view);
+}
 document.addEventListener('keydown', function(event) {
    if (document.activeElement !== document.body) return;
 
