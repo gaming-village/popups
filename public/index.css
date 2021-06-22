@@ -25,7 +25,6 @@ html, body {
 }
 
 * {
-   user-select: none;
    outline: none;
 }
 
@@ -358,6 +357,7 @@ html, body {
    width: 24px;
    margin-right: 5px;
    float: left;
+   pointer-events: none;
 }
 
 #pointCounterContainer {
@@ -612,14 +612,6 @@ input[type=checkbox] {
    padding: 0.1rem 0.2rem;
    margin: 0;
 }
-#computer .dark-popup .popup-title {
-   background-image: none;
-   background-color: rgb(28, 65, 228);
-}
-
-#computer .dark-popup .display-container {
-   background-color: rgb(240, 240, 220);
-}
 
 .ct-xp .popup-container-1 .display-container {
    padding-top: 1rem;
@@ -643,9 +635,15 @@ input[type=checkbox] {
    transform: translateY(-50%);
 }
 
-.popup-container-1 .popup-content p {
-   font-size: 1rem;
+.ct-95 :is(.popup-container-1, .popup-container-2) p {
+   font-size: 0.9rem;
    line-height: 1.1rem;
+}
+:is(.popup-container-1, .popup-container-2) p:first-child {
+   margin-top: 0;
+}
+:is(.popup-container-1, .popup-container-2) p:last-child {
+   margin-bottom: 0;
 }
 
 .popup-container-1 .popup-content img.warning {
@@ -660,6 +658,17 @@ input[type=checkbox] {
    margin: 0.5rem 0 0 0;
    display: flex;
    justify-content: center;
+}
+.button-container .button {
+   margin: 5px;
+}
+
+#computer .dark-popup .popup-title {
+   background-image: none;
+   background-color: rgb(28, 65, 228);
+}
+#computer .dark-popup .display-container {
+   background-color: rgb(240, 240, 220);
 }
 
 /* .button-container button {
@@ -728,25 +737,6 @@ button.button-cost {
    background-image: url(images/xp-icons/coin-icon.png);
    background-size: 18px 18px;
    margin: 1px 4px 0 0;
-}
-
-/* Popup Type 2 */
-
-
-.popup-container-2 p:first-child {
-   margin: 0;
-}
-
-.popup-container-2 p {
-   margin-bottom: 0px;
-}
-
-/* .popup-container-2 .button-container {
-   text-align: right;
-} */
-
-.popup-container-2 button {
-   background-image: linear-gradient(to bottom, #fff 0%, #fff 20%, #f3f3f3 30%, #f3f3f3 80%, #eee 100%);
 }
 
 /* Popup Type 3 (Applications) */

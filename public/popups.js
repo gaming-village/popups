@@ -257,26 +257,19 @@ class Rain extends Popup {
          Game.addLorem(-sapAmount);
          this.totalSapAmount += sapAmount;
       }, 500);
+
+      if (this.checkLetterInterval !== null) return;
       this.checkLetterInterval = setInterval(() => {
          this.letters.forEach(letter => letter.incrementTop());
       }, 10);
-      this.updateTextInterval = setInterval(() => this.changeRainText(), 100);
    }
    hidePopup() {
       super.hidePopup();
+
       clearInterval(this.createLetterInterval);
       this.createLetterInterval = null;
-      clearInterval(this.updateTextInterval);
 
       Game.addLorem(this.totalSapAmount * 1.5);
-   }
-   changeRainText() {
-      const symbols = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")"];
-      let result = "";
-      for (let i = 0; i < 17; i++) {
-         result += symbols[randomInt(0, symbols.length)];
-      }
-      getElement("rainCode").innerHTML = result;
    }
 }
 class RainText {
@@ -286,7 +279,7 @@ class RainText {
       this.displayObj.classList.add("letter");
       this.displayObj.style.left = Math.random() * 100 + 'vw';
       const letterCharacters = ["!", "@", "#", "$", "%", "^", "&", "*", "(", ")"];
-      this.displayObj.innerHTML = letterCharacters[randomInt(0, letterCharacters.length)];
+      this.displayObj.innerHTML = randElem(letterCharacters);
       popups.rain.letters.push(this);
 
       this.topPos = 0;
@@ -296,7 +289,10 @@ class RainText {
       this.topPos += 0.1 * this.fallSpeed;
       this.displayObj.style.top = this.topPos + "vh";
       if (this.topPos >= 100) {
-         if (popups.rain.letters.length <= 1) clearInterval(popups.rain.checkLetterInterval);
+         if (popups.rain.letters.length <= 1) {
+            clearInterval(popups.rain.checkLetterInterval);
+            popups.rain.checkLetterInterval = null;
+         }
 
          popups.rain.letters.splice(popups.rain.letters.indexOf(this), 1);
          this.displayObj.remove();
