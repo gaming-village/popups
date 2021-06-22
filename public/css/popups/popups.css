@@ -301,10 +301,6 @@
 #dev-hire {
    width: 22.5rem;
 }
-#dev-hire button {
-   font-weight: bold;
-   display: inline-block !important;
-}
 #dev-hire-requirements {
    color: #fff;
    border: 3px solid #bbb;

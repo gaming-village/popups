@@ -1,0 +1,10 @@
+@font-face {
+   font-family: 'MS Sans Serif';
+   src: url('ms-sans-serif.ttf');
+   font-weight: normal;
+}
+@font-face {
+   font-family: 'MS Sans Serif';
+   src: url('ms-sans-serif-bold.ttf');
+   font-weight: bold;
+}

@@ -1,11 +1,13 @@
-@import url(css/computer.css);
-@import url(css/computer-nav-bar.css);
-@import url(css/about.css);
-@import url(css/black-market.css);
-@import url(fonts/windows-font.css);
-@import url(css/popups/popups.css);
-@import url(css/corporate-overview.css);
+@import url(./css/computer.css);
+@import url(./css/computer-nav-bar.css);
+@import url(./css/about.css);
+@import url(./css/black-market.css);
+@import url(./css/popups/popups.css);
+@import url(./css/corporate-overview.css);
 @import url(./css/applications.css);
+
+@import url(./fonts/windows-font.css);
+@import url(./fonts/ms-sans-serif-font.css);
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap');
@@ -485,7 +487,7 @@ div#changelog {
 
 /***** BUTTONS *****/
 .button {
-   font: 400 1rem 'Windows';
+   font: normal 0.9rem 'MS Sans Serif';
    margin: 0.5rem 0;
    user-select: none;
    cursor: pointer;
@@ -519,7 +521,6 @@ div#changelog {
    border-right-color: #666;
    border-bottom-color: #666;
    padding: 0.1rem 0.5rem;
-   text-shadow: 0 0 1px #000;
    box-shadow: 0 0 0 2px #000;
 }
 .ct-95 .button:hover {
@@ -561,6 +562,7 @@ input[type=checkbox] {
 }
 
 .popup-container-1, .popup-container-2 {
+   font-family: 'MS Sans Serif';
    position: absolute;
    overflow: hidden;
    z-index: 1;
@@ -580,14 +582,19 @@ input[type=checkbox] {
    border-bottom-color: #000;
    padding: 0.2rem;
 }
-
+.ct-95 :is(.popup-container-1, .popup-container-2, .popup-container-3) .display-container {
+   padding: 0.3rem 0 0;
+}
+.ct-xp :is(.popup-container-1, .popup-container-2, .popup-container-3) .display-container {
+   background-color: rgb(255, 255, 240);
+}
 .popup-container-2.dark-popup {
    background-color: rgb(28, 65, 228);
 }
 
-
 .popup-container-1 .popup-title, .popup-container-2 .popup-title {
    color: #fff;
+   cursor: move;
 }
 .ct-xp :is(.popup-container-1, .popup-container-2) .popup-title {
    width: calc(100% - 0.6rem);
@@ -597,9 +604,10 @@ input[type=checkbox] {
    padding: 0.3rem 0.5rem 0;
    margin: 0 0 0 -0.2rem;
    display: inline-block;
-   cursor: move;
 }
 .ct-95 :is(.popup-container-1, .popup-container-2) .popup-title {
+   font-size: 1rem;
+   font-weight: normal;
    background-color: rgb(26, 57, 197);
    padding: 0.1rem 0.2rem;
    margin: 0;
@@ -608,23 +616,17 @@ input[type=checkbox] {
    background-image: none;
    background-color: rgb(28, 65, 228);
 }
-.ct-95 :is(.popup-container-1, .popup-container-2, .popup-container-3) .display-container {
-   background-color: #fff;
-}
-.ct-xp :is(.popup-container-1, .popup-container-2, .popup-container-3) .display-container {
-   background-color: rgb(255, 255, 240);
-}
 
 #computer .dark-popup .display-container {
    background-color: rgb(240, 240, 220);
 }
 
-.popup-container-1 .display-container {
+.ct-xp .popup-container-1 .display-container {
    padding-top: 1rem;
    padding-bottom: 0.5rem;
 }
 
-.popup-container-1 .popup-content {
+.ct-xp .popup-container-1 .popup-content {
    padding: 0.5rem 1rem;
 }
 .ct-xp .popup-container-1 .popup-content {
@@ -652,10 +654,12 @@ input[type=checkbox] {
    margin-right: 0.5rem;
 }
 
-.popup-container-1 .button-container {
+.button-container {
    width: 100%;
    text-align: center;
    margin: 0.5rem 0 0 0;
+   display: flex;
+   justify-content: center;
 }
 
 /* .button-container button {
@@ -702,10 +706,10 @@ button.accept-button {
    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0.3) inset, 0px 0px 2px 2px #b3bace inset;
 }
 
-.button-container button::before {
+/* .button-container button::before {
    content: "";
    float: left;
-}
+} */
 
 .button-send::before {
    width: 18px;
@@ -728,9 +732,6 @@ button.button-cost {
 
 /* Popup Type 2 */
 
-.popup-container-2 .display-container {
-   padding: 0.75rem;
-}
 
 .popup-container-2 p:first-child {
    margin: 0;
@@ -740,9 +741,9 @@ button.button-cost {
    margin-bottom: 0px;
 }
 
-.popup-container-2 .button-container {
+/* .popup-container-2 .button-container {
    text-align: right;
-}
+} */
 
 .popup-container-2 button {
    background-image: linear-gradient(to bottom, #fff 0%, #fff 20%, #f3f3f3 30%, #f3f3f3 80%, #eee 100%);
