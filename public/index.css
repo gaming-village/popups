@@ -200,11 +200,6 @@ html, body {
    pointer-events: all;
 }
 
-#header {
-   width: 100%;
-   background-color: #444;
-   padding-top: 0.5rem;
-}
 
 #game-version {
    color: #fff;
@@ -215,7 +210,7 @@ html, body {
    left: 0.2rem;
 }
 #game-version::after {
-   content: "";
+   content: '';
    height: 1px;
    background-color: #fff;
    position: absolute;
@@ -225,10 +220,14 @@ html, body {
    box-shadow: 0 0 3px 2px rgba(0, 0, 0, 0.6);
 }
 
+#header {
+   width: 100%;
+   background-color: #444;
+   padding-top: 0.5rem;
+}
 #header h1, #header h2 {
    text-align: center;
 }
-
 #header h1 {
    color: #ddd;
    font-size: 1.9rem;
@@ -260,13 +259,11 @@ html, body {
    padding: 0.5rem 0;
    margin: 0 0 0 0;
 }
-
 #nav-formatter {
    display: inline-block;
    margin-left: 50%;
    transform: translateX(-50%);
 }
-
 .nav-element {
    color: #000;
    background-color: #666;
@@ -278,23 +275,19 @@ html, body {
    display: inline-block;
    cursor: pointer;
 }
-
 .nav-element.selected {
    color: #222;
    background-color: #aaa;
    border-top-color: #ccc;
    border-left-color: #ccc;
 }
-
 .nav-element.selected:hover {
    background-color: #b7b7b7;
 }
-
 .nav-element:not(.selected) {
    border-top-color: #888;
    border-left-color: #888;
 }
-
 .nav-element:not(.selected):hover {
    background-color: #707070;
 }
@@ -306,12 +299,11 @@ html, body {
 .nav-element:not(.selected):active {
    background-color: #606060;
 }
-
 .nav-element:not(:first-child) {
    margin-left: 1rem;
 }
 
-#computer, #about, #black-market, #corporate-overview {
+.view {
    width: 100%;
    position: relative;
 }
@@ -328,6 +320,7 @@ html, body {
    bottom: 2.5rem;
    display: inline-block;
    transform: translate(-50%);
+   z-index: 1;
 }
 .alertBox {
    white-space: nowrap;
@@ -421,6 +414,9 @@ div#changelog {
    cursor: pointer;
    box-shadow: 0px 2px 3px 2px rgba(0, 0, 0, 0.3);
 }
+#changelog img {
+   margin-bottom: -0.2rem;
+}
 
 #loremContainer {
    color: #000;
@@ -437,7 +433,6 @@ div#changelog {
    transform: translateX(-50%);
    box-shadow: 0px 0px 0px 1px rgba(243, 248, 252, 0.4) inset, 0px 0px 0px 1px #72a5cb;
 }
-
 #loremContainer::before {
    /* The container's caption */
    content: attr(display-text);
@@ -455,7 +450,6 @@ div#changelog {
    display: table;
    box-shadow: 0 0 0 2px #666;
 }
-
 #loremContainer:not(.canLorem) {
    font-style: italic;
    color: #777;
@@ -476,35 +470,6 @@ div#changelog {
    top: 10.5rem;
    left: 72.5%;
    cursor: pointer;
-}
-
-#chunky-plantation-count {
-   color: rgb(255, 0, 0);
-   text-align: center;
-   font-size: 1.1rem;
-   margin-top: 0;
-   pointer-events: none;
-}
-
-#chunky-virus {
-   left: 5% !important;
-   top: 40% !important;
-}
-
-.chunky-invisible {
-   margin-left: 1rem;
-   display: inline-block;
-   opacity: 0.5;
-}
-
-#changelog img {
-   margin-bottom: -0.2rem;
-}
-
-#a {
-   position: absolute;
-   top: 0.5rem;
-   left: 0.5rem;
 }
 
 /* Devtools */
@@ -575,10 +540,6 @@ input[type=checkbox] {
 .centered {
    margin-left: 50%;
    transform: translateX(-50%);
-}
-
-#lorem-warning {
-   width: 20rem;
 }
 
 .unclickable {
@@ -757,7 +718,6 @@ button.button-cost {
 }
 
 /* Popup Type 3 (Applications) */
-
 .popup-container-3 {
    font-family: "Open Sans";
    font-size: 0.8rem;
@@ -767,7 +727,6 @@ button.button-cost {
    position: absolute;
    overflow: hidden;
 }
-
 .popup-container-3 .display-container {
    padding: 0.2rem 0.5rem;
    border: 1px solid #23455d;
@@ -818,38 +777,6 @@ button.button-cost {
    margin-left: 2rem;
 }
 
-/* LOREM COUNTER */
-#lorem-counter > .display-container {
-   --size: 10.5rem;
-   width: var(--size);
-   height: var(--size);
-}
-.display-container[displayType=packets] {
-   background-color: #202020;
-}
-#lorem-count {
-   font: 400 4rem "Windows";
-   display: inline-block;
-   margin: 0;
-   padding: 0;
-   position: absolute;
-   top: 50%;
-   left: 50%;
-   transform: translate(-50%, -50%);
-}
-.display-container[displayType=packets] #lorem-count {
-   color: rgb(0, 255, 0);
-}
-.display-container[displayType=lorem] #lorem-count {
-   color: rgb(20, 20, 20);
-}
-.loremCounterAddText {
-   position: absolute;
-   top: 50%;
-   left: 50%;
-   transform: translate(-50%, -50%);
-}
-
 #mining-feed {
    font-family: "Windows";
    font-size: 0.95rem;
@@ -871,37 +798,11 @@ button.button-cost {
    display: inline-block;
 }
 
-/* Lorem Block */
-
-#lurem-impsir {
-   width: 20rem;
-   left: 25%;
-   top: 25%;
-}
 
 #loremTimeRemaining:not(.clickable) {
    color: #ccc;
    font-style: italic;
    cursor: default;
-}
-
-/* iPhone Popup */
-
-#free-iPhone .closePopup, .incorrect-text {
-   color: red;
-}
-
-/* Chunky */
-
-#chunky {
-   width: 20rem;
-}
-
-#chunkyImg {
-   width: 7rem;
-   display: block;
-   margin-left: 50%;
-   transform: translateX(-50%);
 }
 
 .progress-bar-container {
@@ -946,47 +847,7 @@ button.button-cost {
    float: right;
 }
 
-#chunky-status {
-   color: rgb(255, 0, 0);
-}
-#chunky-status.green {
-   color: rgb(0, 255, 0);
-}
 
-#chunky-reward {
-   color: rgb(0, 255, 0);
-   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
-}
-
-#chunky-progress-bar.changed {
-   animation: stripe-transform 3s forwards infinite linear, changeChunkyProgress 1s forwards ease;
-}
-
-@keyframes changeChunkyProgress {
-   0% {
-      background-color: rgb(255, 20, 20);
-   }
-   100% {
-      background-color: rgb(43, 82, 255);
-   }
-}
-
-#chunky-progress-text.red {
-   color: rgb(255, 0, 0);
-}
-
-#chunky .button-container:not(.clickable) {
-   pointer-events: none;
-}
-
-@keyframes stripe-transform {
-   0% {
-      background-position: 0 0;
-   }
-   100% {
-      background-position: 0 60px;
-   }
-}
 
 .chunky-debuff {
    max-width: 11rem;

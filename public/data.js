@@ -328,8 +328,12 @@ const messages = {
    },
    greetings: {
       title: "Greetings",
-      from: "0b4ma",
-      content: `<p>Hello.</p>`,
+      from: "0b4m4",
+      content: `<p>Hello.</p>
+      <p>You may or may not be aware of the malicious past of the corporation Lorem Corp.</p>
+      <p>To stop things from getting out of hand, a group called the Black Market had to be created. Our connections have told us that recently Lorem Corp. has begun hiring again, and as we have tracked you as one of their new hires you are critical to our operation.</p>
+      <p>You will later receive an invitation to our network.</p>
+      <p>Good luck.</p>`,
       received: false,
       opened: false,
       reference: 3

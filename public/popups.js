@@ -221,7 +221,7 @@ class FreeIPhone extends Popup {
    popupHover() {
       this.moveTimer = setTimeout(() => {
          this.moveToRandomPosition(3);
-         getElement("iphonePopupMoveText").classList.remove("hidden");
+         getElement('iphonePopupMoveText').classList.remove('hidden');
       }, Math.random() * 200 + 50);
    }
 }
@@ -236,7 +236,7 @@ class Rain extends Popup {
       this.letters = [];
       this.totalSapAmount = 0;
 
-      getElement("rain-close-button").addEventListener("click", () => this.hidePopup());
+      getElement('rain-close-button').addEventListener('click', () => this.hidePopup());
    }
    showPopup(noMove = false, manualForce = false) {
       super.showPopup(noMove, manualForce);
@@ -244,13 +244,16 @@ class Rain extends Popup {
       
       this.totalSapAmount = 0;
       this.createLetterInterval = setInterval(() => {
-         // Create a letter.
+         const sapAmount = data.rain.stats.sapAmount;
+         // Stop if removing the lorem would bring the player to negative lorem
+         if (sapAmount > Game.loremCount) return;
+
+         // Create a falling rain letter.
          if (this.letters.length < 20) { // Amount of letters is capped at 20.
             new RainText();
          }
 
          // Sap points.
-         const sapAmount = data.rain.stats.sapAmount;
          Game.addLorem(-sapAmount);
          this.totalSapAmount += sapAmount;
       }, 500);
@@ -392,7 +395,7 @@ class Visitor extends Popup {
       }
 
       // Show 3 random popups.
-      const showPopupAmount = Object.keys(potentialPopups).length < 3 ? Object.keys(potentialPopups).length : 3;
+      const showPopupAmount = Math.min(Object.keys(potentialPopups).length, 3);
       for (let i = 0; i < showPopupAmount; i++) {
          let randomName = Object.keys(potentialPopups)[randomInt(0, Object.keys(potentialPopups).length)];
          let chosenPopup = potentialPopups[randomName];
@@ -818,24 +821,26 @@ class ChunkyPlantation extends Popup {
       }
 
       this.currentTimerTime = 15;
-      getElement("chunky-plantation-count").innerHTML = 10;
+      getElement('chunky-plantation-timer').innerHTML = this.currentTimerTime;
+      getElement('chunky-plantation-count').innerHTML = '0 bananas remaining';
 
       this.updateTimerText = setInterval(() => {
          this.currentTimerTime -= 0.1;
 
-         getElement("chunky-plantation-count").innerHTML = formatFloat(this.currentTimerTime);
+         getElement('chunky-plantation-timer').innerHTML = formatFloat(this.currentTimerTime);
          if (this.currentTimerTime <= 0) {
             this.hidePopup();
          }
       }, 100);
 
       // Show the bananas
-      const bananaCount = randomInt(15, 20, true);
+      const bananaCount = randomInt(10, 15, true);
       const maxDisplayTime = 500; // Time it takes to display the bananas.
-      let currentBanana = 0;
+      this.bananas = 0;
       this.createBananaInterval = setInterval(() => {
          new ChunkyPlantationBanana();
-         if (currentBanana++ >= bananaCount) clearInterval(this.createBananaInterval);
+         getElement('chunky-plantation-count').innerHTML = this.bananas + 1 + ' bananas remaining';
+         if (this.bananas++ >= bananaCount) clearInterval(this.createBananaInterval);
       }, maxDisplayTime / bananaCount);
    }
    hidePopup() {
@@ -871,6 +876,9 @@ class ChunkyPlantationBanana {
       if (document.getElementsByClassName("plantation-banana").length == 1) {
          popups.chunkyPlantation.hidePopup();
       }
+
+      popups.chunkyPlantation.bananas -= 1;
+      getElement('chunky-plantation-count').innerHTML = popups.chunkyPlantation.bananas + ' bananas remaining';
 
       clearInterval(this.rotateBananaInterval)
 

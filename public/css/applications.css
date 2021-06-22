@@ -40,3 +40,35 @@
 .event-viewer-entry:not(:last-child) {
    margin-bottom: 0.2rem;
 }
+
+/* LOREM COUNTER */
+#lorem-counter > .display-container {
+   --size: 10.5rem;
+   width: var(--size);
+   height: var(--size);
+}
+.display-container[displayType=packets] {
+   background-color: #202020;
+}
+#lorem-count {
+   font: 400 4rem "Windows";
+   display: inline-block;
+   margin: 0;
+   padding: 0;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+}
+.display-container[displayType=packets] #lorem-count {
+   color: rgb(0, 255, 0);
+}
+.display-container[displayType=lorem] #lorem-count {
+   color: rgb(20, 20, 20);
+}
+.loremCounterAddText {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+}

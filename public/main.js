@@ -5,8 +5,9 @@ function getElement(elementName) {
    const element = document.querySelector(`#${elementName}`);
    return element;
 }
-function formatFloat(input) {
-   const formattedFloat = Math.round((input + Number.EPSILON) * 100) / 100;
+function formatFloat(float, dp = 2) {
+   const mult = Math.pow(10, dp);
+   const formattedFloat = Math.round((float + Number.EPSILON) * mult) / mult;
    return formattedFloat;
 }
 function randomInt(min, max, inclusive = false) {
@@ -24,9 +25,9 @@ function randomSign() {
 }
 function scalePX(px, scaleType) {
    switch (scaleType) {
-      case "vw":
+      case 'vw':
          return 100 / window.innerWidth * px;
-      case "vh":
+      case 'vh':
          return 100 / window.innerHeight * px;
       default:
          return 0;
@@ -41,17 +42,18 @@ function randElem(arr) {
    const elem = arr[randomInt(0, arr.length)];
    return elem;
 }
-
-const hf = {
-   capitalize: function(str) {
-      const first = str.split('')[0].toUpperCase();
-      const rest = str.substring(1, str.split('').length);
-      return first + rest;
-   },
-   plural: function(str) {
-      return str + 's';
-   }
-};
+function capitalize(str) {
+   const first = str.split('')[0].toUpperCase();
+   const rest = str.substring(1, str.split('').length);
+   return first + rest;
+}
+function plural(str) {
+   return str + 's';
+}
+function slugCase(str) {
+   const slug = str.replace(/([A-Z])/g, '-$1').toLowerCase();
+   return slug;
+}
 
 
 
@@ -59,7 +61,7 @@ const hf = {
 /*
 COOKIE STUFF
 */
-function LoadData() {
+const LoadData = () => {
    setUnlockedMalware();
    setReceivedMessages();
    setOpenedMessages();
@@ -70,10 +72,7 @@ function LoadData() {
 }
 
 function setMiscCookie() {
-   // Break if in other pages (e.g. Malware Tree)
-   if (typeof Game === 'undefined') {
-      return;
-   }
+   if (typeof Game === 'undefined') return;
 
    // Bit 1: Black market (binary) (0/1 unlocked/locked)
    // Bit 2: Lorem quota unlocked

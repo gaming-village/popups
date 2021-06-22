@@ -13,7 +13,15 @@
    width: 25em;
 }
 
+/* FREE IPHONE */
+#free-iPhone .closePopup, .incorrect-text {
+   color: red;
+}
+
 /* LUREM IMPSIR */
+#lurem-impsir {
+   width: 20rem;
+}
 #lurem-flushed {
    max-width: 50%;
    margin-right: -2rem;
@@ -100,7 +108,49 @@
 
 /* CHUNKY */
 #chunky {
+   width: 20rem;
    z-index: 2;
+}
+#chunkyImg {
+   width: 7rem;
+   display: block;
+   margin-left: 50%;
+   transform: translateX(-50%);
+}
+#chunky-status {
+   color: rgb(255, 0, 0);
+}
+#chunky-status.green {
+   color: rgb(0, 255, 0);
+}
+#chunky-reward {
+   color: rgb(0, 255, 0);
+   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.4);
+}
+#chunky-progress-bar.changed {
+   animation: stripe-transform 3s forwards infinite linear, changeChunkyProgress 1s forwards ease;
+}
+@keyframes changeChunkyProgress {
+   0% {
+      background-color: rgb(255, 20, 20);
+   }
+   100% {
+      background-color: rgb(43, 82, 255);
+   }
+}
+#chunky-progress-text.red {
+   color: rgb(255, 0, 0);
+}
+#chunky .button-container:not(.clickable) {
+   pointer-events: none;
+}
+@keyframes stripe-transform {
+   0% {
+      background-position: 0 0;
+   }
+   100% {
+      background-position: 0 60px;
+   }
 }
 
 /* BANK DETAILS */
@@ -193,6 +243,26 @@
    position: absolute;
    display: block;
    transform: translate(-50%, -50%);
+   opacity: 0.5;
+}
+#chunky-plantation-timer, #chunky-plantation-count {
+   text-align: center;
+   font-size: 1.1rem;
+   margin-top: 0;
+   pointer-events: none;
+}
+#chunky-plantation-timer {
+   color: rgb(255, 0, 0);
+}
+
+/* CHUNKY VIRUS */
+#chunky-virus {
+   left: 5% !important;
+   top: 40% !important;
+}
+.chunky-invisible {
+   margin-left: 1rem;
+   display: inline-block;
    opacity: 0.5;
 }
 

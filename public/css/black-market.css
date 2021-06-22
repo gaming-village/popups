@@ -111,12 +111,12 @@
    transform: translateY(-50%) scaleX(-1);
 }
 
-#black-market-title h2 {
-   font-size: 1.35rem;
-   color: rgb(247, 96, 37);
+#packet-count {
+   font-size: 1.85rem;
+   color: rgb(255, 180, 94);
    letter-spacing: 0.15rem;
 }
-#black-market-title h2::after {
+#packet-count::after {
    content: " PACKETS";
 }
 

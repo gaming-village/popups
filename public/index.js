@@ -58,9 +58,10 @@ const Game = {
          // Update the progress bar and text
          const req = loremCorpData.jobs[this.job].requirement;
          const progress = Game.loremCount / req * 100;
+
          
-         getElement('job-status').querySelector('h2.center').innerHTML = formatFloat(progress) + '%';
-         const displayProgress = progress <= 100 ? progress : 100;
+         getElement('job-status').querySelector('h2.center').innerHTML = formatFloat(Game.loremCount, 1) + '/' + formatFloat(req, 1) + ' (' + formatFloat(progress) + '%)';
+         const displayProgress = Math.min(progress, 100);
          getElement('job-status').querySelector('.progress-bar').style.width = displayProgress + '%';
       },
       workers: {},
@@ -171,7 +172,7 @@ const Game = {
             // Update the costs
             for (const cost of Object.entries(job[1].cost)) {
                const nameObj = document.createElement('p');
-               nameObj.innerHTML = hf.capitalize(cost[0]);
+               nameObj.innerHTML = capitalize(cost[0]);
 
                jobView.querySelector('.cost-container').querySelector('.left-column').appendChild(nameObj);
 
@@ -411,7 +412,8 @@ const Game = {
    },
 
    checkLoremLetters: () => {
-      if (Game.loremCount >= 3) receiveLetter('motivationalLetter');
+      if (Game.loremCount >= 2) receiveLetter('motivationalLetter');
+      if (Game.loremCount >= 5) receiveLetter('greetings')
       if (Game.loremCount >= 8) receiveLetter('invitation');
       if (Game.loremCount >= 15) receiveLetter('rumors');
    },
@@ -795,7 +797,7 @@ function displayPoints(add) {
    getElement('packet-transfer-amount').innerHTML = formatFloat(Game.loremCount * Game.transferRate);
    
    updateLoremCounter(add);
-   Game.loremQuota.setQuotaProgress();
+   if (Game.loremQuota.unlocked) Game.loremQuota.setQuotaProgress();
    Game.loremCorp.updatePromotionProgress();
 }
 
@@ -830,6 +832,10 @@ const viewEvents = {
    about: {
       open: function() {
          getElement('nav-about').classList.remove('new-mail');
+
+         for (const alert of document.querySelectorAll('.letter-alert')) {
+            alert.remove();
+         }
       },
    },
 }
@@ -900,7 +906,6 @@ window.onload = () => {
    {
       const miscCookie = getCookie('misc');
       if (miscCookie.split('')[1] === '1') {
-         console.warn('sdhfkhdsakhjlhfg kldahdglkmdghbklj');
          Game.unlockLoremQuota();
       }
    }
@@ -946,6 +951,8 @@ window.onload = () => {
 
    // Set the workers to make lorem
    Game.loremCorp.setWorkerGainInterval();
+
+   document.body.classList.add('ct-95');
 }
 
 function changeViewHeights() {
@@ -1253,10 +1260,6 @@ function newLetterAlert(letter) {
    letterAlert.addEventListener('click', () => {
       switchView('about');
       showInbox();
-      
-      for (const alert of document.querySelectorAll('.letter-alert')) {
-         alert.remove();
-      }
    });
 }
 

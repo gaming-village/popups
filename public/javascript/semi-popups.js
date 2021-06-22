@@ -4,7 +4,7 @@ class SemiPopup extends BaseStructure {
       this.displayed = false;
 
       // Convert camelCase to slug-case
-      this.slugCase = popupDataName.replace(/([A-Z])/g, "-$1").toLowerCase(); 
+      this.slugCase = slugCase(popupDataName); 
       this.displayObj = getElement(this.slugCase);
 
       dragElement(this.displayObj, getElement(`${this.slugCase}-title`));
