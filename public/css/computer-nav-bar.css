@@ -1,18 +1,52 @@
 #computer-nav {
    width: 100%;
-   height: 2em;
+   height: 2rem;
    background-image: linear-gradient(to right, #77a9ce 0%, #2d7db5 25%, #2d7db5 75%, #77a9ce 100%);
    position: absolute;
    bottom: 0;
    left: 0;
+   user-select: none;
 }
 
-#computer-start-icon {
-   height: 5em;
-   margin-top: -1.5em;
-   margin-right: 1em;
-   margin-left: 0.05rem;
+/***** START ICON *****/
+#start-icon {
+   height: 100%;
+   background-color: red;
    float: left;
+   cursor: pointer;
+}
+.ct-95 #start-icon {
+   height: calc(100% - 8px);
+   background-color: #ccc;
+   padding: 0 0.2rem;
+   margin: 2px 0.2rem 0 2px;
+   border: 2px solid;
+   border-top-color: #eee;
+   border-left-color: #eee;
+   border-bottom-color: #888;
+   border-right-color: #888;
+   box-shadow: 0 -2px 0 0 #fff, -2px 0 0 0 #fff, 0 2px 0 0 #000, 2px 0 0 0 #000;
+}
+.ct-95 #start-icon:hover {
+   background-color: #d5d5d5;
+}
+.ct-95 #start-icon:active {
+   background-color: #c5c5c5;
+}
+.ct-95 #start-icon .img {
+   --size: calc(2rem - 8px);
+   width: var(--size);
+   height: var(--size);
+   background-image: url(../images/win95-start-icon.png);
+   background-size: var(--size) var(--size);
+   float: left;
+}
+.ct-95 #start-icon .text {
+   font-family: 'MS Sans Serif';
+   font-weight: bold;
+   margin-left: 0.2rem;
+   margin-top: -0.25rem;
+   float: right;
 }
 
 .application {
@@ -20,7 +54,7 @@
    border-top-left-radius: 3px;
    border-top-right-radius: 3px;
    border-bottom: none;
-   padding: 0.1em 0.8em;
+   padding: 0.1em 0.8rem;
    margin-right: 0.2rem;
    float: left;
    cursor: pointer;
