@@ -89,11 +89,12 @@ class CookieObjectManager {
 
 const cookies = {};
 const LoadData = () => {
-   cookies.unlockedMalware = new CookieObjectManager('unlockedMalware', data, 'unlocked');
+   cookies.unlockedMalware = new CookieObjectManager('unlockedMalware', popupData, 'unlocked');
    cookies.receivedMessages = new CookieObjectManager('receivedMessages', messages, 'received');
    cookies.openedMessages = new CookieObjectManager('openedMessages', messages, 'opened');
    cookies.unlockedShops = new CookieObjectManager('unlockedShops', blackMarketShops, 'unlocked');
    cookies.receivedPrompts = new CookieObjectManager('receivedPrompts', prompts, 'received');
+
    setOpenedRewards();
    setMiscCookie();
 }
@@ -106,7 +107,6 @@ function setMiscCookie() {
    // Bit 2: Lorem quota unlocked
    // Bits 3-4: Lorem Promotion Status (hexadecimal)
    // Bit 5: Job (0 = intern, etc.)
-   
 
    let miscCookie = getCookie('misc');
    if (miscCookie === '') {
@@ -134,8 +134,9 @@ function setMiscCookie() {
             let quotaIndex = parseInt(promotionHex, 16);
 
             // If index is out of bounds
-            if (quotaIndex >= Object.keys(loremQuotaData).length) {
-               quotaIndex = Object.keys(loremQuotaData).length - 1;
+            const lgh = Object.keys(loremQuotaData).length;
+            if (quotaIndex >= lgh) {
+               quotaIndex = lgh - 1;
             }
             Game.nextLoremQuota = loremQuotaData[quotaIndex].requirement;
             break;

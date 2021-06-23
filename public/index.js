@@ -508,7 +508,7 @@ const terminal = {
                return;
             }
             // Summon a popup
-            if (!data[name].unlocked) {
+            if (!popupData[name].unlocked) {
                terminal.writeLine(['WARNING: ', '#ffbb29'], ['Popup ', '#888'], [`'${name}'`, '#aaa'], [' is not unlocked yet.', '#888'])
                return;
             }
@@ -767,7 +767,7 @@ function closePrompt() {
 function instantiateClasses() {
    let popupNames = [];
    // Generate the popup names
-   for (const popup of Object.values(data)) {
+   for (const popup of Object.values(popupData)) {
       const camelCaseArray = popup.name.split("-").map((string, index) => {
          return index >= 1 ? string.charAt(0).toUpperCase() + string.slice(1) : string;
       });

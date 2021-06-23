@@ -1,4 +1,4 @@
-const data = {
+const popupData = {
     microsoftAntivirus: {
         name: "microsoft-antivirus",
         stats: {

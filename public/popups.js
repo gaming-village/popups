@@ -19,14 +19,14 @@ class Popup extends BaseStructure {
    constructor(popupDataName) {
       super();
 
-      this.displayObj = getElement("" + data[popupDataName].name);
+      this.displayObj = getElement("" + popupData[popupDataName].name);
       dragElement(this.displayObj, getElement("" + this.displayObj.id + "-title"));
       this.popupDataName = popupDataName;
       this.displayName = this.getDisplayName();
       this.displayed = false;
    }
    getDisplayName() {
-      let displayName = data[this.popupDataName].name.replace("-", " ").split(" ");
+      let displayName = popupData[this.popupDataName].name.replace("-", " ").split(" ");
       for (let i = 0; i < displayName.length; i++) {
          displayName[i] = displayName[i][0].toUpperCase() + displayName[i].substring(1);
          if (i != displayName.length - 1) displayName[i] += " ";
@@ -34,7 +34,7 @@ class Popup extends BaseStructure {
       return displayName.join("");
    }
    showPopup(noMove = false, manualForce = false) {
-      if (!data[this.popupDataName].unlocked) return;
+      if (!popupData[this.popupDataName].unlocked) return;
 
       if (Game.visiblePopupsCount < Game.maxPopups || manualForce) {
          if (!this.displayed) {
@@ -89,13 +89,13 @@ class Popup extends BaseStructure {
       this.displayObj.classList.add("hidden");
       console.log(`%c User closed ${this.displayName}.`, "color: #999");
 
-      const points = data[this.popupDataName].stats.points;
-      if (typeof points != "object" && givePoints && points !== undefined) {
+      const points = popupData[this.popupDataName].stats.points;
+      if (typeof points !== "object" && givePoints && points !== undefined) {
          Game.addLorem(points);
          writeLorem(Math.floor(points / Game.loremPerWrite), false);
       }
 
-      let redisplayTime = data[this.popupDataName].stats.redisplayTime;
+      let redisplayTime = popupData[this.popupDataName].stats.redisplayTime;
       if (typeof redisplayTime === "undefined") {
          redisplayTime = 15000;
          console.warn(`WARNING: Redisplay time not defined for ${this.displayName}. Defaulting to 15 seconds.`);
@@ -244,7 +244,7 @@ class Rain extends Popup {
       
       this.totalSapAmount = 0;
       this.createLetterInterval = setInterval(() => {
-         const sapAmount = data.rain.stats.sapAmount;
+         const sapAmount = popupData.rain.stats.sapAmount;
          // Stop if removing the lorem would bring the player to negative lorem
          if (sapAmount > Game.loremCount) return;
 
@@ -653,8 +653,8 @@ class AnnualSurvey extends Popup {
       }
 
       // Create 3-8 error popups
-      const min = data.annualSurvey.stats.points.min;
-      const max = data.annualSurvey.stats.points.max;
+      const min = popupData.annualSurvey.stats.points.min;
+      const max = popupData.annualSurvey.stats.points.max;
       let maxPopupCount = randomInt(min, max);
       let popupBounds = this.displayObj.getBoundingClientRect();
       this.popupPixelsLeft = popupBounds.x;
@@ -761,7 +761,7 @@ class ChunkyVirus extends Popup {
    }
    hidePopup() {
       super.hidePopup();
-      
+
       clearInterval(this.updateInterval);
    }
 }
