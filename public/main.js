@@ -68,14 +68,14 @@ class CookieObjectManager {
    }
    set() {
       // If the value of the cookie is not set, make it a default value.
-      if (getCookie(this.name) == '') {
+      if (getCookie(this.name) === '') {
          let newCookie = '';
          Object.keys(this.obj).forEach(() => newCookie += '0');
          setCookie(this.name, newCookie, 31);
       }
       // Set the values of the supplied object
       Object.keys(this.obj).forEach((propName, idx) => {
-         this.obj[propName][this.prop] = parseInt(getCookie(this.name).split('')[idx]) == 0 ? false : true;
+         this.obj[propName][this.prop] = parseInt(getCookie(this.name).split('')[idx]) === 0 ? false : true;
       });
    }
    update() {
@@ -200,7 +200,6 @@ function setOpenedRewards() {
    }
 
    Object.keys(messages).forEach((letter, index) => {
-      console.log(messages[letter].rewards);
       if (messages[letter].rewards != undefined) {
          messages[letter].rewards.opened = parseInt(getCookie("openedRewards").split("")[index]) == 1 ? true : false;
       }

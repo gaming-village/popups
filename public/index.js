@@ -512,13 +512,13 @@ const terminal = {
                terminal.writeLine(['WARNING: ', '#ffbb29'], ['Popup ', '#888'], [`'${name}'`, '#aaa'], [' is not unlocked yet.', '#888'])
                return;
             }
-            popups[name].showPopup();
+            popups[name].show();
          }
       },
       killall: {
          returnVal: () => {
             for (const popup of Object.values(popups)) {
-               if (popup.displayed) popup.hidePopup();
+               if (popup.displayed) popup.hide();
             }
          }
       },
@@ -875,7 +875,7 @@ function switchView(view) {
 window.addEventListener('beforeunload', e => {
    // Confirmation thing if rain is open
    if (popups.rain.displayed) {
-      popups.rain.hidePopup();
+      popups.rain.hide();
 
       e.preventDefault();
       e.returnValue = '';
@@ -1048,43 +1048,43 @@ function keyPress() {
 function showPopupsAttempt() {
    switch (iterationCount - checkOffset) {
       case 50:
-         popups.microsoftAntivirus.showPopup();
+         popups.microsoftAntivirus.show();
          break;
       case 100:
-         popups.annualSurvey.showPopup();
+         popups.annualSurvey.show();
          break;
       case 150:
-         popups.browserError.showPopup();
+         popups.browserError.show();
          break;
       case 175:
-         popups.luremImpsir.showPopup();
+         popups.luremImpsir.show();
          break;
       case 200:
-         popups.freeIPhone.showPopup();
+         popups.freeIPhone.show();
          break;
       case 225:
-         popups.bankDetails.showPopup();
+         popups.bankDetails.show();
          break;
       case 250:
-         popups.chunky.showPopup();
+         popups.chunky.show();
          break;
       case 275:
-         popups.ramDownload.showPopup();
+         popups.ramDownload.show();
          break;
       case 300:
-         popups.rain.showPopup();
+         popups.rain.show();
          break;
       case 325:
-         popups.expandinator.showPopup();
+         popups.expandinator.show();
          break;
       case 350:
-         popups.visitor.showPopup();
+         popups.visitor.show();
          break;
       case 375:
-         popups.devHire.showPopup();
+         popups.devHire.show();
          break;
       case 400:
-         popups.adblockBlocker.showPopup();
+         popups.adblockBlocker.show();
          break;
    }
 }
@@ -1413,8 +1413,8 @@ function miscToolsSetup() {
       appendToDevtools(getElement("misc-tools"));
    });
 
-   getElement("summon-chunky").addEventListener("click", () => {
-      popups.chunky.activateChunky();
+   getElement('summon-chunky').addEventListener("click", () => {
+      popups.chunky.activate();
    });
 }
 function summonPopupSetup() {
@@ -1449,7 +1449,7 @@ function summonPopupSetup() {
    const submitButton = getElement("summon-popup-submit");
    submitButton.addEventListener("click", () => {
       for (let i = 0; i < popupNames.length; i++) {
-         if (selectedPopups[popupNames[i]]) popups[popupNames[i]].showPopup(false, true);
+         if (selectedPopups[popupNames[i]]) popups[popupNames[i]].show(false, true);
       }
    });
 
@@ -1457,7 +1457,7 @@ function summonPopupSetup() {
    const summonAllButton = getElement("summon-popup-all");
    summonAllButton.addEventListener("click", () => { 
       console.log('hiding');
-      Object.values(popups).forEach(popup => popup.showPopup(false, true));
+      Object.values(popups).forEach(popup => popup.show(false, true));
    });
 }
 function dataSetup() {
