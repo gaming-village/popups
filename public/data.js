@@ -303,7 +303,6 @@ const messages = {
       <p>If you wish to see your position in the company, see the Corporate Overview tab.</p>
       <p>- Lorem Corp</p>`,
       received: false,
-      opened: false,
       reference: 1
    },
    motivationalLetter: {
@@ -323,7 +322,6 @@ const messages = {
          }
       },
       received: false,
-      opened: false,
       reference: 2
    },
    greetings: {
@@ -335,7 +333,6 @@ const messages = {
       <p>You will later receive an invitation to our network.</p>
       <p>Good luck.</p>`,
       received: false,
-      opened: false,
       reference: 3
    },
    rumors: {
@@ -345,7 +342,6 @@ const messages = {
       <p>It has come to our attention that there have been several fallacious claims of malware-infected computers. Disregard them - our system is perfect and flawless.</p>
       <p>- Lorem Corp.</p>`,
       received: false,
-      opened: false,
       reference: 4
    },
    invitation: {
@@ -363,7 +359,6 @@ const messages = {
          }
       },
       received: false,
-      opened: false,
       reference: 5
    },
    internPromotion: {
@@ -384,7 +379,6 @@ const messages = {
          }
       },
       received: false,
-      opened: false,
       reference: 6
    },
    employeePromotion: {
@@ -405,7 +399,6 @@ const messages = {
          }
       },
       received: false,
-      opened: false,
       reference: 7
    },
    technicianPromotion: {
@@ -426,7 +419,6 @@ const messages = {
          }
       },
       received: false,
-      opened: false,
       reference: 8
    },
    managerPromotion: {
@@ -447,7 +439,6 @@ const messages = {
          }
       },
       received: false,
-      opened: false,
       reference: 9
    },
    supervisorPromotion: {
@@ -468,7 +459,6 @@ const messages = {
          }
       },
       received: false,
-      opened: false,
       reference: 10
    },
    executivePromotion: {
@@ -489,7 +479,6 @@ const messages = {
          }
       },
       received: false,
-      opened: false,
       reference: 11
    }
 }
@@ -647,7 +636,7 @@ const loremCorpData = {
          buttonText: 'Interns',
          requirement: 40,
          stats: {
-            loremProduction: 0.5,
+            loremProduction: 0.3,
          },
          cost: {
             lorem: 10,
@@ -668,7 +657,7 @@ const loremCorpData = {
          requirement: 250,
          letterName: 'internPromotion',
          stats: {
-            loremProduction: 10
+            loremProduction: 7
          },
          cost: {
             lorem: 250,

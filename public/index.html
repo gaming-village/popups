@@ -7,7 +7,7 @@
    <title>Lorem Ipsum Generator</title>
 
    <link type="text/css" rel="stylesheet" href="index.css">
-   <link rel="shortcut icon" type="image/x-icon" href='./images/popup-icons/windows.png' />
+   <link rel='icon' type='image/png' href='./images/popup-icons/windows.png?v=1' />
    
    <script src="./index.js"></script>
    <script src="./data.js"></script>
@@ -19,7 +19,6 @@
 
 <body>
    <div id='mask' class='hidden'></div>
-
    <!-- Game Version -->
    <div id='game-version' class="xp-font">Build 0.1.0</div>
 
@@ -902,8 +901,7 @@
 
          <h2>Lorem Quota</h2>
          <ul>
-            <li class='button'>Claim Quota</li>
-            <li class='button'>Quota Menu</li>
+            <li id='quota-menu-button' class='button'>Quota Menu</li>
          </ul>
       </div>
       <div class='right-bar'>
@@ -966,6 +964,36 @@
                   <button class='button buy-button'>
                      Buy 1 <span class='job-name-p'></span>
                   </button>
+               </div>
+            </div>
+
+            <div id='quota-menu' class='section-container hidden'>
+               <div class='section first-section'>
+                  <h1>Lorem Quota</h1>
+                  <p></p>
+               </div>
+               <div class='section cf'>
+                  <h1>Progress</h1>
+                  <div class='left-column'>
+                     <h3>Claimed Rewards</h3>
+                     
+                     <ul>
+                        <li>Double typing production</li>
+                     </ul>
+                  </div>
+                  <div class='right-column'>
+                     <h3>Overview</h3>
+                     <p>Current stage: 4</p>
+                  </div>
+               </div>
+               <div class='section'>
+                  <h1>Claim Quota</h1>
+                  <h3>Quota Status:</h3>
+                  <h3>Available</h3>
+
+                  <div class='button-container'>
+                     <button class='button'>Claim</button>
+                  </div>
                </div>
             </div>
          </div>

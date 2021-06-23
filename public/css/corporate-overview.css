@@ -34,6 +34,20 @@
 }
 #corporate-overview .left-bar li.button {
    margin-left: 1rem;
+   position: relative;
+}
+#corporate-overview .left-bar li.button:hover::after {
+   content: '';
+   background-color: red;
+   border: 2px solid #000;
+   border-radius: 3px;
+   position: absolute;
+   top: -4px;
+   left: -4px;
+   bottom: -4px;
+   right: -4px;
+   pointer-events: none;
+   transform: translateX(100%);
 }
 #corporate-overview .left-bar li.button:not(.selected) {
    border-top-color: #d6d6d6;
@@ -84,6 +98,7 @@
    transform: translateX(-50%);
 }
 #corporate-overview .section {
+   min-width: 20rem;
    background-color: #ccc;
    border: 2px solid;
    border-top-color: #fff;
@@ -101,7 +116,7 @@
    color: #fff;
    text-align: center;
    font-size: 1.5rem;
-   background-color: #777;
+   background-color: rgb(13, 44, 180);
    margin: 0 0 0.5rem;
 }
 #corporate-overview .section h2 {

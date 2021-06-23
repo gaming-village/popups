@@ -53,6 +53,11 @@ const Game = {
                this.workers[name] = parseInt(workerCount);
             }
          }
+
+         const quotaMenuButton = getElement('quota-menu-button');
+         quotaMenuButton.addEventListener('click', () => {
+            this.showView('quota-menu', quotaMenuButton);
+         });
       },
       updatePromotionProgress: function() {
          // Update the progress bar and text
@@ -101,13 +106,12 @@ const Game = {
       },
       showView: function(viewID, button) {
          // Remove all selected button styles
-         const selectedButton = document.querySelector('#job-button-container .button.selected');
+         const selectedButton = document.querySelector('#corporate-overview .button.selected');
          if (selectedButton != undefined) selectedButton.classList.remove('selected');
-         console.log(button);
+
          const view = getElement(viewID);
          if (!view.classList.contains('hidden')) {
             // If view is visible
-            console.log('unselect');
             view.classList.add('hidden');
             getElement('home-page').classList.remove('hidden');
          }
@@ -146,7 +150,7 @@ const Game = {
       },
       updateWorkerInfo(view, job) {
          // Overview
-         view.querySelector('.lorem-production').innerHTML = loremCorpData.jobs[job[0]].stats.loremProduction * this.workers[job[0]];
+         view.querySelector('.lorem-production').innerHTML = formatFloat(loremCorpData.jobs[job[0]].stats.loremProduction * this.workers[job[0]], 2);
          view.querySelector('.worker-count').innerHTML = this.workers[job[0]];
          view.querySelector('.workforce-count').innerHTML = job[1].cost.workforce * this.workers[job[0]];
 
@@ -259,7 +263,7 @@ const Game = {
          getElement(`${shop.name}-segment`).classList.remove("locked");
 
          shop.unlocked = true;
-         updateUnlockedShopsCookie();
+         cookies.unlockedShops.update();
 
          const shopObject = getElement(`${shop.name}-segment`);
          shopObject.querySelector("h2").innerHTML = shop.display.title;
@@ -753,7 +757,7 @@ function showPrompt(prompt) {
    getElement("message").innerHTML = prompts[prompt].content;
 
    prompts[prompt].received = true;
-   updateReceivedPromptsCookie();
+   cookies.receivedPrompts.update();
 }
 function closePrompt() {
    getElement("mask").classList.add("hidden");
@@ -1189,7 +1193,7 @@ function showLetter(letter) {
    
    // Remember it as opened
    letter.opened = true;
-   updateOpenedMessagesCookie();
+   cookies.openedMessages.update();
 
    // Update the paper's text
    paper.innerHTML = `<h3>${letter.title}</h3> ${letter.content}`;
@@ -1244,7 +1248,7 @@ function receiveLetter(letterName) {
 
    letter.received = true;
    createInboxEntry(letter);
-   updateReceivedMessagesCookie();
+   cookies.receivedMessages.update();
 
    if (!letter.opened) {
       newLetterAlert(letter);
@@ -1468,11 +1472,9 @@ function dataSetup() {
 
       // Reset cookies when the reset button is clicked
       const otherCookies = ['lorem', 'packets', 'recievedPrompts', 'openedMessages', 'openedRewards', 'receivedMessages', 'unlockedMalware', 'receivedPrompts', 'unlockedShops', 'misc'];
-      console.log(otherCookies);
-      const cookies = [...workerCookies, ...otherCookies];
-      console.log(cookies);
+      const allCookies = [...workerCookies, ...otherCookies];
       // Delete cookies
-      cookies.forEach(cookie => document.cookie = cookie +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;');
+      allCookies.forEach(cookie => document.cookie = cookie +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;');
       // Reload the page
       location.reload();
    });
