@@ -57,6 +57,15 @@ function slugCase(str) {
 
 
 
+/***** SOUNDS  *****/
+class Sound {
+   constructor(path) {
+      this.audio = new Audio(path);
+      this.audio.play();
+   }
+}
+
+
 
 /***** COOKIE STUFF *****/
 class CookieObjectManager {

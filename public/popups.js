@@ -31,7 +31,7 @@ class Popup extends BaseStructure {
          displayName[i] = displayName[i][0].toUpperCase() + displayName[i].substring(1);
          if (i != displayName.length - 1) displayName[i] += " ";
       }
-      return displayName.join("");
+      return displayName.join('');
    }
    show(noMove = false, manualForce = false) {
       if (!popupData[this.popupDataName].unlocked) return;
@@ -42,7 +42,7 @@ class Popup extends BaseStructure {
             console.log(`%c Displayed ${this.displayName}.`, "color: #999");
             
             clearTimeout(this.redisplayDelay);
-            this.displayObj.classList.remove("hidden");
+            this.displayObj.classList.remove('hidden');
             this.displayed = true;
 
             if (!noMove) this.moveToRandomPosition(30);
@@ -72,10 +72,7 @@ class Popup extends BaseStructure {
       }
 
       // Show a queued popup
-      console.log(Game.popupQueue);
-      console.log(Game.popupQueue.length);
       if (Game.popupQueue.length >= 1) {
-         console.log(popups[Game.popupQueue[0]]);
          popups[Game.popupQueue[0]].show(false, true);
       }
 
@@ -89,16 +86,10 @@ class Popup extends BaseStructure {
          writeLorem(Math.floor(points / Game.loremPerWrite), false);
       }
 
-      let redisplayTime = popupData[this.popupDataName].stats.redisplayTime;
-      if (typeof redisplayTime === "undefined") {
-         redisplayTime = 15000;
-         console.warn(`WARNING: Redisplay time not defined for ${this.displayName}. Defaulting to 15 seconds.`);
-      }
+      const redisplayTime = popupData[this.popupDataName].stats.redisplayTime;
+      if (typeof redisplayTime === 'undefined') return;
 
       this.redisplayDelay = setTimeout(() => this.show(), redisplayTime);
-   }
-   deletePopup(popup) {
-      popup.remove();
    }
 }
 
@@ -176,21 +167,25 @@ class BrowserError extends Popup {
    constructor(popupDataName) {
       super(popupDataName);
 
+      this.moveInterval = null;
+      
       getElement('browser-error-close').addEventListener('click', () => this.hide());
    }
    show(noMove = false, manualForce = false) {
       super.show(noMove, manualForce);
       if (!this.displayed) return;
 
-      clearInterval(this.moveInterval);
-      this.moveInterval = setInterval(() => {
-         this.moveToRandomPosition(30);
-      }, 1500);
+      if (this.moveInterval === null) {
+         this.moveInterval = setInterval(() => {
+            this.moveToRandomPosition(30);
+         }, 1500);
+      }
    }
    hide(givePoints = true) {
       super.hide(givePoints);
 
       clearInterval(this.moveInterval);
+      this.moveInterval = null;
    }
 }
 class FreeIPhone extends Popup {
@@ -670,7 +665,7 @@ class AnnualSurvey extends Popup {
       }, 20);
 
       copy.querySelector(".close-icon").addEventListener("click", () => {
-         this.deletePopup(copy);
+         copy.remove();
          Game.addLorem(1);
       });
    }
@@ -679,29 +674,27 @@ class AdblockBlocker extends Popup {
    constructor(popupDataName) {
       super(popupDataName);
 
-      getElement("adblock-blocker-close").addEventListener("click", () => {
+      getElement('adblock-blocker-close').addEventListener("click", () => {
+         this.showAds(5);
          this.hide();
       });
-      const leaveButton = getElement("adblockExit");
-      leaveButton.addEventListener("mouseenter", () => {
-         leaveButton.classList.add("invisible");
+
+      const leaveButton = getElement('adblockExit');
+      leaveButton.addEventListener('mouseenter', () => {
+         leaveButton.classList.add('invisible');
       });
-      leaveButton.addEventListener("mouseleave", () => {
-         leaveButton.classList.remove("invisible");
+      leaveButton.addEventListener('mouseleave', () => {
+         leaveButton.classList.remove('invisible');
       });
    }
-   hide() {
-      super.hide();
-      for (let i = 1; i <= 5; i++) {
-         setTimeout(() => {
-            semiPopups["ad" + i].show();
-         }, i * 50);
-         getElement("ad" + i).querySelector(".close-icon").addEventListener("click", () => {
-            semiPopups["ad" + i].hide();
-            Game.addLorem(1.5);
-         });
-         dragElement(this.displayObj, this.displayObj.querySelector(".popup-title"));
-      }
+   showAds(n) {
+      semiPopups['ad' + n].show();
+      dragElement(this.displayObj, this.displayObj.querySelector('.popup-title'));
+
+      if (n <= 1) return;
+      setTimeout(() => {
+         this.showAds(n - 1);
+      }, 50);
    }
 }
 class ChunkyVirus extends Popup {
@@ -715,10 +708,7 @@ class ChunkyVirus extends Popup {
       });
    }
    duplicatePopup() {
-      // Reset the timer.
       this.baseTime = 10;
-
-      // Decrement points.
       Game.addLorem(-3);
 
       // Create a copy.
@@ -746,7 +736,7 @@ class ChunkyVirus extends Popup {
 
                if (this.copies[virusKeys[i]].copyTime <= 0) {
                   // Remove the copy.
-                  this.deletePopup(this.copies[virusKeys[i]].displayObj);
+                  this.copies[virusKeys[i]].displayObj.remove();
                   delete this.copies[virusKeys[i]];
                }
             }

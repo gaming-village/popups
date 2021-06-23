@@ -9,12 +9,12 @@ class SemiPopup extends BaseStructure {
 
       dragElement(this.displayObj, getElement(`${this.slugCase}-title`));
    }
-   showPopup(range = 40) {
+   show(range = 40) {
       this.displayObj.classList.remove("hidden");
       this.moveToRandomPosition(range);
       this.displayed = true;
    }
-   hidePopup() {
+   hide() {
       this.displayObj.classList.add("hidden");
       this.displayed = false;
    }
@@ -25,11 +25,11 @@ class ChunkyMessage extends SemiPopup {
       super(popupDataName);
       this.isChunky = true;
    }
-   showPopup() {
-      super.showPopup(0);
+   show() {
+      super.show(0);
 
       setTimeout(() => {
-         this.hidePopup();
+         this.hide();
       }, 20000);
    }
 }
@@ -38,13 +38,13 @@ class PlagueOfChunky extends SemiPopup {
       super(popupDataName);
       this.isChunky = true;
    }
-   showPopup() {
-      super.showPopup(60);
+   show() {
+      super.show(60);
 
       Game.multLorem(0.65, true);
 
       const displayTime = 7500;
-      setTimeout(() => this.hidePopup(), displayTime);
+      setTimeout(() => this.hide(), displayTime);
    }
 }
 class ScourgeOfChunky extends SemiPopup {
@@ -54,18 +54,18 @@ class ScourgeOfChunky extends SemiPopup {
       this.activated = false;
       this.isChunky = true;
    }
-   showPopup() {
-      super.showPopup(60);
+   show() {
+      super.show(60);
 
       this.activated = true;
 
       const displayTime = 20; // In seconds
       setTimeout(() => {
-         this.hidePopup();
+         this.hide();
       }, displayTime * 1000);
    }
-   hidePopup() {
-      super.hidePopup();
+   hide() {
+      super.hide();
 
       this.activated = false;
    }
@@ -75,8 +75,8 @@ class WrathOfChunky extends SemiPopup {
       super(popupDataName);
       this.isChunky = true;
    }
-   showPopup() {
-      super.showPopup(60);
+   show() {
+      super.show(60);
 
       // Move all popups.
       const movePopupsInterval = setInterval(() => {
@@ -88,7 +88,7 @@ class WrathOfChunky extends SemiPopup {
 
       const clearIntervalTime = 10000;
       setTimeout(() => {
-         this.hidePopup();
+         this.hide();
          clearInterval(movePopupsInterval);
       }, clearIntervalTime);
    }
@@ -101,13 +101,13 @@ class HexOfChunky extends SemiPopup {
       this.associateList = {};
       this.isChunky = true;
    }
-   showPopup() {
-      super.showPopup(60);
+   show() {
+      super.show(60);
 
       this.associateTimer();
 
       const hideTimer = setTimeout(() => {
-         this.hidePopup();
+         this.hide();
          clearInterval(this.createAssociateTimer);
       }, 10000);
 
@@ -191,31 +191,25 @@ class HexOfChunky extends SemiPopup {
       }
    }
 }
-class Ad1 extends SemiPopup {
+
+class Ad extends SemiPopup {
    constructor(popupDataName) {
       super(popupDataName);
+      
+      this.displayObj.querySelector('.close-icon').addEventListener('click', () => {
+         this.hide();
+      });
+   }
+   hide() {
+      super.hide();
+      Game.addLorem(1.5);
    }
 }
-class Ad2 extends SemiPopup {
-   constructor(popupDataName) {
-      super(popupDataName);
-   }
-}
-class Ad3 extends SemiPopup {
-   constructor(popupDataName) {
-      super(popupDataName);
-   }
-}
-class Ad4 extends SemiPopup {
-   constructor(popupDataName) {
-      super(popupDataName);
-   }
-}
-class Ad5 extends SemiPopup {
-   constructor(popupDataName) {
-      super(popupDataName);
-   }
-}
+class Ad1 extends Ad {}
+class Ad2 extends Ad {}
+class Ad3 extends Ad {}
+class Ad4 extends Ad {}
+class Ad5 extends Ad {}
 
 class LoremWarning extends SemiPopup {
    constructor(popupDataName) {
@@ -225,16 +219,16 @@ class LoremWarning extends SemiPopup {
          addPoints(-1);
       });
 
-      getElement("lorem-warning-close").addEventListener("click", () => this.hidePopup());
+      getElement("lorem-warning-close").addEventListener("click", () => this.hide());
    }
-   hidePopup() {
-      super.hidePopup();
+   hide() {
+      super.hide();
 
       // continued = true;
       // getElement("a").classList.remove("unclickable");
    }
-   showPopup() {
-      super.showPopup(30);
+   show() {
+      super.show(30);
 
       // getElement("a").classList.add("unclickable");
    }

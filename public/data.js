@@ -154,7 +154,6 @@ const popupData = {
             description: "Chunky grows angry.",
             special: "Duplicates itself when closed, automatically closes within a time limit when not closed.",
             points: 3,
-            redisplayTime: Math.random() * 10000 + 15000,
             cost: 5
         },
         display: {
@@ -190,7 +189,6 @@ const popupData = {
             description: "Chunky's banana plantation.",
             special: "Generates 10-20 bananas which explode into points.",
             points: 0,
-            redisplayTime: 45000,
             cost: 15
         },
         display: {

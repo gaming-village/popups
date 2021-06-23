@@ -58,6 +58,9 @@ const Game = {
          quotaMenuButton.addEventListener('click', () => {
             this.showView('quota-menu', quotaMenuButton);
          });
+
+         // Set the workers to make lorem
+         Game.loremCorp.setWorkerGainInterval();
       },
       updatePromotionProgress: function() {
          // Update the progress bar and text
@@ -685,7 +688,7 @@ class AlertBox {
       alertBox.querySelector("h3").innerHTML = title;
       alertBox.querySelector("h2").innerHTML = content;
 
-      alertBox.querySelector("img").addEventListener("click", () => {
+      alertBox.querySelector('.close-icon').addEventListener("click", () => {
          alertBox.remove();
          delete this;
       });
@@ -886,12 +889,11 @@ window.onload = () => {
    instantiateClasses();
 
    LoadData();
+
    setupNavBar();
+   setupComputerBar();
 
-   // Set the Game lorem count
    Game.setup.setupLorem();
-
-   // Setup the lorem quota
    Game.loremQuota = new LoremQuota(Game.nextLoremQuota);
 
    // Unlock lorem quota. (Has to be done after LoadData because loremQuota doesn't exist until then)
@@ -907,17 +909,15 @@ window.onload = () => {
    displayPoints(0);
 
    // Show the admission message and the starting letter.
-   showPrompt("admission");
+   showPrompt('admission');
    receiveLetter("start");
 
    dragElement(getElement("pointCounterContainer"), getElement("point-counter-title"));
 
    changeViewHeights();
-   window.addEventListener("resize", () => changeViewHeights());
+   window.addEventListener('resize', () => changeViewHeights());
 
    setupDevtools();
-
-   getElement("header-title").addEventListener("click", () => getElement("devtools").classList.remove("hidden"));
 
    switchView("computer");
 
@@ -941,10 +941,14 @@ window.onload = () => {
    // File system setup
    // fileSystem.startApplications();
 
-   // Set the workers to make lorem
-   Game.loremCorp.setWorkerGainInterval();
-
    document.body.classList.add('ct-95');
+
+}
+
+function setupComputerBar() {
+   getElement('start-icon').addEventListener('click', () => {
+      new Sound('./audio/windows-xp-startup.mp3');
+   });
 }
 
 function changeViewHeights() {
@@ -1377,9 +1381,9 @@ function dragElement(elmnt, start) {
 }
 
 
-// DEVTOOLS
+/***** DEVTOOLS *****/
 function setupDevtools() {
-   // Devtools won't be draggable.
+   getElement("header-title").addEventListener("click", () => getElement("devtools").classList.remove("hidden"));
 
    summonPopupSetup();
    miscToolsSetup();
