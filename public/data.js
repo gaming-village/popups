@@ -647,7 +647,7 @@ const loremCorpData = {
          buttonText: 'Interns',
          requirement: 40,
          stats: {
-            loremProduction: 1,
+            loremProduction: 0.5,
          },
          cost: {
             lorem: 10,

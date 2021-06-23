@@ -32,41 +32,32 @@
    padding: 0;
    margin: 0;
 }
-#corporate-overview .left-bar li.xp-button {
-   width: calc(100% - 3rem);
-   margin: 0 0 0.3rem 1rem;
+#corporate-overview .left-bar li.button {
+   margin-left: 1rem;
 }
-#corporate-overview .left-bar li.xp-button:not(.selected) {
+#corporate-overview .left-bar li.button:not(.selected) {
    border-top-color: #d6d6d6;
    border-left-color: #d6d6d6;
    border-bottom-color: #444;
    border-right-color: #444;
    background-color: #b5b5b5;
 }
-#corporate-overview .left-bar li.xp-button:not(.selected):hover {
+#corporate-overview .left-bar li.button:not(.selected):hover {
    border-top-color: #dedede;
    border-left-color: #dedede;
    border-bottom-color: #555;
    border-right-color: #555;
    background-color: #bababa;
 }
-#corporate-overview .left-bar li.xp-button:not(.selected):active {
+#corporate-overview .left-bar li.button:not(.selected):active {
    border-top-color: #d0d0d0;
    border-left-color: #d0d0d0;
    border-bottom-color: #444;
    border-right-color: #444;
    background-color: #b0b0b0;
 }
-#corporate-overview .left-bar li:not(.xp-button) {
-   padding: 0 0.2rem;
-   margin: 0.2rem 1rem;
-   border: 2px solid;
-   border-top-color: #888;
-   border-right-color: #eee;
-   border-bottom-color: #eee;
-   border-left-color: #888;
-   display: table;
-}
+
+/***** RIGHT BAR *****/
 #corporate-overview .right-bar {
    width: calc(100% - clamp(15%, 15rem, 30%) - 2px);
    height: calc(100% - 2px);
@@ -136,11 +127,11 @@
    text-decoration: underline;
    margin: 0;
 }
-.section:not(#job-status) .xp-button {
+.section:not(#job-status) .button {
    margin: 0.3rem 0 0;
    float: right;
 }
-#job-status .xp-button {
+#job-status .button {
    margin: 0.5rem 0 0 50%;
    transform: translateX(-50%);
 }
