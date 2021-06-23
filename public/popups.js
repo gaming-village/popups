@@ -761,6 +761,7 @@ class ChunkyVirus extends Popup {
    }
    hidePopup() {
       super.hidePopup();
+      
       clearInterval(this.updateInterval);
    }
 }
@@ -805,6 +806,8 @@ class ChunkyVirusCopy {
 class ChunkyPlantation extends Popup {
    constructor(popupDataName) {
       super(popupDataName);
+
+      this.updateTimerInterval = null;
    }
    showPopup(noMove = false, manualForce = false) {
       super.showPopup(noMove, manualForce);
@@ -820,14 +823,16 @@ class ChunkyPlantation extends Popup {
       getElement('chunky-plantation-timer').innerHTML = this.currentTimerTime;
       getElement('chunky-plantation-count').innerHTML = '0 bananas remaining';
 
-      this.updateTimerText = setInterval(() => {
-         this.currentTimerTime -= 0.1;
+      if (this.updateTimerInterval === null) {
+         this.updateTimerText = setInterval(() => {
+            this.currentTimerTime -= 0.1;
 
-         getElement('chunky-plantation-timer').innerHTML = formatFloat(this.currentTimerTime);
-         if (this.currentTimerTime <= 0) {
-            this.hidePopup();
-         }
-      }, 100);
+            getElement('chunky-plantation-timer').innerHTML = formatFloat(this.currentTimerTime);
+            if (this.currentTimerTime <= 0) {
+               this.hidePopup();
+            }
+         }, 100);
+      }
 
       // Show the bananas
       const bananaCount = randomInt(10, 15, true);
@@ -841,7 +846,9 @@ class ChunkyPlantation extends Popup {
    }
    hidePopup() {
       super.hidePopup();
+      
       clearInterval(this.updateTimerText);
+      this.updateTimerInterval = null;
    }
 }
 class ChunkyPlantationBanana {

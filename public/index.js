@@ -101,12 +101,13 @@ const Game = {
       },
       showView: function(viewID, button) {
          // Remove all selected button styles
-         const selectedButton = document.querySelector('#job-button-container .xp-button.selected');
+         const selectedButton = document.querySelector('#job-button-container .button.selected');
          if (selectedButton != undefined) selectedButton.classList.remove('selected');
          console.log(button);
          const view = getElement(viewID);
          if (!view.classList.contains('hidden')) {
             // If view is visible
+            console.log('unselect');
             view.classList.add('hidden');
             getElement('home-page').classList.remove('hidden');
          }
@@ -1451,6 +1452,7 @@ function summonPopupSetup() {
    // Add the summon all button functionality.
    const summonAllButton = getElement("summon-popup-all");
    summonAllButton.addEventListener("click", () => { 
+      console.log('hiding');
       Object.values(popups).forEach(popup => popup.showPopup(false, true));
    });
 }

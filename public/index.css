@@ -838,18 +838,33 @@ button.close-button {
 
 .close-icon {
    float: right;
+   cursor: pointer;
+}
+.ct-xp .close-icon {
    opacity: 0.75;
    margin-top: -0.1rem;
    margin-right: -0.2rem;
-   cursor: pointer;
 }
-
 .close-icon:not(.close-gray):hover {
    opacity: 1;
 }
-
 .close-icon:active {
    opacity: 0.75;
+}
+.ct-95 .close-icon {
+   --size: 23px;
+   width: var(--size);
+   height: var(--size);
+   background-image: url(./images/win95/win95-close-button.png);
+   background-size: var(--size) var(--size);
+   margin-top: 1px;
+   opacity: 0.95;
+}
+.ct-95 .close-icon:hover {
+   opacity: 1;
+}
+.ct-95 .close-icon:active {
+   opacity: 0.9;
 }
 
 .close-gray {
