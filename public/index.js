@@ -861,7 +861,7 @@ function updateLoremCounter(add) {
    }, 30);
 }
 
-const views = ['computer', "about", 'black-market', 'corporate-overview'];
+const views = ['computer', "about", 'black-market', 'corporate-overview', 'settings'];
 const viewEvents = {
    about: {
       open: function() {
@@ -966,7 +966,7 @@ window.onload = () => {
    document.body.classList.add('ct-95');
 
    welcomeScreen.load();
-   const received = getCookie('receivedMessages').split('')[0];
+   const received = getCookie('receivedLetters').split('')[0];
    if (received === '0') {
       welcomeScreen.show();
    } else {
@@ -1236,7 +1236,7 @@ function showLetter(letterObj) {
    
    // Remember it as opened
    letter.opened = true;
-   cookies.openedMessages.update();
+   cookies.openedLetters.update();
 
    // Update the paper's text
    paper.innerHTML = `<h3>${letter.title}</h3> ${letter.content}`;
@@ -1291,7 +1291,7 @@ function receiveLetter(letterName) {
 
    letter.received = true;
    createInboxEntry([letterName, letters[letterName]]);
-   cookies.receivedMessages.update();
+   cookies.receivedLetters.update();
 
    if (!letter.opened) {
       newLetterAlert(letter);
@@ -1517,7 +1517,7 @@ function dataSetup() {
       workerCookies = workerCookies.map(cookie => cookie[0]);
 
       // Reset cookies when the reset button is clicked
-      const otherCookies = ['lorem', 'packets', 'recievedPrompts', 'openedMessages', 'openedRewards', 'receivedMessages', 'unlockedMalware', 'receivedPrompts', 'unlockedShops', 'misc'];
+      const otherCookies = ['lorem', 'packets', 'openedLetters', 'openedRewards', 'receivedLetters', 'unlockedMalware', 'unlockedShops', 'misc'];
       const allCookies = [...workerCookies, ...otherCookies];
       // Delete cookies
       allCookies.forEach(cookie => document.cookie = cookie +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;');

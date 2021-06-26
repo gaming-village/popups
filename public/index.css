@@ -2,9 +2,10 @@
 @import url(./css/computer-nav-bar.css);
 @import url(./css/about.css);
 @import url(./css/black-market.css);
-@import url(./css/popups/popups.css);
+@import url(./css/popups.css);
 @import url(./css/corporate-overview.css);
 @import url(./css/applications.css);
+@import url(./css/settings.css);
 
 @import url(./fonts/windows-font.css);
 @import url(./fonts/ms-sans-serif-font.css);

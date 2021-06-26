@@ -99,8 +99,8 @@ class CookieObjectManager {
 const cookies = {};
 const LoadData = () => {
    cookies.unlockedMalware = new CookieObjectManager('unlockedMalware', popupData, 'unlocked');
-   cookies.receivedMessages = new CookieObjectManager('receivedMessages', letters, 'received');
-   cookies.openedMessages = new CookieObjectManager('openedMessages', letters, 'opened');
+   cookies.receivedLetters = new CookieObjectManager('receivedLetters', letters, 'received');
+   cookies.openedLetters = new CookieObjectManager('openedLetters', letters, 'opened');
    cookies.unlockedShops = new CookieObjectManager('unlockedShops', blackMarketShops, 'unlocked');
 
    setOpenedRewards();
