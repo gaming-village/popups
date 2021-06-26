@@ -172,6 +172,7 @@
 }
 
 #welcome-screen {
+   width: clamp(30%, 40rem, 100%);
    font-family: 'MS Sans Serif';
    background-color: #ccc;
    border: 2px solid;
