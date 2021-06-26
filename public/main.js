@@ -129,13 +129,20 @@ function setSettingsCookie() {
          case 2:
             Game.settings.progressType = parseInt(char);
             break;
+         case 3:
+            const animatedBGs = char === '1' ? true : false;
+            Game.settings.animatedBGs = animatedBGs;
+            break;
          default:
             console.warn(`WARNING! Char ${idx + 1} not found in the settings cookie.`);
       }
    });
 }
 function updateSettingsCookie() {
-   let newCookie = Game.settings.dpp.toString() + Game.settings.progressType.toString();
+   const dpp = Game.settings.dpp.toString();
+   const progressType = Game.settings.progressType.toString();
+   const animatedBGs = Game.settings.animatedBGs ? '1' : '0';
+   let newCookie = dpp + progressType + animatedBGs;
    setCookie('settings', newCookie);
 }
 

@@ -6,6 +6,7 @@ const Game = {
    settings: {
       dpp: 2,
       progressType: 2,
+      animatedBGs: false,
       setup: function() {
          const dppSlider = getElement('settings-dpp').querySelector('input');
          dppSlider.addEventListener('input', () => {
@@ -13,9 +14,28 @@ const Game = {
             getElement('settings-dpp').querySelector('.selected-val').innerHTML = dppSlider.value;
             updateSettingsCookie();
          });
-
          dppSlider.value = this.dpp;
          getElement('settings-dpp').querySelector('.selected-val').innerHTML = this.dpp;
+
+         const progressTypeBox = getElement('settings-progress-type').querySelector('select');
+         const progressTypes = ['Percentage', 'Current/Total', 'Current/Total (Percentage)'];
+         progressTypeBox.addEventListener('input', () => {
+            this.progressType = progressTypes.indexOf(progressTypeBox.value) + 1;
+            getElement('settings-progress-type').querySelector('.selected-val').innerHTML = progressTypeBox.value;
+            updateSettingsCookie();
+         });
+         progressTypeBox.value = progressTypes[this.progressType - 1];
+         getElement('settings-progress-type').querySelector('.selected-val').innerHTML = progressTypes[this.progressType - 1];
+
+         const animatedBGBox = getElement('settings-animated-bgs').querySelector('input');
+         animatedBGBox.addEventListener('click', () => {
+            console.log(animatedBGBox.checked);
+            this.animatedBGs = animatedBGBox.checked;
+            getElement('settings-animated-bgs').querySelector('.selected-val').innerHTML = animatedBGBox.checked ? 'On' : 'Off';
+            updateSettingsCookie();
+         });
+         animatedBGBox.checked = this.animatedBGs;
+         getElement('settings-animated-bgs').querySelector('.selected-val').innerHTML = this.animatedBGs ? 'On' : 'Off';
       }
    },
    loremCorp: {
@@ -160,7 +180,7 @@ const Game = {
 
             button.addEventListener('click', () => {
                this.showView(job[0] + '-section', button);
-            })
+            });
 
             frag.appendChild(button);
          }
@@ -1537,7 +1557,7 @@ function dataSetup() {
       workerCookies = workerCookies.map(cookie => cookie[0]);
 
       // Reset cookies when the reset button is clicked
-      const otherCookies = ['lorem', 'packets', 'openedLetters', 'openedRewards', 'receivedLetters', 'unlockedMalware', 'unlockedShops', 'misc'];
+      const otherCookies = ['lorem', 'packets', 'openedLetters', 'openedRewards', 'receivedLetters', 'unlockedMalware', 'unlockedShops', 'misc', 'settings'];
       const allCookies = [...workerCookies, ...otherCookies];
       // Delete cookies
       allCookies.forEach(cookie => document.cookie = cookie +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;');
