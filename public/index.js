@@ -3,6 +3,21 @@ const semiPopups = {};
 const applications = {};
 
 const Game = {
+   settings: {
+      dpp: 2,
+      progressType: 2,
+      setup: function() {
+         const dppSlider = getElement('settings-dpp').querySelector('input');
+         dppSlider.addEventListener('input', () => {
+            this.dpp = parseInt(dppSlider.value);
+            getElement('settings-dpp').querySelector('.selected-val').innerHTML = dppSlider.value;
+            updateSettingsCookie();
+         });
+
+         dppSlider.value = this.dpp;
+         getElement('settings-dpp').querySelector('.selected-val').innerHTML = this.dpp;
+      }
+   },
    loremCorp: {
       setWorkerGainInterval: function() {
          const ms = 500;
@@ -68,7 +83,7 @@ const Game = {
          const progress = Game.loremCount / req * 100;
 
          
-         getElement('job-status').querySelector('h2.center').innerHTML = formatFloat(Game.loremCount, 1) + '/' + formatFloat(req, 1) + ' (' + formatFloat(progress) + '%)';
+         getElement('job-status').querySelector('h2.center').innerHTML = formatFloat(Game.loremCount) + '/' + formatFloat(req) + ' (' + formatFloat(progress) + '%)';
          const displayProgress = Math.min(progress, 100);
          getElement('job-status').querySelector('.progress-bar').style.width = displayProgress + '%';
       },
@@ -153,7 +168,7 @@ const Game = {
       },
       updateWorkerInfo(view, job) {
          // Overview
-         view.querySelector('.lorem-production').innerHTML = formatFloat(loremCorpData.jobs[job[0]].stats.loremProduction * this.workers[job[0]], 2);
+         view.querySelector('.lorem-production').innerHTML = formatFloat(loremCorpData.jobs[job[0]].stats.loremProduction * this.workers[job[0]]);
          view.querySelector('.worker-count').innerHTML = this.workers[job[0]];
          view.querySelector('.workforce-count').innerHTML = job[1].cost.workforce * this.workers[job[0]];
 
@@ -388,6 +403,7 @@ const Game = {
    },
 
    nextLoremQuota: 50,
+   currentQuota: -1,
    get quotaPromotions () {
       let returnArr = [];
       for (const quotaReward of Object.values(loremQuotaData)) {
@@ -402,6 +418,7 @@ const Game = {
       const quotaIndex = Game.quotaPromotions.indexOf(Game.nextLoremQuota);
 
       Game.nextLoremQuota = Game.quotaPromotions[quotaIndex + 1];
+      console.log(quotaIndex + 1);
 
       updateMiscCookie();
    },
@@ -416,8 +433,6 @@ const Game = {
       if (Game.loremCount >= 8) receiveLetter('invitation');
       if (Game.loremCount >= 15) receiveLetter('rumors');
    },
-
-   loremPerWrite: 0.05,
 
    maxPopups: 7,
    popupQueue: [],
@@ -696,7 +711,6 @@ class LoremQuota {
 
       this.setupQuota();
       this.setQuotaProgress();
-      this.updateRewards();
    }
    updateRewards() {
       Object.values(loremQuotaData).forEach(reward => {
@@ -726,6 +740,8 @@ class LoremQuota {
       this.displayObj.querySelector('.progress-bar').style.width = `${progress}%`;
    }
    reachQuota() {
+      Game.currentQuota += 1;
+      
       Game.updateQuotaFactor();
       this.quota = Game.nextLoremQuota;
 
@@ -861,7 +877,7 @@ function updateLoremCounter(add) {
    }, 30);
 }
 
-const views = ['computer', "about", 'black-market', 'corporate-overview', 'settings'];
+const views = ['computer', 'about', 'black-market', 'corporate-overview', 'settings'];
 const viewEvents = {
    about: {
       open: function() {
@@ -974,6 +990,8 @@ window.onload = () => {
    }
 
    receiveLetter('start');
+
+   Game.settings.setup();
 }
 
 function setupComputerBar() {
@@ -1033,7 +1051,9 @@ function writeLorem(loremN = 1, giveLorem = true) {
    const currentText = getElement("current-lorem-text");
    currentText.innerHTML += loremTemplate.split("")[iterationCount % loremLength];
 
-   if (!(iterationCount % 5) && giveLorem) Game.addLorem(Game.loremPerWrite);
+   let loremPerWrite = 0.05;
+   if (Game.currentQuota >= 2) loremPerWrite *= 2;
+   if (!(iterationCount % 5) && giveLorem) Game.addLorem(loremPerWrite);
 
    const loremContainer = getElement("loremContainer");
 

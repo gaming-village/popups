@@ -4,6 +4,7 @@
 
 <head>
    <meta charset="utf-8" />
+   <meta name='Description' CONTENT='Lorem Ipsum Generator is an incremental game where you start as an unpaid intern, eventually working your way up to overseeing thousands of workers as your position rises.'>
    <title>Lorem Ipsum Generator</title>
 
    <link type="text/css" rel="stylesheet" href="index.css">
@@ -328,8 +329,8 @@
                <p class="hidden closePopup" id="iphonePopupMoveText">Looks like you tried to close this popup!</p>
             </div>
             <div class="button-container">
-               <button>purchese!</button>
-               <button class="close-button" id="free-iPhone-close">
+               <button class='button'>purchese!</button>
+               <button class='button' id="free-iPhone-close">
                   close down.
                </button>
             </div>
@@ -1005,7 +1006,30 @@
    </div>
 
    <div id='settings' class='view'>
-      
+      <div class='main'>
+         <h1>Settings</h1>
+         <p>Manage your Computer's visual preferences.</p>
+
+         <h2>Numerals</h2>
+         <div id='settings-dpp' class='section'>
+            <div class='cf'>
+               <p class='label'>Decimal point precision</p>
+               <p class='selected-val'>2</p>
+            </div>
+            <input type='range' min='0' max='9' />
+         </div>
+         <div class='section'>
+            <div class='cf'>
+               <p class='label'>Progress representation</p>
+               <p class='selected-val'>Percentage</p>
+            </div>
+            <select>
+               <option>Percentage</option>
+               <option>Current/Total</option>
+               <option>Current/Total (Percentage)</option>
+            </select>
+         </div>
+      </div>
    </div>
 </body>
 

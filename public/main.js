@@ -5,7 +5,7 @@ function getElement(elementName) {
    const element = document.querySelector(`#${elementName}`);
    return element;
 }
-function formatFloat(float, dp = 2) {
+function formatFloat(float, dp = Game.settings.dpp) {
    const mult = Math.pow(10, dp);
    const formattedFloat = Math.round((float + Number.EPSILON) * mult) / mult;
    return formattedFloat;
@@ -103,8 +103,40 @@ const LoadData = () => {
    cookies.openedLetters = new CookieObjectManager('openedLetters', letters, 'opened');
    cookies.unlockedShops = new CookieObjectManager('unlockedShops', blackMarketShops, 'unlocked');
 
-   setOpenedRewards();
+   setSettingsCookie();
    setMiscCookie();
+   setOpenedRewards();
+}
+
+function setSettingsCookie() {
+   if (typeof Game === 'undefined') return;
+
+   // Char 1: DPP (0-9) decimal
+   // Char 2: Progress type (1-3)
+
+   let settingsCookie = getCookie('settings');
+   if (settingsCookie === '') {
+      settingsCookie = Game.settings.dpp.toString() + Game.settings.progressType.toString();
+      setCookie('settings', settingsCookie);
+      return;
+   }
+
+   settingsCookie.split('').forEach((char, idx) => {
+      switch (idx + 1) {
+         case 1:
+            Game.settings.dpp = parseInt(char);
+            break;
+         case 2:
+            Game.settings.progressType = parseInt(char);
+            break;
+         default:
+            console.warn(`WARNING! Char ${idx + 1} not found in the settings cookie.`);
+      }
+   });
+}
+function updateSettingsCookie() {
+   let newCookie = Game.settings.dpp.toString() + Game.settings.progressType.toString();
+   setCookie('settings', newCookie);
 }
 
 
@@ -147,6 +179,7 @@ function setMiscCookie() {
                quotaIndex = lgh - 1;
             }
             Game.nextLoremQuota = loremQuotaData[quotaIndex].requirement;
+            Game.currentQuota = quotaIndex + 1;
             break;
          case 5:
             // Lorem corp setup

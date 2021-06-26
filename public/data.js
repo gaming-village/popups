@@ -24,7 +24,7 @@ const popupData = {
             special: "Moves around the screen randomly.",
             points: 2,
             redisplayTime: Math.random() * 8000 + 13000,
-            cost: 1
+            cost: 2.5
         },
         display: {
             top: 7,
@@ -42,8 +42,7 @@ const popupData = {
             special: "Leeches 1 lorem every second. When closed, gives back 1.5x what was stolen.",
             points: 1,
             redisplayTime: 60000,
-            cost: 3.5,
-
+            cost: 5,
             sapAmount: 0.5
         },
         display: {
@@ -62,7 +61,7 @@ const popupData = {
             special: 'Becomes enraged when closed too many times - appeasement is required.',
             points: 0,
             redisplayTime: 60000,
-            cost: 10
+            cost: 20
         },
         display: {
             top: -18,
@@ -101,7 +100,7 @@ const popupData = {
                 max: 8
             },
             redisplayTime: 55000,
-            cost: 10
+            cost: 20
         },
         display: {
             top: 10,
@@ -119,7 +118,7 @@ const popupData = {
             special: "",
             points: 5,
             redisplayTime: 60000,
-            cost: 5
+            cost: 40
         },
         display: {
             top: 9,
@@ -137,7 +136,7 @@ const popupData = {
             special: "Stops production of lorem ipsum until closed.",
             points: 6,
             redisplayTime: Math.random() * 20000 + 25000,
-            cost: 10
+            cost: 25
         },
         display: {
             top: -1.5,
@@ -189,7 +188,7 @@ const popupData = {
             description: "Chunky's banana plantation.",
             special: "Generates 10-20 bananas which explode into points.",
             points: 0,
-            cost: 15
+            cost: 75
         },
         display: {
             top: -29,
@@ -225,7 +224,7 @@ const popupData = {
             special: "Requires precise input to close.",
             points: 20,
             redisplayTime: 45000,
-            cost: 50
+            cost: 60
         },
         display: {
             top: 23,
@@ -261,7 +260,7 @@ const popupData = {
             special: "Shows multiple prompts when you try to close it. Made as a practical joke by the Devil to run the days of aspiring web developers.",
             points: 40,
             redisplayTime: 50000,
-            cost: 75
+            cost: 175
         },
         display: {
             top: 20,
@@ -279,7 +278,7 @@ const popupData = {
             special: "Removes several popups when it appears.",
             points: 0,
             redisplayTime: 30000,
-            cost: 25
+            cost: 20
         },
         display: {
             top: -12,

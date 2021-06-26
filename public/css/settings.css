@@ -1,3 +1,49 @@
-#settings {
-   background-color: red;
+@import url(../fonts/ms-sans-serif-font.css);
+
+.ct-95 #settings {
+   font-family: 'MS Sans Serif';
+   background-color: #018281;
+}
+
+#settings .main {
+   width: 50%;
+   padding: 0 0.5rem 0.5rem;
+   margin-left: 50%;
+   overflow-y: scroll;
+   overflow-x: hidden;
+   transform: translate(-50%, 5rem);
+}
+.ct-95 #settings .main {
+   background-color: #ccc;
+   border: 2px solid;
+   border-top-color: #fff;
+   border-left-color: #fff;
+   border-right-color: #444;
+   border-bottom-color: #444;
+}
+
+#settings .main :is(h1, h2) {
+   margin: 0.3rem 0;
+}
+
+#settings .main .section {
+   width: calc(100% - 4rem);
+   background-color: rgb(240, 240, 230);
+   border: 2px solid;
+   border-top-color: #fff;
+   border-left-color: #fff;
+   border-right-color: rgb(150, 150, 135);
+   border-bottom-color: rgb(150, 150, 135);
+   padding: 0.3rem 0.5rem;
+   margin: 0.5rem 0 0.5rem 50%;
+   transform: translateX(-50%);
+   box-shadow: 3px 3px 0 0 #999;
+}
+#settings .main .section .label {
+   float: left;
+   margin: 0;
+}
+#settings .main .section .selected-val {
+   float: right;
+   margin: 0;
 }
