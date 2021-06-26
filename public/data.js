@@ -292,7 +292,7 @@ const popupData = {
     }
 }
 
-const messages = {
+const letters = {
    start: {
       title: "A Friendly Introduction",
       from: "Lorem Corp",
@@ -300,8 +300,7 @@ const messages = {
       <p>If you have received this letter, you have been successfully integrated into Lorem Corp. You will go to the Generator and begin mining.</p>
       <p>If you wish to see your position in the company, see the Corporate Overview tab.</p>
       <p>- Lorem Corp</p>`,
-      received: false,
-      reference: 1
+      received: false
    },
    motivationalLetter: {
       title: "Motivational Letter",
@@ -319,8 +318,7 @@ const messages = {
             updateMiscCookie();
          }
       },
-      received: false,
-      reference: 2
+      received: false
    },
    greetings: {
       title: "Greetings",
@@ -330,8 +328,7 @@ const messages = {
       <p>To stop things from getting out of hand, a group called the Black Market had to be created. Our connections have told us that recently Lorem Corp. has begun hiring again, and as we have tracked you as one of their new hires you are critical to our operation.</p>
       <p>You will later receive an invitation to our network.</p>
       <p>Good luck.</p>`,
-      received: false,
-      reference: 3
+      received: false
    },
    rumors: {
       title: "Addressing Rumors",
@@ -339,8 +336,7 @@ const messages = {
       content: `<p>Greetings employees.</p>
       <p>It has come to our attention that there have been several fallacious claims of malware-infected computers. Disregard them - our system is perfect and flawless.</p>
       <p>- Lorem Corp.</p>`,
-      received: false,
-      reference: 4
+      received: false
    },
    invitation: {
       title: "Invitation",
@@ -356,8 +352,7 @@ const messages = {
             updateMiscCookie();
          }
       },
-      received: false,
-      reference: 5
+      received: false
    },
    internPromotion: {
       title: 'Promotion',
@@ -376,8 +371,7 @@ const messages = {
             Game.addLorem(10);
          }
       },
-      received: false,
-      reference: 6
+      received: false
    },
    employeePromotion: {
       title: 'Promotion',
@@ -396,8 +390,7 @@ const messages = {
             Game.addLorem(1);
          }
       },
-      received: false,
-      reference: 7
+      received: false
    },
    technicianPromotion: {
       title: 'Promotion',
@@ -416,8 +409,7 @@ const messages = {
             Game.addLorem(1);
          }
       },
-      received: false,
-      reference: 8
+      received: false
    },
    managerPromotion: {
       title: 'Promotion',
@@ -436,8 +428,7 @@ const messages = {
             Game.addLorem(1);
          }
       },
-      received: false,
-      reference: 9
+      received: false
    },
    supervisorPromotion: {
       title: 'Promotion',
@@ -456,8 +447,7 @@ const messages = {
             Game.addLorem(1);
          }
       },
-      received: false,
-      reference: 10
+      received: false
    },
    executivePromotion: {
       title: 'Promotion',
@@ -476,8 +466,7 @@ const messages = {
             Game.addLorem(1);
          }
       },
-      received: false,
-      reference: 11
+      received: false
    }
 }
 

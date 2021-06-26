@@ -322,8 +322,6 @@ const Game = {
          Game.updatePackets();
       },
       setupBlackMarket: () => {
-         // Game.changeTransferRate();
-
          // Setup each black market shop.
          Object.values(blackMarketShops).forEach(shop => {
             new blackMarketShop(shop);
@@ -368,7 +366,7 @@ const Game = {
    updateLorem: (add) => {
       createMiningEntry(add);
       displayPoints(add);
-      applications.eventViewer.createEvent(['Gained ', '#888'], [add, '#555'], [' lorem', '#888']);
+      applications.eventViewer.createEvent(['Gained ', '#ccc'], [add, '#fff'], [' lorem', '#ccc']);
       setCookie("lorem", Game.loremCount, 31);
       Game.checkLoremLetters();
 
@@ -376,20 +374,13 @@ const Game = {
    },
 
    transferRate: 0.1,
-   // transferIdeal: 0.03,
-   // transferBias: 3, // MAX OF 100
-   // changeTransferRate: () => {
-   //    const randomBias = randomFloat(Game.transferBias/10, Game.transferBias);
-   //    Game.transferRate = Game.transferIdeal + randomFloat(0.2, 3) * randomBias / 100;
-   //    getElement("transfer-rate").innerHTML = formatFloat(Game.transferRate);
-   // },
 
    packetCount: 0,
    addPackets: (add, directAdd = false) => {
       const packets = add * (directAdd ? 1 : Game.transferRate);
       Game.packetCount += packets;
       Game.updatePackets();
-      applications.eventViewer.createEvent(['Gained ', '#888'], [add, '#555'], [' packets', '#888'])
+      applications.eventViewer.createEvent(['Gained ', '#ccc'], [add, '#fff'], [' packets', '#ccc']);
    },
    updatePackets: () => {
       getElement("packet-count").innerHTML = formatFloat(Game.packetCount);
@@ -695,7 +686,7 @@ class AlertBox {
    }
 }
 
-
+/***** LOREM QUOTA *****/
 class LoremQuota {
    constructor(quota) {
       this.quota = quota;
@@ -745,6 +736,59 @@ class LoremQuota {
 
       this.setupQuota();
       const alertBox = new AlertBox('Quota reached!', 'Go to the Corporate Overview to claim your reward!');
+   }
+}
+
+const welcomeScreen = {
+   currentView: 'main',
+   viewContent: {
+      main: `<p>Welcome intern.</p>
+      <p>Congratulations on your entry into Lorem Corp. You have been supplied with a virtual Windows 95 machine on which to conduct your mining. See the About page for further information.</p>
+      <p>You are dispensable and will be removed if you step out of line.</p>
+      <p>- Lorem Corp.</p>`,
+      about: `<p>Lorem Corp. is the leading corporation in the field of Lorem production.</p>
+      <p>As an intern, it is your right to tirelessly produce lorem with no pay. Any behaviour which may be deemed 'unnecessary' will result in immediate action.</p>
+      <p>Here at Lorem Corp., the safety of the higher-ups is integral to our business.</p>`
+   },
+   load: function() {
+      const welcomeScreen = getElement('welcome-screen');
+      for (const view of Object.entries(this.viewContent)) {
+         const btn = document.createElement('button');
+         btn.className = `${view[0]} button dark`;
+         btn.innerHTML = capitalize(view[0]);
+
+         btn.addEventListener('click', () => this.switchView(view[0]));
+
+         welcomeScreen.querySelector('.seperator').before(btn);
+      }
+
+      const continueButton = getElement('welcome-screen').querySelector('.continue');
+      continueButton.addEventListener('click', () => this.hide());
+
+      this.switchView(this.currentView);
+   },
+   switchView: function(view) {
+      if (!Object.keys(this.viewContent).includes(view)) {
+         console.warn(`WARNING: View ${view} does not exist.`);
+         return;
+      }
+
+      const welcomeScreen = getElement('welcome-screen');
+      welcomeScreen.querySelector('.content').innerHTML = this.viewContent[view];
+
+      for (const btn of welcomeScreen.querySelectorAll('.button:not(.continue)')) {
+         btn.classList.add('dark');
+      }
+
+      welcomeScreen.querySelector(`.${view}`).classList.remove('dark');
+   },
+   show: function() {
+      getElement('welcome-screen').classList.remove('hidden');
+      getElement('mask').classList.remove('hidden');
+   },
+   hide: function() {
+      getElement('welcome-screen').remove();
+      getElement('mask').classList.add('hidden');
    }
 }
 
@@ -898,8 +942,9 @@ window.onload = () => {
 
    // Unlock lorem quota. (Has to be done after LoadData because loremQuota doesn't exist until then)
    {
-      const miscCookie = getCookie('misc');
-      if (miscCookie.split('')[1] === '1') {
+      const idx = Object.keys(letters).indexOf('motivationalLetter');
+      const opened = getCookie('openedRewards').split('')[idx];
+      if (opened === '1') {
          Game.unlockLoremQuota();
       }
    }
@@ -923,7 +968,7 @@ window.onload = () => {
 
    setupMailbox();
 
-   if (getCookie('misc').split('')[0] == '1') messages.invitation.rewards.reward();
+   if (getCookie('misc').split('')[0] == '1') letters.invitation.rewards.reward();
 
    // Terminal setup
    getElement('pointer-content').addEventListener('keydown', function(event) {
@@ -938,11 +983,12 @@ window.onload = () => {
       }
    });
 
-   // File system setup
    // fileSystem.startApplications();
 
    document.body.classList.add('ct-95');
 
+   welcomeScreen.load();
+   welcomeScreen.show();
 }
 
 function setupComputerBar() {
@@ -960,7 +1006,7 @@ const loremTemplate = "Lorem ipsum dolor sit amet, consectetur adipisicing elit.
 const adTexts = [" Full version costs $204967.235 ", " Go to www.this.is.a.site for free viruses! ", "Top 10 Top 10 list ! "];
 const loremBlockSize = 500;
 
-const loremLength = loremTemplate.split("").length;
+const loremLength = loremTemplate.length;
 var iterationCount = 0;
 var nextText = 100;
 var checkOffset = 0;
@@ -1104,11 +1150,12 @@ function loremAdClick(ad) {
 var selectedMessage = -1;
 function showInbox() {
    getElement("mail-inbox").classList.remove("hidden");
-   getElement("mask").classList.remove("hidden");
+   getElement('mask').classList.remove('hidden');
 
    // Show any selected letters.
    if (selectedMessage >= 0) {
-      const newSelectedMessage = Object.values(messages)[selectedMessage];
+      const newSelectedMessage = Object.values(letters)[selectedMessage];
+      console.log(Object.entries(letters)[selectedMessage]);
 
       changeSelectedLetter(newSelectedMessage);
       switchLetterVisibility(newSelectedMessage);
@@ -1119,35 +1166,40 @@ function hideInbox() {
    // getElement("mask").classList.add("hidden");
    hideLetter();
 }
-function createInboxEntry(letter, existingEntry = false) {
+function createInboxEntry(letterObj, existingEntry = false) {
+   const letter = letterObj[1];
    // If the entry has already been created
-   if (getElement(`inbox-entry-${letter.reference}`) != undefined) {
+   if (getElement(`inbox-entry-${letterObj[0]}`) != undefined) {
       return;
    }
    const newEntry = getElement("inbox-entry-template").cloneNode(true);
    getElement("mail-inbox").appendChild(newEntry);
-   newEntry.id = `inbox-entry-${letter.reference}`;
+   newEntry.id = `inbox-entry-${letterObj[0]}`;
    newEntry.classList.remove("hidden");
-   console.log(newEntry);
 
    if (letter.opened) {
-      newEntry.classList.add("opened");
-   } else if (existingEntry) {
-      // Entry already exists but has not been opened.
-      newLetterAlert(letter);
+      newEntry.classList.add('opened');
+   } else {
+      if (letter.rewards !== undefined) {
+         newEntry.classList.add('reward-available');
+      }
+      if (existingEntry) {
+         // Entry already exists but has not been opened.
+         newLetterAlert(letter);
+      }
    }
 
    newEntry.querySelector('.inbox-entry-title').innerHTML = letter.title;
    newEntry.querySelector('.inbox-entry-from').innerHTML = letter.from;
 
    newEntry.addEventListener('click', () => {
-      changeSelectedLetter(letter);
+      changeSelectedLetter(letterObj);
    });
 }
 function showExistingEntries() {
-   for (const message of Object.values(messages)) {
-      if (message.received) {
-         createInboxEntry(message, true);
+   for (const letter of Object.entries(letters)) {
+      if (letter[1].received) {
+         createInboxEntry(letter, true);
       }
    }
 }
@@ -1163,19 +1215,18 @@ function setupMailbox() {
       hideInbox();
    });
 }
-function changeSelectedLetter(letter) {
-   selectedMessage = letter.reference - 1;
-   const selectedEntry = getElement(`inbox-entry-${letter.reference}`);
+function changeSelectedLetter(letterObj) {
+   const selectedEntry = getElement(`inbox-entry-${letterObj[0]}`);
    const previousSelected = document.querySelector('.selected-letter');
 
-   selectedEntry.classList.add("selected-letter");
+   selectedEntry.classList.add('selected-letter');
    
    for (const entry of document.getElementsByClassName("inbox-entry")) {
       if (entry !== selectedEntry) {
          entry.classList.remove("selected-letter");
       }
    }
-   switchLetterVisibility(letter, previousSelected !== selectedEntry);
+   switchLetterVisibility(letterObj, previousSelected !== selectedEntry);
 }
 function openReward(letter) {
    letter.rewards.opened = true;
@@ -1187,13 +1238,16 @@ function openReward(letter) {
    const claimAllButton = getElement('paper').querySelector('.paper-button');
    claimAllButton.classList.add('opened');
 }
-function showLetter(letter) {
+function showLetter(letterObj) {
+   const letter = letterObj[1];
+
    // Show the paper
    const paper = getElement('paper');
    paper.classList.remove('hidden');
 
-   const letterEntry = getElement(`inbox-entry-${letter.reference}`);
+   const letterEntry = getElement(`inbox-entry-${letterObj[0]}`);
    letterEntry.classList.add('opened');
+   letterEntry.classList.remove('reward-available');
    
    // Remember it as opened
    letter.opened = true;
@@ -1235,10 +1289,10 @@ function showLetter(letter) {
 function hideLetter() {
    getElement('paper').classList.add('hidden');
 }
-function switchLetterVisibility(letter, forceShow = false) {
+function switchLetterVisibility(letterObj, forceShow = false) {
    if (getElement("paper").classList.contains("hidden") || forceShow) {
       // Show the letter and update the letter text.
-      showLetter(letter);
+      showLetter(letterObj);
    } else {
       hideLetter();
       const selectedLetter = document.querySelector('.selected-letter');
@@ -1247,23 +1301,26 @@ function switchLetterVisibility(letter, forceShow = false) {
    }
 }
 function receiveLetter(letterName) {
-   const letter = messages[letterName];
+   const letter = letters[letterName];
    if (letter.received) return;
 
    letter.received = true;
-   createInboxEntry(letter);
+   createInboxEntry([letterName, letters[letterName]]);
    cookies.receivedMessages.update();
 
    if (!letter.opened) {
       newLetterAlert(letter);
    }
+
+   applications.eventViewer.createEvent(['Received letter ', '#ccc'], [letterName, '#fff']);
 }
 function newLetterAlert(letter) {
    getElement('nav-about').classList.add('new-mail');
    const alertBox = new AlertBox('New letter received!', letter.title);
    // Remove the close button.
    const letterAlert = alertBox.displayObj;
-   letterAlert.querySelector('img').remove();
+   console.log(letterAlert);
+   letterAlert.querySelector('.close-icon').remove();
    letterAlert.classList.add('letter-alert');
 
    letterAlert.addEventListener('click', () => {

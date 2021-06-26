@@ -99,8 +99,8 @@ class CookieObjectManager {
 const cookies = {};
 const LoadData = () => {
    cookies.unlockedMalware = new CookieObjectManager('unlockedMalware', popupData, 'unlocked');
-   cookies.receivedMessages = new CookieObjectManager('receivedMessages', messages, 'received');
-   cookies.openedMessages = new CookieObjectManager('openedMessages', messages, 'opened');
+   cookies.receivedMessages = new CookieObjectManager('receivedMessages', letters, 'received');
+   cookies.openedMessages = new CookieObjectManager('openedMessages', letters, 'opened');
    cookies.unlockedShops = new CookieObjectManager('unlockedShops', blackMarketShops, 'unlocked');
    cookies.receivedPrompts = new CookieObjectManager('receivedPrompts', prompts, 'received');
 
@@ -204,19 +204,19 @@ function updateMiscCookie() {
 function setOpenedRewards() {
    if (getCookie("openedRewards") == "") {
       let resultCookie = "";
-      Object.keys(messages).forEach(() => resultCookie += "0");
+      Object.keys(letters).forEach(() => resultCookie += "0");
       setCookie("openedRewards", resultCookie, 31);
    }
 
-   Object.keys(messages).forEach((letter, index) => {
-      if (messages[letter].rewards != undefined) {
-         messages[letter].rewards.opened = parseInt(getCookie("openedRewards").split("")[index]) == 1 ? true : false;
+   Object.keys(letters).forEach((letter, index) => {
+      if (letters[letter].rewards != undefined) {
+         letters[letter].rewards.opened = parseInt(getCookie("openedRewards").split("")[index]) == 1 ? true : false;
       }
    });
 }
 function updateOpenedRewardsCookie() {
    let newCookie = "";
-   for (const letter of Object.values(messages)) {
+   for (const letter of Object.values(letters)) {
       if (letter.rewards == undefined) {
          newCookie += "0";
       } else {

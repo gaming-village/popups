@@ -1,31 +1,43 @@
 #computer-nav {
    width: 100%;
    height: 2rem;
-   background-image: linear-gradient(to right, #77a9ce 0%, #2d7db5 25%, #2d7db5 75%, #77a9ce 100%);
    position: absolute;
    bottom: 0;
    left: 0;
    user-select: none;
 }
+.ct-95 #computer-nav {
+   background-color: #ccc;
+}
+.ct-xp #computer-nav {
+   background-image: linear-gradient(to right, #77a9ce 0%, #2d7db5 25%, #2d7db5 75%, #77a9ce 100%);
+}
 
-/***** START ICON *****/
-#start-icon {
-   height: 100%;
-   background-color: red;
+.application-segment {
    float: left;
    cursor: pointer;
 }
-.ct-95 #start-icon {
+.ct-95 .application-segment {
    height: calc(100% - 8px);
    background-color: #ccc;
-   padding: 0 0.2rem;
-   margin: 2px 0.2rem 0 2px;
+   margin-top: 2px;
    border: 2px solid;
    border-top-color: #eee;
    border-left-color: #eee;
    border-bottom-color: #888;
    border-right-color: #888;
-   box-shadow: 0 -2px 0 0 #fff, -2px 0 0 0 #fff, 0 2px 0 0 #000, 2px 0 0 0 #000;
+   box-shadow: 0 -2px 0 0 #fff, -2px 0 0 0 #fff, -2px -2px 0 0 #fff, 0 2px 0 0 #000, 2px 0 0 0 #000, 2px 2px 0 0 #000;
+}
+
+/***** START ICON *****/
+#start-icon {
+   height: 100%;
+   float: left;
+   cursor: pointer;
+}
+.ct-95 #start-icon {
+   padding: 0 0.2rem;
+   margin: 2px 0.2rem 0 2px;
 }
 .ct-95 #start-icon:hover {
    background-color: #d5d5d5;
@@ -49,15 +61,28 @@
    float: right;
 }
 
-.application {
+.ct-95 .application {
+   min-width: 10rem;
+   margin-left: 0.3rem;
+}
+.ct-xp .application {
    border: 1px solid rgba(243, 248, 252, 0.6);
    border-top-left-radius: 3px;
    border-top-right-radius: 3px;
    border-bottom: none;
    padding: 0.1em 0.8rem;
    margin-right: 0.2rem;
+}
+
+.application :is(img, .text) {
    float: left;
-   cursor: pointer;
+}
+.ct-95 .application img {
+   margin-left: 0.2rem;
+}
+.ct-95 .application .text {
+   font-family: 'MS Sans Serif';
+   margin-left: 0.2rem;
 }
 
 .application.closed {

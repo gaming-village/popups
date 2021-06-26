@@ -19,19 +19,15 @@ class Popup extends BaseStructure {
    constructor(popupDataName) {
       super();
 
-      this.displayObj = getElement("" + popupData[popupDataName].name);
-      dragElement(this.displayObj, getElement("" + this.displayObj.id + "-title"));
+      this.displayObj = getElement(popupData[popupDataName].name);
+      dragElement(this.displayObj, getElement(popupData[popupDataName].name + '-title'));
       this.popupDataName = popupDataName;
-      this.displayName = this.getDisplayName();
       this.displayed = false;
    }
-   getDisplayName() {
-      let displayName = popupData[this.popupDataName].name.replace("-", " ").split(" ");
-      for (let i = 0; i < displayName.length; i++) {
-         displayName[i] = displayName[i][0].toUpperCase() + displayName[i].substring(1);
-         if (i != displayName.length - 1) displayName[i] += " ";
-      }
-      return displayName.join('');
+   get displayName() {
+      let displayName = popupData[this.popupDataName].name.replace('-', ' ').split(' ');
+      displayName = displayName.map(seg => capitalize(seg));
+      return displayName.join(' ');
    }
    show(noMove = false, manualForce = false) {
       if (!popupData[this.popupDataName].unlocked) return;
@@ -58,7 +54,6 @@ class Popup extends BaseStructure {
             console.warn(`Tried to show ${this.displayName}, but it was already visible.`);
          }
       } else {
-         // Don't run if this popup is already in the queue.
          if (Game.popupQueue.indexOf(this.popupDataName) != -1) return;
 
          Game.popupQueue.push(this.popupDataName);
@@ -71,13 +66,12 @@ class Popup extends BaseStructure {
          return;
       }
 
-      // Show a queued popup
       if (Game.popupQueue.length >= 1) {
          popups[Game.popupQueue[0]].show(false, true);
       }
 
       this.displayed = false;
-      this.displayObj.classList.add("hidden");
+      this.displayObj.classList.add('hidden');
       console.log(`%c User closed ${this.displayName}.`, "color: #999");
 
       const points = popupData[this.popupDataName].stats.points;
@@ -88,7 +82,6 @@ class Popup extends BaseStructure {
 
       const redisplayTime = popupData[this.popupDataName].stats.redisplayTime;
       if (typeof redisplayTime === 'undefined') return;
-
       this.redisplayDelay = setTimeout(() => this.show(), redisplayTime);
    }
 }
@@ -106,12 +99,12 @@ class MicrosoftAntivirus extends Popup {
          // Show the clicked popup
          const clicked = getElement("microsoft-antivirus-clicked");
          clicked.classList.remove("hidden");
-         let bounds = this.displayObj.getBoundingClientRect();
-         let computerBounds = getElement("computer").getBoundingClientRect();
-         const xPos = bounds.x + bounds.width / 2;
-         clicked.style.left = xPos / computerBounds.width * 100 + "%";
-         const yPos = bounds.y;
-         clicked.style.top = yPos / computerBounds.height * 100 + "%";
+         const bounds = this.displayObj.getBoundingClientRect();
+         const clickedBounds = clicked.getBoundingClientRect();
+         const xPos = bounds.x + bounds.width / 2 - clickedBounds.width / 2;
+         clicked.style.left = scalePX(xPos, 'vw') + 'vw';
+         const yPos = bounds.y - clickedBounds.height / 2;
+         clicked.style.top = scalePX(yPos, 'vh') + 'vh';
 
          this.hide(false);
       });
@@ -307,8 +300,8 @@ class Visitor extends Popup {
       getElement("visitor-status").classList.remove("specialReward");
       this.visitorStatusType = 0;
       this.updateStatusInterval = setInterval(() => {
-         this.visitorStatusType = this.visitorStatusType == 0 ? 1 : 0;
-         getElement("visitor-status").innerHTML = this.visitorStatusType == 9 ? "Spinning.." : "Spinning...";
+         this.visitorStatusType = this.visitorStatusType === 0 ? 1 : 0;
+         getElement("visitor-status").innerHTML = this.visitorStatusType === 0 ? "Spinning.." : "Spinning...";
       }, 200);
 
       // Show the box spinning
@@ -322,9 +315,9 @@ class Visitor extends Popup {
       // Display current reward
       let randomReward = this.getRandomReward();
       this.currentReward = randomReward;
-      if (typeof randomReward == "number") {
+      if (typeof randomReward === 'number') {
          let prefix = randomReward > 0 ? "+" : "";
-         let suffix = randomReward == -1 ? "" : "s";
+         let suffix = randomReward === -1 ? "" : "s";
          getElement("visitor-value").innerHTML = `${prefix + randomReward} point${suffix}`;
       } else {
          getElement("visitor-value").innerHTML = randomReward;
@@ -1330,9 +1323,8 @@ class Clippy extends Popup {
       super.hide();
 
       const allPopups = [ ...Game.visiblePopups, ...Object.values(semiPopups) ];
-
       allPopups.forEach(popup => {
-         if (popup.popupDataName != "clippy") {
+         if (popup.popupDataName !== 'clippy') {
             popup.hide();
          }
       });

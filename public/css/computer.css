@@ -170,3 +170,54 @@
    z-index: 2;
    text-shadow: 0 0 3px #000, 0 0 2px #000, 0 0 1px #000;
 }
+
+#welcome-screen {
+   font-family: 'MS Sans Serif';
+   background-color: #ccc;
+   border: 2px solid;
+   border-top-color: #fff;
+   border-left-color: #fff;
+   border-bottom-color: #666;
+   border-right-color: #666;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   z-index: 4;
+}
+#welcome-screen .title {
+   color: #fff;
+   font-size: 1rem;
+   background-color: rgb(26, 57, 197);
+   margin: 0.2rem;
+}
+#welcome-screen h2 {
+   text-align: center;
+   margin: 0;
+}
+#welcome-screen .formatter {
+   margin: 0.5rem;
+   display: flex;
+}
+#welcome-screen .content {
+   background-color: rgb(255, 255, 240);
+   padding: 0.3rem 0.5rem;
+   flex-basis: 70%;
+}
+#welcome-screen .content :is(:first-child, :last-child) {
+   margin: 0;
+}
+#welcome-screen .btn-container {
+   flex-basis: 30%;
+}
+#welcome-screen .btn-container * {
+   margin-left: 50%;
+   transform: translateX(-50%);
+}
+#welcome-screen .seperator {
+   width: 90%;
+   height: 1px;
+   background-color: #444;
+   margin: 1rem 0 1rem 50%;
+   box-shadow: 0 2px 0 0 #fff;
+}

@@ -214,6 +214,44 @@
    display: none;
 }
 
+.inbox-entry:not(.reward-available) .inbox-entry-reward-icon {
+   display: none;
+}
+.inbox-entry-reward-icon {
+   --size: 40px;
+   width: var(--size);
+   height: var(--size);
+   background-image: url(../images/win95/question-book.png);
+   background-size: var(--size) var(--size);
+   position: absolute;
+   left: 0.1rem;
+   bottom: 0.1rem;
+   animation: keyShake 1s infinite linear;
+}
+@keyframes keyShake {
+   10% {
+      transform: rotate(12deg);
+   }
+   20% {
+      transform: rotate(-10deg);
+   }
+   30% {
+      transform: rotate(8deg);
+   }
+   40% {
+      transform: rotate(-6deg);
+   }
+   50% {
+      transform: rotate(4deg);
+   }
+   60% {
+      transform: rotate(-2deg);
+   }
+   70% {
+      transform: rotate(0deg);
+   }
+}
+
 #open-mail {
    --size: calc(2.6rem + 1vh + 1vw);
    width: calc(var(--size) * 1.414);

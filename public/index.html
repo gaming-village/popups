@@ -97,14 +97,15 @@
       </div>
 
       <!-- Computer bottom bar -->
-      <div id="computer-nav">
-         <div id='start-icon'>
+      <div id='computer-nav'>
+         <div id='start-icon' class='application-segment'>
             <div class='img'></div>
             <div class='text'>Start</div>
          </div>
          <img id="computer-start-icon" src="images/start-button.png" alt="Start button">
-         <div class="application hidden closed" id="application-template">
+         <div id='application-template' class='application hidden closed application-segment'>
             <img class="application-icon" src="images/changelog-icon.png" alt="Application icon">
+            <div class='text'></div>
          </div>
       </div>
 
@@ -198,6 +199,19 @@
          </div>
       </div>
 
+      <div id='welcome-screen' class='hidden'>
+         <div class='mask'></div>
+         <h3 class='title'>Welcome</h3>
+         <h2>Welcome to Lorem Corp!</h2>
+         <div class='formatter'>
+            <div class='content'></div>
+            <div class='btn-container'>
+               <div class='seperator'></div>
+               <button class='continue button dotted'>Continue</button>
+            </div>
+         </div>
+      </div>
+
 
       <!-- Devtools -->
       <div class="popup-container-2 xp-font hidden" id="devtools">
@@ -205,7 +219,7 @@
             Devtools
          </h3>
          <div class="display-container">
-            <div class='devtool-unit button' id="devtools-summon">Summon popups</div>
+            <div id='devtools-summon' class='devtool-unit button dotted'>Summon popups</div>
             <div class='devtool-unit button' id='devtools-misc'>Miscellaneous</div>
             <div class='devtool-unit button' id="devtools-data">Data</div>
             <div class='devtool-unit button' id="devtools-terminal">Terminal</div>
@@ -369,7 +383,7 @@
                <p>To fix them, you must upgrade your mainframe to System 32!</p>
             </div>
             <div class='button-container'>
-               <button id="microsoft-antivirus-upgrade" class='hidden'>upgrade System</button>
+               <button id="microsoft-antivirus-upgrade" class='button hidden'>upgrade System</button>
                <button id="microsoft-antivirus-close" class='button'>
                   Go away!
                </button>
@@ -834,14 +848,13 @@
 
       <div id="mail-inbox" class="hidden">
          <div id="inbox-entry-template" class="inbox-entry hidden">
-            <div class="inbox-entry-title">
-               
-            </div>
-            <div class="inbox-entry-from">
-               
-            </div>
+            <div class="inbox-entry-title"></div>
+            <div class="inbox-entry-from"></div>
             <div class="inbox-entry-icon-container">
                <img class="inbox-entry-icon" src="images/sealed-letter.png">
+            </div>
+            <div class='inbox-entry-reward-icon'>
+
             </div>
          </div>
       </div>

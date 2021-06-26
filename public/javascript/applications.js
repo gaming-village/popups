@@ -1,33 +1,41 @@
 // The parent class (inherited by all applications).
 // Used to handle the general functions of applications.
 class Application {
-    constructor(name) {
-        this.createNavPresence();
-        this.opened = false;
-        this.name = name;
+   constructor(name) {
+      this.opened = false;
+      this.name = name;
 
-        dragElement(getElement(name), getElement(name + "-top"));
-    }
-    createNavPresence() {
-        this.navObject = getElement("application-template").cloneNode(true);
-        this.navObject.id = '';
-        this.navObject.classList.remove("hidden");
-        getElement("computer-nav").appendChild(this.navObject);
+      this.createNavPresence();
 
-        this.navObject.addEventListener("click", () => {
-            this.opened ? this.hideApplication() : this.openApplication();
-        });
-    }
-    openApplication() {
-        this.opened = true;
-        getElement(this.name).classList.remove("hidden");
-        this.navObject.classList.remove("closed");
-    }
-    hideApplication() {
-        this.opened = false;
-        getElement(this.name).classList.add("hidden");
-        this.navObject.classList.add("closed");
-    }
+      dragElement(getElement(name), getElement(name + '-top'));
+   }
+   get displayName() {
+      let returnVal = this.name.split('-');
+      returnVal = returnVal.map(item => capitalize(item));
+      return returnVal.join(' ');
+   }
+   createNavPresence() {
+      this.navObject = getElement("application-template").cloneNode(true);
+      this.navObject.id = '';
+      this.navObject.classList.remove("hidden");
+      getElement("computer-nav").appendChild(this.navObject);
+
+      this.navObject.addEventListener("click", () => {
+         this.opened ? this.hideApplication() : this.openApplication();
+      });
+
+      this.navObject.querySelector('.text').innerHTML = this.displayName;
+   }
+   openApplication() {
+      this.opened = true;
+      getElement(this.name).classList.remove("hidden");
+      this.navObject.classList.remove("closed");
+   }
+   hideApplication() {
+      this.opened = false;
+      getElement(this.name).classList.add("hidden");
+      this.navObject.classList.add("closed");
+   }
 }
 
 class LoremController extends Application {
