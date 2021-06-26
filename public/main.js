@@ -102,7 +102,6 @@ const LoadData = () => {
    cookies.receivedMessages = new CookieObjectManager('receivedMessages', letters, 'received');
    cookies.openedMessages = new CookieObjectManager('openedMessages', letters, 'opened');
    cookies.unlockedShops = new CookieObjectManager('unlockedShops', blackMarketShops, 'unlocked');
-   cookies.receivedPrompts = new CookieObjectManager('receivedPrompts', prompts, 'received');
 
    setOpenedRewards();
    setMiscCookie();

@@ -743,12 +743,13 @@ const welcomeScreen = {
    currentView: 'main',
    viewContent: {
       main: `<p>Welcome intern.</p>
-      <p>Congratulations on your entry into Lorem Corp. You have been supplied with a virtual Windows 95 machine on which to conduct your mining. See the About page for further information.</p>
+      <p>Congratulations on your entry into Lorem Corp. You have been supplied with a virtual Windows 95 machine on which to conduct your mining. Go to the About page for further information.</p>
       <p>You are dispensable and will be removed if you step out of line.</p>
       <p>- Lorem Corp.</p>`,
       about: `<p>Lorem Corp. is the leading corporation in the field of Lorem production.</p>
       <p>As an intern, it is your right to tirelessly produce lorem with no pay. Any behaviour which may be deemed 'unnecessary' will result in immediate action.</p>
-      <p>Here at Lorem Corp., the safety of the higher-ups is integral to our business.</p>`
+      <p>Here at Lorem Corp., the safety of the higher-ups is integral to our business.</p>
+      <p>To start your labour, press the 'Continue' button.</p>`
    },
    load: function() {
       const welcomeScreen = getElement('welcome-screen');
@@ -790,25 +791,6 @@ const welcomeScreen = {
       getElement('welcome-screen').remove();
       getElement('mask').classList.add('hidden');
    }
-}
-
-
-function showPrompt(prompt) {
-   if (prompts[prompt].received) return;
-
-   getElement("mask").classList.remove("hidden");
-   getElement("message-container").classList.remove("hidden");
-
-   getElement("message-title").innerHTML = prompts[prompt].title;
-   getElement("message-from").innerHTML = prompts[prompt].from;
-   getElement("message").innerHTML = prompts[prompt].content;
-
-   prompts[prompt].received = true;
-   cookies.receivedPrompts.update();
-}
-function closePrompt() {
-   getElement("mask").classList.add("hidden");
-   getElement("message-container").classList.add("hidden");
 }
 
 function instantiateClasses() {
@@ -953,10 +935,6 @@ window.onload = () => {
    Game.setup.setupBlackMarket();
    displayPoints(0);
 
-   // Show the admission message and the starting letter.
-   showPrompt('admission');
-   receiveLetter("start");
-
    dragElement(getElement("pointCounterContainer"), getElement("point-counter-title"));
 
    changeViewHeights();
@@ -988,7 +966,14 @@ window.onload = () => {
    document.body.classList.add('ct-95');
 
    welcomeScreen.load();
-   welcomeScreen.show();
+   const received = getCookie('receivedMessages').split('')[0];
+   if (received === '0') {
+      welcomeScreen.show();
+   } else {
+      welcomeScreen.hide();
+   }
+
+   receiveLetter('start');
 }
 
 function setupComputerBar() {

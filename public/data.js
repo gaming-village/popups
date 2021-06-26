@@ -470,20 +470,6 @@ const letters = {
    }
 }
 
-const prompts = {
-   admission: {
-      title: "Application",
-      from: "Lorem Corp",
-      content: `
-      <p>Welcome intern.</p>
-      <p>Congratulations on your entry into Lorem Corp. You have been supplied with a virtual Windows 95 machine on which to conduct your mining. See the About page for further information.</p>
-      <p>You are dispensable and will be removed if you step out of line.</p>
-      <p>- Lorem Corp.</p>
-      `,
-      received: false
-   }
-}
-
 const blackMarketShops = {
    malware: {
       name: "malware",
