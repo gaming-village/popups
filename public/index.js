@@ -591,9 +591,10 @@ const terminal = {
       hideall: {
          returnVal: () => {
             let popupsHidden = 0;
-            for (const popup of Object.values(popups)) {
-               if (popup.displayed) {
-                  popup.hide();
+            for (const popup of Object.entries(popupData)) {
+               const popupReference = popups[popup[0]];
+               if (popup[1].unlocked && popupReference.displayed) {
+                  popupReference.hide();
                   popupsHidden++;
                }
             }
