@@ -74,6 +74,11 @@ class Popup extends BaseStructure {
          return;
       }
 
+      new Sound({
+         path: './audio/windows-95-close-popup.mp3',
+         volume: 0.5
+      });
+
       if (Game.popupQueue.length >= 1) {
          popups[Game.popupQueue[0]].show(false, true);
       }
@@ -129,13 +134,13 @@ class MicrosoftAntivirus extends Popup {
 class LuremImpsir extends Popup {
    constructor(popupDataName) {
       super(popupDataName);
+
       this.canLorem = true;
       this.loremTime = 5;
 
-      getElement("loremTimeRemaining").addEventListener("click", () => {
-         // Only execute if the countdown has ended.
-         if (!getElement("loremTimeRemaining").classList.contains("clickable")) return;
-         this.hide();
+      this.timerObj = getElement('lorem-time-remaining');
+      this.timerObj.addEventListener("click", () => {
+         if (!this.timerObj.classList.contains('dark')) this.hide();
       });
    }
    show(noMove = false, manualForce = false) {
@@ -143,19 +148,19 @@ class LuremImpsir extends Popup {
       if (!this.displayed) return;
 
       this.canLorem = false;
+      this.displayObj.classList.remove("hidden");
+      this.timerObj.classList.add("dark");
       getElement("loremContainer").setAttribute("display-text", "STOPPED");
       getElement("loremContainer").classList.remove("canLorem");
-      this.displayObj.classList.remove("hidden");
+
       this.updateLoremText = setInterval(() => {
-         // Update lorem time.
-         getElement("loremTimeRemaining").innerHTML = `continue (${formatFloat(this.loremTime)})`;
+         this.timerObj.innerHTML = `continue (${formatFloat(this.loremTime)})`;
 
          this.loremTime -= 0.01;
          if (this.loremTime <= 0) {
             clearInterval(this.updateLoremText);
-            const timeObject = getElement("loremTimeRemaining");
-            timeObject.classList.add("clickable");
-            timeObject.innerHTML = "continue";
+            this.timerObj.classList.remove('dark');
+            this.timerObj.innerHTML = "continue";
          }
       }, 10);
    }
@@ -164,7 +169,6 @@ class LuremImpsir extends Popup {
 
       getElement("loremContainer").setAttribute("display-text", "Generate your lorem here.");
       getElement("loremContainer").classList.add("canLorem");
-      getElement("loremTimeRemaining").classList.remove("clickable");
 
       this.canLorem = true;
       this.loremTime = 5;

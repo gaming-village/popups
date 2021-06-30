@@ -799,11 +799,11 @@ button.close-button {
 }
 
 
-#loremTimeRemaining:not(.clickable) {
+/* #loremTimeRemaining:not(.clickable) {
    color: #ccc;
    font-style: italic;
    cursor: default;
-}
+} */
 
 .progress-bar-container {
    width: 90%;

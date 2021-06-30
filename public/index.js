@@ -560,6 +560,20 @@ const terminal = {
          }
       },
       summon: {
+         all: () => {
+            let summonedPopups = 0;
+            for (const popup of Object.entries(popupData)) {
+               if (popup[1].unlocked) {
+                  popups[popup[0]].show(false, true);
+                  summonedPopups++;
+               }
+            }
+            if (summonedPopups === 0) {
+               terminal.writeLine(['WARNING: ', '#ffbb29'], ['No popups could be summoned!', '#888']);
+               return;
+            }
+            terminal.writeLine([summonedPopups, '#aaa'], [' popups summoned.', '#888'])
+         },
          anyStr: (arr) => {
             const name = arr.join(' ');
             if (popups[name] === undefined) {
@@ -574,11 +588,20 @@ const terminal = {
             popups[name].show();
          }
       },
-      killall: {
+      hideall: {
          returnVal: () => {
+            let popupsHidden = 0;
             for (const popup of Object.values(popups)) {
-               if (popup.displayed) popup.hide();
+               if (popup.displayed) {
+                  popup.hide();
+                  popupsHidden++;
+               }
             }
+            if (popupsHidden === 0) {
+               terminal.writeLine(['WARNING: ', '#ffbb29'], ['There were no popups to hide!', '#888']);
+               return;
+            }
+            terminal.writeLine([popupsHidden, '#aaa'], [' popups hidden.', '#888']);
          }
       },
       js: {
@@ -638,6 +661,12 @@ const terminal = {
          if (property[0] === args[0]) {
             rootObject = rootObject || property;
 
+            // If the command is a function run it (end of branch)
+            if (typeof property[1] === 'function') {
+               property[1]();
+               return;
+            }
+            
             // If the requested command has an extra parameter.
             if (args[1] !== undefined) {
                if (!isNaN(args[1])) {
@@ -653,6 +682,7 @@ const terminal = {
                      this.writeLine(['ERROR: ', '#f53527'], [' The command ', '#888'], [`'${rootObject[0]}'`, '#bbb'], [' has no parameter ', '#888'], [`'${args[1]}'`, 'italic', '#bbb'], ['.', '#888']);
                   }
                } else {
+                  console.log('e!');
                   const nextArgs = args.slice();
                   nextArgs.splice(0, 1);
                   this.searchCommand(property[1], nextArgs, rootObject);
@@ -1049,7 +1079,6 @@ window.onload = () => {
 
 function setupComputerBar() {
    getElement('start-icon').addEventListener('click', () => {
-      new Sound('./audio/windows-xp-startup.mp3');
       new Sound({
          path: './audio/windows-xp-startup.mp3'
       });
