@@ -24,6 +24,9 @@ class Popup extends BaseStructure {
       this.popupDataName = popupDataName;
       this.displayed = false;
    }
+   get unlocked() {
+      return popupData[this.popupDataName].unlocked;
+   }
    get displayName() {
       let displayName = popupData[this.popupDataName].name.replace('-', ' ').split(' ');
       displayName = displayName.map(seg => capitalize(seg));
@@ -33,25 +36,30 @@ class Popup extends BaseStructure {
       if (!popupData[this.popupDataName].unlocked) return;
 
       if (Game.visiblePopupsCount < Game.maxPopups || manualForce) {
-         if (!this.displayed) {
-            // Display the popup
-            console.log(`%c Displayed ${this.displayName}.`, "color: #999");
-            
-            clearTimeout(this.redisplayDelay);
-            this.displayObj.classList.remove('hidden');
-            this.displayed = true;
-
-            if (!noMove) this.moveToRandomPosition(30);
-
-            // Clear all instances of the popup from the queue.
-            Game.popupQueue = Game.popupQueue.filter(elem => elem !== this.popupDataName);
-
-            // Show clippy
-            if (Game.visiblePopupsCount >= (Game.maxPopupCount - 1) * 0.75) {
-               popups.clippy.show(false, true);
-            }
-         } else {
+         if (this.displayed) {
             console.warn(`Tried to show ${this.displayName}, but it was already visible.`);
+            return;
+         }
+
+         // Display the popup
+         console.log(`%c Displayed ${this.displayName}.`, "color: #999");
+         clearTimeout(this.redisplayDelay);
+         this.displayObj.classList.remove('hidden');
+         this.displayed = true;
+
+         new Sound({
+            path: './audio/windows-95-balloon.mp3',
+            volume: 0.5
+         });
+
+         if (!noMove) this.moveToRandomPosition(30);
+
+         // Clear all instances of the popup from the queue.
+         Game.popupQueue = Game.popupQueue.filter(elem => elem !== this.popupDataName);
+
+         // Show clippy
+         if (Game.visiblePopupsCount >= (Game.maxPopupCount - 1) * 0.75) {
+            popups.clippy.show(false, true);
          }
       } else {
          if (Game.popupQueue.indexOf(this.popupDataName) != -1) return;
@@ -83,6 +91,14 @@ class Popup extends BaseStructure {
       const redisplayTime = popupData[this.popupDataName].stats.redisplayTime;
       if (typeof redisplayTime === 'undefined') return;
       this.redisplayDelay = setTimeout(() => this.show(), redisplayTime);
+   }
+   get allPopups() {
+      let allPopups = [ ...Object.values(popups), ...Object.values(semiPopups) ];
+      allPopups = allPopups.filter(popup => {
+         if (popup.unlocked === undefined) return true;
+         return popup.unlocked;
+      });
+      return allPopups;
    }
 }
 
@@ -227,15 +243,13 @@ class Rain extends Popup {
       this.totalSapAmount = 0;
       this.createLetterInterval = setInterval(() => {
          const sapAmount = popupData.rain.stats.sapAmount;
-         // Stop if removing the lorem would bring the player to negative lorem
          if (sapAmount > Game.loremCount) return;
 
-         // Create a falling rain letter.
-         if (this.letters.length < 20) { // Amount of letters is capped at 20.
+         const MAX_LETTER_COUNT = 20;
+         if (this.letters.length < MAX_LETTER_COUNT && Game.settings.rainLetters) {
             new RainText();
          }
 
-         // Sap points.
          Game.addLorem(-sapAmount);
          this.totalSapAmount += sapAmount;
       }, 500);
@@ -559,7 +573,7 @@ class Chunky extends Popup {
          chunkyStatus.innerHTML = "Chunky is fuming.";
       } else if (this.chunkyRage >= 100) {
          chunkyStatus.innerHTML = "Chunky has risen.";
-         this.activateChunky();
+         this.activate();
       }
 
       if (this.chunkyRage <= 99) {
@@ -1270,10 +1284,6 @@ class DevHire extends Popup {
       }
 
       getElement("dev-hire-close").addEventListener("click", () => {
-         // console.log(document.getElementsByClassName("dev-hire-prompt"));
-         // document.getElementsByClassName("dev-hire-prompt").forEach(prompt => {
-         //    if (!prompt.classList.contains("hidden")) console.log("A");
-         // });
          this.showPrompt(1);
       });
 
@@ -1322,8 +1332,7 @@ class Clippy extends Popup {
    hide() {
       super.hide();
 
-      const allPopups = [ ...Game.visiblePopups, ...Object.values(semiPopups) ];
-      allPopups.forEach(popup => {
+      this.allPopups.forEach(popup => {
          if (popup.popupDataName !== 'clippy') {
             popup.hide();
          }

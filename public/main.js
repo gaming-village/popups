@@ -10,6 +10,19 @@ function formatFloat(float, dp = Game.settings.dpp) {
    const formattedFloat = Math.round((float + Number.EPSILON) * mult) / mult;
    return formattedFloat;
 }
+function formatProg(current, goal) {
+   const progressType = Game.settings.progressType;
+   switch (progressType) {
+      case 1:
+         break;
+      case 2:
+         break;
+      case 3:
+         break;
+      default:
+         console.warn(`WARNING! Progress type ${progressType} not found.`);
+   }
+}
 function randomInt(min, max, inclusive = false) {
    const add = inclusive ? 1 : 0;
    const randomInt = Math.floor(Math.random() * (max - min + add)) + min;
@@ -59,8 +72,9 @@ function slugCase(str) {
 
 /***** SOUNDS  *****/
 class Sound {
-   constructor(path) {
+   constructor({ path, volume = 1 }) {
       this.audio = new Audio(path);
+      this.audio.volume = volume;
       this.audio.play();
    }
 }
@@ -113,10 +127,12 @@ function setSettingsCookie() {
 
    // Char 1: DPP (0-9) decimal
    // Char 2: Progress type (1-3)
+   // Char 3: Animated BGs (0/1)
+   // Char 4: Rain letters (0/1)
 
    let settingsCookie = getCookie('settings');
    if (settingsCookie === '') {
-      settingsCookie = Game.settings.dpp.toString() + Game.settings.progressType.toString();
+      settingsCookie = Game.settings.dpp.toString() + Game.settings.progressType.toString() + Game.settings.animatedBGs.toString() + Game.settings.rainLetters.toString();
       setCookie('settings', settingsCookie);
       return;
    }
@@ -132,6 +148,10 @@ function setSettingsCookie() {
          case 3:
             const animatedBGs = char === '1' ? true : false;
             Game.settings.animatedBGs = animatedBGs;
+            break;
+         case 4:
+            const rainLetters = char === '1' ? true : false;
+            Game.settings.rainLetters = rainLetters;
             break;
          default:
             console.warn(`WARNING! Char ${idx + 1} not found in the settings cookie.`);

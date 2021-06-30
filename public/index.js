@@ -7,35 +7,65 @@ const Game = {
       dpp: 2,
       progressType: 2,
       animatedBGs: false,
+      rainLetters: true,
+      getContainerElems: function(containerID) {
+         return [
+            getElement(containerID),
+            getElement(containerID).querySelector('.selected-val')
+         ];
+      },
       setup: function() {
-         const dppSlider = getElement('settings-dpp').querySelector('input');
-         dppSlider.addEventListener('input', () => {
-            this.dpp = parseInt(dppSlider.value);
-            getElement('settings-dpp').querySelector('.selected-val').innerHTML = dppSlider.value;
-            updateSettingsCookie();
-         });
-         dppSlider.value = this.dpp;
-         getElement('settings-dpp').querySelector('.selected-val').innerHTML = this.dpp;
-
-         const progressTypeBox = getElement('settings-progress-type').querySelector('select');
-         const progressTypes = ['Percentage', 'Current/Total', 'Current/Total (Percentage)'];
-         progressTypeBox.addEventListener('input', () => {
-            this.progressType = progressTypes.indexOf(progressTypeBox.value) + 1;
-            getElement('settings-progress-type').querySelector('.selected-val').innerHTML = progressTypeBox.value;
-            updateSettingsCookie();
-         });
-         progressTypeBox.value = progressTypes[this.progressType - 1];
-         getElement('settings-progress-type').querySelector('.selected-val').innerHTML = progressTypes[this.progressType - 1];
-
-         const animatedBGBox = getElement('settings-animated-bgs').querySelector('input');
-         animatedBGBox.addEventListener('click', () => {
-            console.log(animatedBGBox.checked);
-            this.animatedBGs = animatedBGBox.checked;
-            getElement('settings-animated-bgs').querySelector('.selected-val').innerHTML = animatedBGBox.checked ? 'On' : 'Off';
-            updateSettingsCookie();
-         });
-         animatedBGBox.checked = this.animatedBGs;
-         getElement('settings-animated-bgs').querySelector('.selected-val').innerHTML = this.animatedBGs ? 'On' : 'Off';
+         {
+            const [ container, selectedVal ] = this.getContainerElems('settings-dpp');
+            const dppSlider = container.querySelector('input');
+            dppSlider.addEventListener('input', () => {
+               this.dpp = parseInt(dppSlider.value);
+               selectedVal.innerHTML = dppSlider.value;
+               updateSettingsCookie();
+            });
+            dppSlider.value = this.dpp;
+            selectedVal.innerHTML = this.dpp;
+         }
+         {
+            const [ container, selectedVal ] = this.getContainerElems('settings-progress-type');
+            const progressTypeBox = container.querySelector('select');
+            const progressTypes = ['Percentage', 'Current/Total', 'Current/Total (Percentage)'];
+            progressTypeBox.addEventListener('input', () => {
+               this.progressType = progressTypes.indexOf(progressTypeBox.value) + 1;
+               selectedVal.innerHTML = progressTypeBox.value;
+               updateSettingsCookie();
+            });
+            progressTypeBox.value = progressTypes[this.progressType - 1];
+            selectedVal.innerHTML = progressTypes[this.progressType - 1];
+         }
+         {
+            const [ container, selectedVal ] = this.getContainerElems('settings-animated-bgs');
+            const animatedBGBox = container.querySelector('input');
+            animatedBGBox.addEventListener('click', () => {
+               this.animatedBGs = animatedBGBox.checked;
+               selectedVal.innerHTML = animatedBGBox.checked ? 'On' : 'Off';
+               if (animatedBGBox.checked) {
+                  getElement('black-market-stars').classList.remove('hidden');
+               } else {
+                  getElement('black-market-stars').classList.add('hidden');
+               }
+               updateSettingsCookie();
+            });
+            animatedBGBox.checked = this.animatedBGs;
+            selectedVal.innerHTML = this.animatedBGs ? 'On' : 'Off';
+            if (!this.animatedBGs) getElement('black-market-stars').classList.add('hidden');
+         }
+         {
+            const [ container, selectedVal ] = this.getContainerElems('settings-rain-letters');
+            const rainLettersBox = container.querySelector('input');
+            rainLettersBox.addEventListener('click', () => {
+               this.rainLetters = rainLettersBox.checked;
+               selectedVal.innerHTML = rainLettersBox.checked ? 'On' : 'Off';
+               updateSettingsCookie();
+            });
+            rainLettersBox.checked = this.rainLetters;
+            selectedVal.innerHTML = this.rainLetters ? 'On' : 'Off';
+         }
       }
    },
    loremCorp: {
@@ -703,7 +733,7 @@ class blackMarketShop {
 }
 
 class AlertBox {
-   constructor(title = "", content = "") {
+   constructor({ title, body }) {
       // Create the alert box
       const alertBox = getElement("alert-box-template").cloneNode(true);
       getElement("alert-container").appendChild(alertBox);
@@ -771,7 +801,10 @@ class LoremQuota {
       }, 300);
 
       this.setupQuota();
-      const alertBox = new AlertBox('Quota reached!', 'Go to the Corporate Overview to claim your reward!');
+      const alertBox = new AlertBox({
+         title: 'Quota reached!',
+         body: 'Go to the Corporate Overview to claim your reward!'
+      });
    }
 }
 
@@ -1017,6 +1050,9 @@ window.onload = () => {
 function setupComputerBar() {
    getElement('start-icon').addEventListener('click', () => {
       new Sound('./audio/windows-xp-startup.mp3');
+      new Sound({
+         path: './audio/windows-xp-startup.mp3'
+      });
    });
 }
 
@@ -1341,10 +1377,12 @@ function receiveLetter(letterName) {
 }
 function newLetterAlert(letter) {
    getElement('nav-about').classList.add('new-mail');
-   const alertBox = new AlertBox('New letter received!', letter.title);
-   // Remove the close button.
+   const alertBox = new AlertBox({
+      title: 'New letter received!',
+      body: letter.title
+   });
+
    const letterAlert = alertBox.displayObj;
-   console.log(letterAlert);
    letterAlert.querySelector('.close-icon').remove();
    letterAlert.classList.add('letter-alert');
 
