@@ -588,8 +588,8 @@ const terminal = {
             popups[name].show();
          }
       },
-      hideall: {
-         returnVal: () => {
+      hide: {
+         all: () => {
             let popupsHidden = 0;
             for (const popup of Object.entries(popupData)) {
                const popupReference = popups[popup[0]];
@@ -603,6 +603,21 @@ const terminal = {
                return;
             }
             terminal.writeLine([popupsHidden, '#aaa'], [' popups hidden.', '#888']);
+         },
+         anyStr: (arr) => {
+            const name = arr.join(' ');
+            if (popups[name] === undefined) {
+               terminal.writeLine(['Popup ', '#888'], [`'${name}'`, '#aaa'], [' does not exist.', '#888'])
+               return;
+            }
+            if (!popupData[name].unlocked) {
+               terminal.writeLine(['WARNING: ', '#ffbb29'], ['Popup ', '#888'], [`'${name}'`, '#aaa'], [' is not unlocked yet.', '#888'])
+               return;
+            } else if (!popups[name].displayed) {
+               terminal.writeLine(['WARNING: ', '#ffbb29'], ['Popup ', '#888'], [`'${name}'`, '#aaa'], [' is not visible.', '#888'])
+               return;
+            }
+            popups[name].hide();
          }
       },
       js: {
