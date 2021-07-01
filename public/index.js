@@ -788,7 +788,7 @@ class AlertBox {
       this.displayObj = alertBox;
 
       alertBox.querySelector("h3").innerHTML = title;
-      alertBox.querySelector("h2").innerHTML = content;
+      alertBox.querySelector("h2").innerHTML = body;
 
       alertBox.querySelector('.close-icon').addEventListener("click", () => {
          alertBox.remove();
@@ -1026,6 +1026,39 @@ window.addEventListener('beforeunload', e => {
    }
 });
 
+const getTimeIdle = () => {
+   const currentTime = Math.floor(new Date().getTime() / 1000);
+   const lastTime = parseInt(getCookie('idle') !== '' ? getCookie('idle') : currentTime);
+   return currentTime - lastTime;
+}
+const updateIdleTime = () => {
+   const timeInSeconds = Math.floor(new Date().getTime() / 1000);
+   setCookie('idle', timeInSeconds);
+}
+const handleIdleTime = () => {
+   const timeIdle = getTimeIdle();
+
+   let workerSecondGain = 0;
+   for (const worker of Object.entries(loremCorpData.jobs)) {
+      const workerCount = Game.loremCorp.workers[worker[0]];
+      workerSecondGain += worker[1].stats.loremProduction * workerCount;
+   }
+   const workerGain = workerSecondGain * timeIdle;
+
+   const totalGain = workerGain;
+   if (totalGain === 0) return;
+
+   Game.addLorem(totalGain);
+   const alertBox = new AlertBox({
+      title: 'New idle profits.',
+      body: `Your workers generated ${formatFloat(totalGain)} lorem.`
+   });
+
+   const IDLE_CHECK_INTERVAL = 5;
+   setInterval(updateIdleTime, IDLE_CHECK_INTERVAL * 1000);
+   updateIdleTime();
+}
+
 window.onload = () => {
    instantiateClasses();
 
@@ -1091,6 +1124,8 @@ window.onload = () => {
    receiveLetter('start');
 
    Game.settings.setup();
+
+   handleIdleTime();
 }
 
 function setupComputerBar() {
