@@ -137,6 +137,7 @@ function setSettingsCookie() {
       return;
    }
 
+   console.log(settingsCookie);
    settingsCookie.split('').forEach((char, idx) => {
       switch (idx + 1) {
          case 1:
@@ -162,7 +163,8 @@ function updateSettingsCookie() {
    const dpp = Game.settings.dpp.toString();
    const progressType = Game.settings.progressType.toString();
    const animatedBGs = Game.settings.animatedBGs ? '1' : '0';
-   let newCookie = dpp + progressType + animatedBGs;
+   const rainLetters = Game.settings.rainLetters ? '1' : '0';
+   let newCookie = dpp + progressType + animatedBGs + rainLetters;
    setCookie('settings', newCookie);
 }
 

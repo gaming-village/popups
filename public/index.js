@@ -276,7 +276,6 @@ const Game = {
          }
       },
       set job(newJob) {
-         console.log(newJob);
          this.job_internal = newJob;
          const jobData = loremCorpData.jobs[newJob];
 
@@ -1060,6 +1059,9 @@ const handleIdleTime = () => {
 }
 
 window.onload = () => {
+   console.log('Welcome to the console!');
+   console.log(`If you're trying to modify the game, try clicking the 'Lorem Ipsum Generator' title text :)`);
+
    instantiateClasses();
 
    LoadData();
