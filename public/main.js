@@ -122,6 +122,13 @@ const LoadData = () => {
    setOpenedRewards();
 }
 
+const getSettingsCookie = () => {
+   const dpp = Game.settings.dpp.toString();
+   const progressType = Game.settings.progressType.toString();
+   const animatedBGs = Game.settings.animatedBGs ? '1' : '0';
+   const rainLetters = Game.settings.rainLetters ? '1' : '0';
+   return dpp + progressType + animatedBGs + rainLetters;
+}
 function setSettingsCookie() {
    if (typeof Game === 'undefined') return;
 
@@ -132,7 +139,7 @@ function setSettingsCookie() {
 
    let settingsCookie = getCookie('settings');
    if (settingsCookie === '') {
-      settingsCookie = Game.settings.dpp.toString() + Game.settings.progressType.toString() + Game.settings.animatedBGs.toString() + Game.settings.rainLetters.toString();
+      settingsCookie = getSettingsCookie();
       setCookie('settings', settingsCookie);
       return;
    }
@@ -160,12 +167,7 @@ function setSettingsCookie() {
    });
 }
 function updateSettingsCookie() {
-   const dpp = Game.settings.dpp.toString();
-   const progressType = Game.settings.progressType.toString();
-   const animatedBGs = Game.settings.animatedBGs ? '1' : '0';
-   const rainLetters = Game.settings.rainLetters ? '1' : '0';
-   let newCookie = dpp + progressType + animatedBGs + rainLetters;
-   setCookie('settings', newCookie);
+   setCookie('settings', getSettingsCookie());
 }
 
 
