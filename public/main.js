@@ -144,7 +144,6 @@ function setSettingsCookie() {
       return;
    }
 
-   console.log(settingsCookie);
    settingsCookie.split('').forEach((char, idx) => {
       switch (idx + 1) {
          case 1:
@@ -175,13 +174,12 @@ function setMiscCookie() {
    if (typeof Game === 'undefined') return;
 
    // Bit 1: Black market (binary) (0/1 unlocked/locked)
-   // Bit 2: Lorem quota unlocked
-   // Bits 3-4: Lorem Promotion Status (hexadecimal)
-   // Bit 5: Job (0 = intern, etc.)
+   // Bits 2-3: Lorem Promotion Status (hexadecimal)
+   // Bit 4: Job (0 = intern, etc.)
 
    let miscCookie = getCookie('misc');
    if (miscCookie === '') {
-      miscCookie = '00000';
+      miscCookie = '0000';
       setCookie('misc', miscCookie);
    }
 
@@ -195,11 +193,11 @@ function setMiscCookie() {
                Game.blackMarket.unlockBlackMarket();
             }
             break;
-         case 3:
+         case 2:
             // Lorem promotion status
             promotionHex += bit;
             break;
-         case 4:
+         case 3:
             // Lorem promotion status
             promotionHex += bit;
             let quotaIndex = parseInt(promotionHex, 16);
@@ -212,16 +210,16 @@ function setMiscCookie() {
             Game.nextLoremQuota = loremQuotaData[quotaIndex].requirement;
             Game.currentQuota = quotaIndex + 1;
             break;
-         case 5:
+         case 4:
             // Lorem corp setup
             Game.loremCorp.setup();
 
-            const idx = parseInt(bit);
+            const jobIdx = parseInt(bit);
             const jobArr = Object.entries(loremCorpData.jobs);
-            Game.loremCorp.job = jobArr[idx][0];
+            Game.loremCorp.job = jobArr[jobIdx][0];
             break;
          default:
-            console.warn('Bit ' + bit + ' not accessed in misc cookie!')
+            console.warn('Bit ' + (idx + 1) + ' not accessed in misc cookie!')
       }
    });
 }

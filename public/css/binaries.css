@@ -1,50 +1,65 @@
 @import url(./general.css);
 
 @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
+@import url(../fonts/ms-sans-serif-font.css);
 
 body {
    background-color: #333;
    box-shadow: 0 0 5rem 2rem #111 inset;
 }
+body, html {
+   padding: 0;
+   margin: 0;
+}
+
+.hidden {
+   display: none !important;
+}
 
 #header {
    font-family: 'Abril Fatface';
    background-image: radial-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
-   padding: 0.5rem;
+   border: 2px solid #000;
+   border-radius: 6px;
+   padding: 0 1rem;
    margin-left: 50%;
    margin-top: 2rem;
+   margin-bottom: 5rem;
    display: table;
    transform: translateX(-50%);
+   box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.2), 5px 5px 5px 5px rgba(0, 0, 0, 0.4);;
 }
 #header :is(h1, h2) {
    text-align: center;
    margin: 0;
 }
 #header h1 {
-   color: rgb(245, 240, 198);
-   text-decoration: underline;
-   font-size: 2.5rem;
-   letter-spacing: 0.15rem;
+   color: #fff;
+   font-size: 2.3rem;
+   letter-spacing: 0.1rem;
+}
+#header h1 span {
+   color: rgb(255, 196, 0);
 }
 #header h2 {
-   color: #eee;
-   font-weight: 400;
-   font-size: 1.3rem;
-   font-family: 'Times New Roman', Times, serif;
+   color: #ddd;
+   font-family: "MS Sans Serif";
+   font-weight: normal;
+   font-size: 1.2rem;
 }
 
-#binaries-container {
-   padding: 1rem;
-   background-color: #111;
-   position: absolute;
-   top: 50%;
-   left: 50%;
-   transform: translate(-50%, -50%);
+#shop {
+   width: 50%;
+   background-image: radial-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0));
+   border: 2px solid #000;
+   border-radius: 6px;
+   margin-left: 50%;
+   transform: translateX(-50%);
+   box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.4) inset, 0 0 0 2px rgba(255, 255, 255, 0.2), 5px 5px 5px 5px rgba(0, 0, 0, 0.4);;
 }
-.binary-notch {
-   --size: 6rem;
-   width: var(--size);
-   height: var(--size);
-   background-color: red;
-   display: inline-block;
+#shop .title {
+   color: #fff;
+   font-family: "MS Sans Serif";
+   text-align: center;
+   margin: 0.3rem 0 1rem;
 }

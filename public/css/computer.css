@@ -85,11 +85,12 @@
    text-decoration: underline;
    margin: 0.7rem 0 0.2rem;
 }
-.ct-xp #quota-reward-title, #quota-reward-text {
+.ct-xp #quota-reward-title, .ct-xp #quota-reward-text {
    margin: 0;
 }
 .ct-xp #quota-reward-title {
    font-size: 1.1rem;
+   font-weight: bold;
    margin-bottom: 0.3rem;
 }
 
@@ -117,12 +118,22 @@
    margin: 0;
    line-height: 1.7rem;
 }
-.ct-95 #lorem-quota h4 {
-   font-weight: normal;
-}
 .ct-95 #lorem-quota h3 {
    text-align: center;
    margin-bottom: 0.1rem;
+}
+.ct-95 #quota-amount {
+   font-weight: normal;
+}
+.ct-95 #quota-reward-title {
+   font-weight: normal;
+}
+.ct-95 #quota-reward-text {
+   text-align: justify;
+   color: #222;
+   font-weight: normal;
+   font-size: 0.92rem;
+   font-style: italic;
 }
 .ct-95 #lorem-quota .progress-bar-container {
    margin-bottom: 0.3rem;

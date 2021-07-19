@@ -3,6 +3,7 @@ const semiPopups = {};
 const applications = {};
 
 const Game = {
+   currentView: "",
    settings: {
       dpp: 2,
       progressType: 2,
@@ -11,7 +12,7 @@ const Game = {
       getContainerElems: function(containerID) {
          return [
             getElement(containerID),
-            getElement(containerID).querySelector('.selected-val')
+            getElement(containerID).querySelector(".selected-val")
          ];
       },
       setup: function() {
@@ -992,6 +993,7 @@ const setupNavBar = () => {
    views.forEach(view => getElement(`nav-${view}`).addEventListener("click", () => switchView(view)));
 }
 function switchView(view) {
+   Game.currentView = view;
    // Switch to the view.
    getElement(`nav-${view}`).classList.add("selected");
    getElement(view).classList.remove("hidden");
