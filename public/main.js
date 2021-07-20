@@ -178,8 +178,8 @@ function setMiscCookie() {
    // Bit 4: Job (0 = intern, etc.)
 
    let miscCookie = getCookie('misc');
-   if (miscCookie === '') {
-      miscCookie = '0000';
+   if (miscCookie === "") {
+      miscCookie = "0000";
       setCookie('misc', miscCookie);
    }
 
@@ -211,12 +211,11 @@ function setMiscCookie() {
             Game.currentQuota = quotaIndex + 1;
             break;
          case 4:
-            // Lorem corp setup
-            Game.loremCorp.setup();
-
             const jobIdx = parseInt(bit);
             const jobArr = Object.entries(loremCorpData.jobs);
-            Game.loremCorp.job = jobArr[jobIdx][0];
+            const job = jobArr[jobIdx][0];
+
+            Game.loremCorp.setup(job);
             break;
          default:
             console.warn('Bit ' + (idx + 1) + ' not accessed in misc cookie!')

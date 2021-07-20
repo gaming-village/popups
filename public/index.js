@@ -86,9 +86,11 @@ const Game = {
       corporateOverview: {
          unlocked: false
       },
-      setup: function() {
+      setup: function(job) {
+         this.job = job;
+
          // Setup the promote button
-         getElement('promote-button').addEventListener('click', () => {
+         getElement("promote-button").addEventListener('click', () => {
             if (Game.loremCount > loremCorpData.jobs[this.job].requirement) {
                // Promote
                if (this.jobIdx + 1 >= Object.keys(loremCorpData.jobs).length) return;
@@ -110,7 +112,7 @@ const Game = {
             const name = worker[0];
             const workerCount = getCookie(name);
             
-            if (workerCount == '') {
+            if (workerCount === "") {
                // If the worker is not stored
                setCookie(name, 0);
                this.workers[name] = 0;
@@ -127,6 +129,22 @@ const Game = {
 
          // Set the workers to make lorem
          Game.loremCorp.setWorkerGainInterval();
+      },
+      setupHoverPanel: function(button) {
+         const hoverPanel = getElement("corporate-overview-hover-panel");
+         button.addEventListener("mouseover", () => {
+            hoverPanel.classList.remove("hidden");
+            console.log(button);
+
+            const bounds = button.getBoundingClientRect();
+            const topHeight = getElement("info-bar").offsetHeight;
+
+            hoverPanel.style.left = bounds.left + bounds.width + "px";
+            hoverPanel.style.top = bounds.top - topHeight + "px";
+         });
+         button.addEventListener("mouseout", () => {
+            hoverPanel.classList.add("hidden");
+         })
       },
       updatePromotionProgress: function() {
          // Update the progress bar and text
@@ -209,6 +227,9 @@ const Game = {
             button.classList.remove('hidden');
             button.innerHTML = job[1].buttonText;
 
+            // Create the hover overview for the buttons.
+            this.setupHoverPanel(button);
+
             button.addEventListener('click', () => {
                this.showView(job[0] + '-section', button);
             });
@@ -277,6 +298,7 @@ const Game = {
          }
       },
       set job(newJob) {
+         console.log(`New job: ${newJob}`);
          this.job_internal = newJob;
          const jobData = loremCorpData.jobs[newJob];
 
