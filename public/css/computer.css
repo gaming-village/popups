@@ -96,7 +96,8 @@
 
 .ct-95 #lorem-quota {
    max-width: 17rem;
-   font-family: 'MS Sans Serif';
+   min-width: 10rem;
+   font-family: "MS Sans Serif";
    background-color: #ddd;
    border: 2px solid;
    border-top-color: #fff;
@@ -118,6 +119,12 @@
    margin: 0;
    line-height: 1.7rem;
 }
+.ct-95 #lorem-quota-progress {
+   font-weight: normal;
+}
+.ct-95 #lorem-quota-progress span {
+   font-weight: bold;
+}
 .ct-95 #lorem-quota h3 {
    text-align: center;
    margin-bottom: 0.1rem;
@@ -137,6 +144,16 @@
 }
 .ct-95 #lorem-quota .progress-bar-container {
    margin-bottom: 0.3rem;
+}
+.ct-95 #lorem-quota-complete {
+   color: rgb(0, 255, 0);
+   line-height: 1rem;
+   text-shadow: 0px 0px 1px #333, 0px 0px 2px #000;
+   text-align: center;
+   margin: 0.3rem 0;
+}
+.ct-95 #lorem-quota-complete span {
+   font-weight: bold;
 }
 
 .loremAd {

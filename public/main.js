@@ -10,15 +10,18 @@ function formatFloat(float, dp = Game.settings.dpp) {
    const formattedFloat = Math.round((float + Number.EPSILON) * mult) / mult;
    return formattedFloat;
 }
-function formatProg(current, goal) {
+function formatProg(current, goal, preventOverflow = false) {
    const progressType = Game.settings.progressType;
+   console.log(progressType);
+   let progress = current / goal * 100;
+   if (preventOverflow) progress = Math.min(progress, 100);
    switch (progressType) {
       case 1:
-         break;
+         return formatFloat(progress) + "%";
       case 2:
-         break;
+         return formatFloat(current) + "/" + formatFloat(goal);
       case 3:
-         break;
+         return formatFloat(current) + "/" + formatFloat(goal) + " (" + formatFloat(progress) + "%)";
       default:
          console.warn(`WARNING! Progress type ${progressType} not found.`);
    }
@@ -185,7 +188,7 @@ function setMiscCookie() {
 
    const bits = miscCookie.split('');
    bits.forEach((bit, idx) => {
-      let promotionHex = '';
+      let promotionHex = "";
       switch (idx + 1) {
          case 1:
             // Black Market
@@ -200,15 +203,19 @@ function setMiscCookie() {
          case 3:
             // Lorem promotion status
             promotionHex += bit;
-            let quotaIndex = parseInt(promotionHex, 16);
+            const quotaIndex = parseInt(promotionHex, 16);
+            console.log(quotaIndex);
+            const quota = loremQuotaData[quotaIndex].requirement;
+            Game.loremQuota.setup(quota);
+            console.log([ quotaIndex, quota ]);
 
-            // If index is out of bounds
-            const lgh = Object.keys(loremQuotaData).length;
-            if (quotaIndex >= lgh) {
-               quotaIndex = lgh - 1;
-            }
-            Game.nextLoremQuota = loremQuotaData[quotaIndex].requirement;
-            Game.currentQuota = quotaIndex + 1;
+            // // If index is out of bounds
+            // const lgh = Object.keys(loremQuotaData).length;
+            // if (quotaIndex >= lgh) {
+            //    quotaIndex = lgh - 1;
+            // }
+            // Game.nextLoremQuota = loremQuotaData[quotaIndex].requirement;
+            // Game.currentQuota = quotaIndex + 1;
             break;
          case 4:
             const jobIdx = parseInt(bit);
@@ -229,23 +236,24 @@ function updateMiscCookie() {
    newCookie += Game.blackMarket.unlocked ? '1' : '0';
 
    // Lorem quota unlocked
-   newCookie += Game.loremQuota.unlocked ? '1' : '0';
+   // newCookie += Game.loremQuota.unlocked ? '1' : '0';
 
    // Lorem promotion status
    // Find index of current quota
    let quotaIndex = 0;
    for (const quota of Object.values(loremQuotaData)) {
-      if (quota.requirement == Game.nextLoremQuota) {
+      if (quota.requirement == Game.loremQuota.quota) {
          break;
       }
       quotaIndex++;
    }
    let quotaHex = quotaIndex.toString(16);
    // Add additional 0 if malformed length
-   if (quotaHex.split('').length == 1) {
+   if (quotaHex.length === 1) {
       quotaHex = '0' + quotaHex;
    }
    newCookie += quotaHex;
+   console.log(newCookie);
 
    // Lorem Corp Job
    let jobIndex = -1;

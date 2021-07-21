@@ -313,7 +313,7 @@ const letters = {
          text: "Lorem Quota",
          img: "images/coin-icon.png",
          reward: () => {
-            Game.unlockLoremQuota();
+            Game.loremQuota.unlock();
             updateMiscCookie();
          }
       },

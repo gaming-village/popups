@@ -69,6 +69,44 @@ const Game = {
          }
       }
    },
+   loremQuota: {
+      quota: 0,
+      unlocked: false,
+      unlock: function() {
+         this.unlocked = true;
+         getElement("lorem-quota").classList.remove("hidden");
+      },
+      updateProgress: function() {
+         const progress = Game.loremCount / this.quota * 100;
+
+         getElement("lorem-quota").querySelector(".progress-bar").style.width = progress + "%";
+         const displayProgress = formatProg(Game.loremCount, this.quota, true)
+         getElement("lorem-quota-progress").innerHTML = "Progress: <span>" + displayProgress + "</span>";
+
+         if (progress >= 100) {
+            if (getElement("lorem-quota-complete") != undefined) return;
+            const progressText = document.createElement("p");
+            progressText.id = "lorem-quota-complete";
+            progressText.innerHTML = "Go to the <span>Corporate Overview</span> to claim your quota!";
+            getElement("quota-reward-text").after(progressText);
+         }
+      },
+      updateText: function() {
+         for (const reward of Object.entries(loremQuotaData)) {
+            if (reward[1].requirement === this.quota) {
+               getElement("quota-reward-title").innerHTML = reward[1].rewardTitle;
+               getElement("quota-reward-text").innerHTML = reward[1].rewardText;
+            }
+         }
+      },
+      setup: function(startQuota) {
+         this.quota = startQuota;
+
+         getElement("quota-amount").innerHTML = startQuota;
+
+         this.updateText();
+      }
+   },
    loremCorp: {
       setWorkerGainInterval: function() {
          const ms = 500;
@@ -474,30 +512,30 @@ const Game = {
       setCookie("packets", Game.packetCount, 31);
    },
 
-   nextLoremQuota: 50,
-   currentQuota: -1,
-   get quotaPromotions () {
-      let returnArr = [];
-      for (const quotaReward of Object.values(loremQuotaData)) {
-         returnArr.push(quotaReward.requirement);
-      }
-      return returnArr;
-   },
-   updateQuotaFactor: () => {
-      // Increment the lorem quota by 1 from the quotaPromotions array
-      if (!Game.loremQuota.unlocked) return;
+   // nextLoremQuota: 50,
+   // currentQuota: -1,
+   // get quotaPromotions () {
+   //    let returnArr = [];
+   //    for (const quotaReward of Object.values(loremQuotaData)) {
+   //       returnArr.push(quotaReward.requirement);
+   //    }
+   //    return returnArr;
+   // },
+   // updateQuotaFactor: () => {
+   //    // Increment the lorem quota by 1 from the quotaPromotions array
+   //    if (!Game.loremQuota.unlocked) return;
 
-      const quotaIndex = Game.quotaPromotions.indexOf(Game.nextLoremQuota);
+   //    const quotaIndex = Game.quotaPromotions.indexOf(Game.nextLoremQuota);
 
-      Game.nextLoremQuota = Game.quotaPromotions[quotaIndex + 1];
-      console.log(quotaIndex + 1);
+   //    Game.nextLoremQuota = Game.quotaPromotions[quotaIndex + 1];
+   //    console.log(quotaIndex + 1);
 
-      updateMiscCookie();
-   },
-   unlockLoremQuota: () => {
-      Game.loremQuota.unlocked = true;
-      getElement('lorem-quota').classList.remove('hidden');
-   },
+   //    updateMiscCookie();
+   // },
+   // unlockLoremQuota: () => {
+   //    Game.loremQuota.unlocked = true;
+   //    getElement('lorem-quota').classList.remove('hidden');
+   // },
 
    checkLoremLetters: () => {
       if (Game.loremCount >= 2) receiveLetter('motivationalLetter');
@@ -968,7 +1006,7 @@ function displayPoints(add) {
    getElement('packet-transfer-amount').innerHTML = formatFloat(Game.loremCount * Game.transferRate);
    
    updateLoremCounter(add);
-   if (Game.loremQuota.unlocked) Game.loremQuota.setQuotaProgress();
+   if (Game.loremQuota.unlocked) Game.loremQuota.updateProgress();
    Game.loremCorp.updatePromotionProgress();
 }
 
@@ -1083,8 +1121,8 @@ const handleIdleTime = () => {
 }
 
 window.onload = () => {
-   console.log('Welcome to the console!');
-   console.log(`If you're trying to modify the game, try clicking the 'Lorem Ipsum Generator' title text :)`);
+   console.log("Welcome to the console!");
+   console.log("If you're trying to modify the game, try clicking the 'Lorem Ipsum Generator' title text :)");
 
    instantiateClasses();
 
@@ -1094,14 +1132,16 @@ window.onload = () => {
    setupComputerBar();
 
    Game.setup.setupLorem();
-   Game.loremQuota = new LoremQuota(Game.nextLoremQuota);
+   // Game.loremQuota.setup();
+   // Game.loremQuota = new LoremQuota(Game.nextLoremQuota);
 
    // Unlock lorem quota. (Has to be done after LoadData because loremQuota doesn't exist until then)
    {
       const idx = Object.keys(letters).indexOf('motivationalLetter');
       const opened = getCookie('openedRewards').split('')[idx];
-      if (opened === '1') {
-         Game.unlockLoremQuota();
+      if (opened === "1") {
+         // Game.unlockLoremQuota();
+         Game.loremQuota.unlock();
       }
    }
 
@@ -1120,7 +1160,7 @@ window.onload = () => {
 
    setupMailbox();
 
-   if (getCookie('misc').split('')[0] == '1') letters.invitation.rewards.reward();
+   if (getCookie('misc').split("")[0] === '1') letters.invitation.rewards.reward();
 
    // Terminal setup
    getElement('pointer-content').addEventListener('keydown', function(event) {
