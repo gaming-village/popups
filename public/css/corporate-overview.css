@@ -27,6 +27,9 @@
    font-size: 1.3rem;
    margin: 1rem 0 0.5rem 0.5rem;
 }
+#corporate-overview-promotion-progress {
+   text-decoration: none !important;
+}
 #corporate-overview .left-bar ul {
    list-style-type: none;
    padding: 0;
@@ -36,22 +39,33 @@
    position: relative;
 }
 #corporate-overview-hover-panel {
-   background-color: red;
+   max-width: 20rem;
+   background-color: #888;
+   border: 2px solid;
+   border-radius: 1px;
+   border-top-color: #bbb;
+   border-left-color: #bbb;
+   border-bottom-color: #555;
+   border-right-color: #555;
+   padding: 0.1rem 0.3rem;
+   margin-left: 10px;
+   box-shadow: 0 0 0 2px #000;
    position: absolute;
+   transform: translateY(-50%);
+   z-index: 999;
 }
-/* #corporate-overview .left-bar li.button:hover::after {
-   content: '';
-   background-color: red;
-   border: 2px solid #000;
-   border-radius: 3px;
-   position: absolute;
-   top: -4px;
-   left: -4px;
-   bottom: -4px;
-   right: -4px;
-   pointer-events: none;
-   transform: translateX(100%);
-} */
+#corporate-overview-hover-panel h2 {
+   color: #fff;
+   font-size: 1.1rem;
+   margin: 0;
+}
+#corporate-overview-hover-panel p {
+   color: #eee;
+   font-size: 1rem;
+   margin: 0;
+   text-align: justify;
+   text-shadow: 2px 2px 0 #222;
+}
 #corporate-overview .left-bar li.button:not(.selected) {
    border-top-color: #d6d6d6;
    border-left-color: #d6d6d6;
@@ -118,7 +132,7 @@
 #corporate-overview .section h1 {
    color: #fff;
    text-align: center;
-   font-size: 1.5rem;
+   font-size: 1.4rem;
    background-color: rgb(13, 44, 180);
    margin: 0 0 0.5rem;
 }
@@ -152,6 +166,25 @@
 #job-status .button {
    margin: 0.5rem 0 0 50%;
    transform: translateX(-50%);
+}
+
+#lorem-quota-status {
+   font-size: 1rem;
+   font-weight: normal;
+   font-family: "MS Sans Serif";
+   text-decoration: none !important;
+}
+#lorem-quota-status span {
+   font-weight: bold;
+}
+#lorem-quota-progress2 {
+   font-family: "MS Sans Serif";
+   text-align: center;
+   font-size: 1rem;
+   margin-bottom: 0;
+}
+#lorem-quota-progress2 span {
+   font-weight: bold;
 }
 
 #corporate-lorem-count {

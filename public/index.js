@@ -71,6 +71,7 @@ const Game = {
    },
    loremQuota: {
       quota: 0,
+      quotaIdx: -1,
       unlocked: false,
       unlock: function() {
          this.unlocked = true;
@@ -82,13 +83,34 @@ const Game = {
          getElement("lorem-quota").querySelector(".progress-bar").style.width = progress + "%";
          const displayProgress = formatProg(Game.loremCount, this.quota, true)
          getElement("lorem-quota-progress").innerHTML = "Progress: <span>" + displayProgress + "</span>";
+         getElement("lorem-quota-progress2").innerHTML = `Progress: <span>${displayProgress}</span>`;
+
+         const quotaStatus = getElement("lorem-quota-status");
 
          if (progress >= 100) {
             if (getElement("lorem-quota-complete") != undefined) return;
+
+            getElement("claim-quota-button").classList.remove("dark");
+
+            quotaStatus.innerHTML = "Quota Status: <span>Available</span>";
+            quotaStatus.querySelector("span").style.color = "rgb(0, 255, 0)";
+
             const progressText = document.createElement("p");
             progressText.id = "lorem-quota-complete";
-            progressText.innerHTML = "Go to the <span>Corporate Overview</span> to claim your quota!";
+            progressText.innerHTML = "Quota reached! Go to the <span>Corporate Overview</span> to claim your reward.";
             getElement("quota-reward-text").after(progressText);
+
+            progressText.querySelector("span").addEventListener("click", () => {
+               switchView("corporate-overview");
+            });
+         } else {
+            const quotaNotice = getElement("lorem-quota-complete");
+            if (quotaNotice !== null) quotaNotice.remove();
+
+            getElement("claim-quota-button").classList.add("dark");
+
+            quotaStatus.innerHTML = "Quota Status: <span>Unavailable</span>";
+            quotaStatus.querySelector("span").style.color = "rgb(255, 0, 0)";
          }
       },
       updateText: function() {
@@ -99,12 +121,42 @@ const Game = {
             }
          }
       },
+      updateCorporateOverviewScreen: function() {
+         const quotaStage = this.quotaIdx + 1;
+         getElement("lorem-quota-stage").innerHTML = `Current quota stage: ${quotaStage}`;
+
+         const frag = document.createDocumentFragment();
+         Object.values(loremQuotaData).every((quota, idx) => {
+            if (idx >= this.quotaIdx) return false;
+            
+            const li = document.createElement("li");
+            li.innerHTML = quota.rewardText;
+            frag.appendChild(li);
+            return true;
+         });
+         getElement("lorem-quota-claimed-rewards").appendChild(frag);
+      },
       setup: function(startQuota) {
          this.quota = startQuota;
 
          getElement("quota-amount").innerHTML = startQuota;
 
+         getElement("claim-quota-button").addEventListener("click", () => {
+            if (Game.loremCount >= this.quota) {
+               this.quotaIdx += 1;
+               this.quota = loremQuotaData[this.quotaIdx].requirement;
+
+               getElement("lorem-quota-complete").remove();
+
+               updateMiscCookie();
+               this.updateText();
+               this.updateProgress();
+               this.updateCorporateOverviewScreen();
+            }
+         });
+
          this.updateText();
+         this.updateCorporateOverviewScreen();
       }
    },
    loremCorp: {
@@ -125,27 +177,6 @@ const Game = {
          unlocked: false
       },
       setup: function(job) {
-         this.job = job;
-
-         // Setup the promote button
-         getElement("promote-button").addEventListener('click', () => {
-            if (Game.loremCount > loremCorpData.jobs[this.job].requirement) {
-               // Promote
-               if (this.jobIdx + 1 >= Object.keys(loremCorpData.jobs).length) return;
-               const nextJob = Object.entries(loremCorpData.jobs)[this.jobIdx + 1];
-               const nextJobName = nextJob[0];
-               this.job = nextJobName;
-               updateMiscCookie();
-               this.updatePromotionProgress();
-
-               Game.addLorem(-Game.loremCount);
-
-               // Receive the promotion letter
-               const letterName = nextJob[1].letterName;
-               receiveLetter(letterName);
-            }
-         });
-
          for (const worker of Object.entries(loremCorpData.jobs)) {
             const name = worker[0];
             const workerCount = getCookie(name);
@@ -160,6 +191,29 @@ const Game = {
             }
          }
 
+         this.job = job;
+
+         // Setup the promote button
+         getElement("promote-button").addEventListener('click', () => {
+            if (Game.loremCount < loremCorpData.jobs[this.job].requirement) return;
+
+            getElement("promote-button").classList.add("dark");
+
+            // Promote
+            if (this.jobIdx + 1 >= Object.keys(loremCorpData.jobs).length) return;
+            const nextJob = Object.entries(loremCorpData.jobs)[this.jobIdx + 1];
+            const nextJobName = nextJob[0];
+            this.job = nextJobName;
+            updateMiscCookie();
+            this.updatePromotionProgress();
+
+            Game.addLorem(-Game.loremCount);
+
+            // Receive the promotion letter
+            const letterName = nextJob[1].letterName;
+            receiveLetter(letterName);
+         });
+
          const quotaMenuButton = getElement('quota-menu-button');
          quotaMenuButton.addEventListener('click', () => {
             this.showView('quota-menu', quotaMenuButton);
@@ -168,29 +222,18 @@ const Game = {
          // Set the workers to make lorem
          Game.loremCorp.setWorkerGainInterval();
       },
-      setupHoverPanel: function(button) {
-         const hoverPanel = getElement("corporate-overview-hover-panel");
-         button.addEventListener("mouseover", () => {
-            hoverPanel.classList.remove("hidden");
-            console.log(button);
-
-            const bounds = button.getBoundingClientRect();
-            const topHeight = getElement("info-bar").offsetHeight;
-
-            hoverPanel.style.left = bounds.left + bounds.width + "px";
-            hoverPanel.style.top = bounds.top - topHeight + "px";
-         });
-         button.addEventListener("mouseout", () => {
-            hoverPanel.classList.add("hidden");
-         })
-      },
       updatePromotionProgress: function() {
          // Update the progress bar and text
          const req = loremCorpData.jobs[this.job].requirement;
          const progress = Game.loremCount / req * 100;
 
-         
-         getElement('job-status').querySelector('h2.center').innerHTML = formatFloat(Game.loremCount) + '/' + formatFloat(req) + ' (' + formatFloat(progress) + '%)';
+         if (progress >= 100) {
+            getElement("promote-button").classList.remove("dark");
+         } else {
+            getElement("promote-button").classList.add("dark");
+         }
+
+         getElement("job-status").querySelector("h2.center").innerHTML = formatProg(Game.loremCount, req, true);
          const displayProgress = Math.min(progress, 100);
          getElement('job-status').querySelector('.progress-bar').style.width = displayProgress + '%';
       },
@@ -257,7 +300,7 @@ const Game = {
          const frag = document.createDocumentFragment();
          getElement('job-title').classList.add('hidden');
          for (const job of Object.entries(loremCorpData.jobs)) {
-            if (job[0] === this.job_internal) break;
+            if (job[0] === this.job) break;
             
             getElement('job-title').classList.remove('hidden');
             const button = getElement('job-template').cloneNode(true);
@@ -266,7 +309,13 @@ const Game = {
             button.innerHTML = job[1].buttonText;
 
             // Create the hover overview for the buttons.
-            this.setupHoverPanel(button);
+            const content = [
+               [`<h2>${capitalize(job[0])}s</h2><p>You have `],
+               [`this.workers["${job[0]}"]`, "eval"],
+               [` ${job[0]}s producing `],
+               [`formatFloat(loremCorpData.jobs["${job[0]}"].stats.loremProduction * this.workers["${job[0]}"])`, "eval"],
+               [` lorem per second.`]];
+            this.setupHoverPanel(button, content);
 
             button.addEventListener('click', () => {
                this.showView(job[0] + '-section', button);
@@ -275,6 +324,32 @@ const Game = {
             frag.appendChild(button);
          }
          getElement('job-button-container').appendChild(frag);
+      },
+      setupHoverPanel: function(button, ...content) {
+         const hoverPanel = getElement("corporate-overview-hover-panel");
+         button.addEventListener("mouseover", () => {
+            hoverPanel.classList.remove("hidden");
+
+            const bounds = button.getBoundingClientRect();
+            const topHeight = getElement("info-bar").offsetHeight;
+
+            hoverPanel.style.left = bounds.left + bounds.width + "px";
+            hoverPanel.style.top = bounds.top + bounds.height / 2 - topHeight + "px";
+
+            let text = "";
+            for (const component of content[0]) {
+               if (component.includes("eval")) {
+                  text += eval(component[0]);
+               } else {
+                  text += component[0];
+               }
+            }
+
+            hoverPanel.innerHTML = text;
+         });
+         button.addEventListener("mouseout", () => {
+            hoverPanel.classList.add("hidden");
+         })
       },
       updateWorkerInfo(view, job) {
          // Overview
@@ -1254,7 +1329,7 @@ function writeLorem(loremN = 1, giveLorem = true) {
    currentText.innerHTML += loremTemplate.split("")[iterationCount % loremLength];
 
    let loremPerWrite = 0.05;
-   if (Game.currentQuota >= 2) loremPerWrite *= 2;
+   if (Game.loremQuota.quotaIdx >= 1) loremPerWrite *= 2;
    if (!(iterationCount % 5) && giveLorem) Game.addLorem(loremPerWrite);
 
    const loremContainer = getElement("loremContainer");

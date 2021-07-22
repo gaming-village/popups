@@ -146,14 +146,17 @@
    margin-bottom: 0.3rem;
 }
 .ct-95 #lorem-quota-complete {
-   color: rgb(0, 255, 0);
    line-height: 1rem;
-   text-shadow: 0px 0px 1px #333, 0px 0px 2px #000;
    text-align: center;
+   background-color: #c2c2c2;
    margin: 0.3rem 0;
+   padding: 0.2rem 0;
 }
 .ct-95 #lorem-quota-complete span {
-   font-weight: bold;
+   color: rgb(0, 255, 0);
+   text-shadow: 0px 0px 2px #333, 0px 0px 2px #000;
+   text-decoration: underline;
+   cursor: pointer;
 }
 
 .loremAd {

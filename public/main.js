@@ -12,16 +12,25 @@ function formatFloat(float, dp = Game.settings.dpp) {
 }
 function formatProg(current, goal, preventOverflow = false) {
    const progressType = Game.settings.progressType;
-   console.log(progressType);
    let progress = current / goal * 100;
    if (preventOverflow) progress = Math.min(progress, 100);
+
+   let type;
+   if (progress >= 100) {
+      type = `<span class="progress-green">`;
+   } else if (progress >= 50) {
+      type = `<span class="progress-orange">`;
+   } else {
+      type = `<span class="progress-red">`;
+   }
+
    switch (progressType) {
       case 1:
-         return formatFloat(progress) + "%";
+         return type + formatFloat(progress) + "%</span>";
       case 2:
-         return formatFloat(current) + "/" + formatFloat(goal);
+         return type + formatFloat(current) + "</span>/" + formatFloat(goal);
       case 3:
-         return formatFloat(current) + "/" + formatFloat(goal) + " (" + formatFloat(progress) + "%)";
+         return formatFloat(current) + "/" + formatFloat(goal) + type + " (" + formatFloat(progress) + "%)</span>";
       default:
          console.warn(`WARNING! Progress type ${progressType} not found.`);
    }
@@ -69,6 +78,9 @@ function plural(str) {
 function slugCase(str) {
    const slug = str.replace(/([A-Z])/g, '-$1').toLowerCase();
    return slug;
+}
+function fetchProperty(obj, prop) {
+   return obj[prop];
 }
 
 
@@ -141,7 +153,7 @@ function setSettingsCookie() {
    // Char 4: Rain letters (0/1)
 
    let settingsCookie = getCookie('settings');
-   if (settingsCookie === '') {
+   if (settingsCookie === "") {
       settingsCookie = getSettingsCookie();
       setCookie('settings', settingsCookie);
       return;
@@ -204,10 +216,11 @@ function setMiscCookie() {
             // Lorem promotion status
             promotionHex += bit;
             const quotaIndex = parseInt(promotionHex, 16);
-            console.log(quotaIndex);
+            Game.loremQuota.quotaIdx = quotaIndex;
+            // console.log(quotaIndex);
             const quota = loremQuotaData[quotaIndex].requirement;
             Game.loremQuota.setup(quota);
-            console.log([ quotaIndex, quota ]);
+            // console.log([ quotaIndex, quota ]);
 
             // // If index is out of bounds
             // const lgh = Object.keys(loremQuotaData).length;

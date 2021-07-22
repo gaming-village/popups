@@ -132,6 +132,17 @@ html, body {
    }
 }
 
+span.progress-green {
+   color: rgb(0, 255, 0);
+   text-shadow: 1px 1px 1px #000;
+}
+span.progress-orange {
+   color: rgb(255, 128, 0);
+}
+span.progress-red {
+   color: rgb(255, 0, 0);
+}
+
 #message-container {
    font-family: 'Windows';
    background-color: #aaa;

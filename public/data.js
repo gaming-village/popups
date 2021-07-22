@@ -528,12 +528,12 @@ const loremQuotaData = {
    0: {
       requirement: 30,
       rewardTitle: `Touch typing`,
-      rewardText: `Gain double lorem per key stroke.`
+      rewardText: `Double lorem production per key stroke.`
    },
    1: {
       requirement: 100,
-      rewardTitle: `Branching out`,
-      rewardText: `Hire an unpaid intern to mine for you.`
+      rewardTitle: `Job listing`,
+      rewardText: `Hire a gang of 3 unpaid intern to mine for you.`
    },
    2: {
       requirement: 300,
@@ -542,8 +542,8 @@ const loremQuotaData = {
    },
    3: {
       requirement: 500,
-      rewardTitle: `More interns`,
-      rewardText: `Hire a tribe of interns to mine for you.`
+      rewardTitle: `Ad campaign`,
+      rewardText: `Acquire a tribe of 10 interns to mine for you.`
    },
    4: {
       requirement: 1000,
@@ -552,8 +552,8 @@ const loremQuotaData = {
    },
    5: {
       requirement: 2500,
-      rewardTitle: `Antivirus`,
-      rewardText: `Purchase a lorem generation machine`
+      rewardTitle: `Massive billboard`,
+      rewardText: `Obtain a horde of unpaid interns.`
    },
    6: {
       requirement: 5000,
