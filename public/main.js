@@ -79,9 +79,6 @@ function slugCase(str) {
    const slug = str.replace(/([A-Z])/g, '-$1').toLowerCase();
    return slug;
 }
-function fetchProperty(obj, prop) {
-   return obj[prop];
-}
 
 
 
@@ -217,18 +214,9 @@ function setMiscCookie() {
             promotionHex += bit;
             const quotaIndex = parseInt(promotionHex, 16);
             Game.loremQuota.quotaIdx = quotaIndex;
-            // console.log(quotaIndex);
+            
             const quota = loremQuotaData[quotaIndex].requirement;
             Game.loremQuota.setup(quota);
-            // console.log([ quotaIndex, quota ]);
-
-            // // If index is out of bounds
-            // const lgh = Object.keys(loremQuotaData).length;
-            // if (quotaIndex >= lgh) {
-            //    quotaIndex = lgh - 1;
-            // }
-            // Game.nextLoremQuota = loremQuotaData[quotaIndex].requirement;
-            // Game.currentQuota = quotaIndex + 1;
             break;
          case 4:
             const jobIdx = parseInt(bit);

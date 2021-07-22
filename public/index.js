@@ -1207,8 +1207,6 @@ window.onload = () => {
    setupComputerBar();
 
    Game.setup.setupLorem();
-   // Game.loremQuota.setup();
-   // Game.loremQuota = new LoremQuota(Game.nextLoremQuota);
 
    // Unlock lorem quota. (Has to be done after LoadData because loremQuota doesn't exist until then)
    {
@@ -1445,7 +1443,6 @@ function showInbox() {
 }
 function hideInbox() {
    getElement("mail-inbox").classList.add("hidden");
-   // getElement("mask").classList.add("hidden");
    hideLetter();
 }
 function createInboxEntry(letterObj, existingEntry = false) {
@@ -1493,9 +1490,12 @@ function setupMailbox() {
 
    getElement("mask").addEventListener("click", () => {
       if (getElement("about").classList.contains("hidden")) return;
-      getElement("mask").classList.add("hidden");
-      hideInbox();
+      hideMailbox();
    });
+}
+function hideMailbox() {
+   getElement("mask").classList.add("hidden");
+   hideInbox();
 }
 function changeSelectedLetter(letterObj) {
    const selectedEntry = getElement(`inbox-entry-${letterObj[0]}`);
@@ -1535,8 +1535,17 @@ function showLetter(letterObj) {
    letter.opened = true;
    cookies.openedLetters.update();
 
+   let content = letter.content;
+   const textNames = ["Corporate Overview"];
+   const viewNames = ["corporate-overview"];
+   let idx = 0;
+   for (const textName of textNames) {
+      content = content.replace(textName, `<span onclick="switchView('${viewNames[idx]}'); hideMailbox();">${textName}</span>`);
+      idx++;
+   }
+
    // Update the paper's text
-   paper.innerHTML = `<h3>${letter.title}</h3> ${letter.content}`;
+   paper.innerHTML = `<h3>${letter.title}</h3> ${content}`;
    if (letter.rewards != undefined) {
       paper.innerHTML += `
       <h2 class="reward-header">Rewards</h2>

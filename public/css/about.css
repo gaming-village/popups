@@ -31,12 +31,7 @@
 }
 
 #about {
-   /* width: 100vw;
-   height: 100vh; */
    background-color: #eee;
-   /* position: absolute;
-   top: 0;
-   left: 0; */
    overflow: hidden;
    pointer-events: none;
    box-shadow: 0 0 30px 10px #888 inset;
@@ -291,59 +286,6 @@
    opacity: 0.85;
 }
 
-#mail-container {
-   --size: 10rem;
-   width: calc(var(--size) * 1.414);
-   /* height: var(--size); */
-   transform: translate(-50%, -50%);
-   position: absolute;
-   top: 50%;
-   left: 75%;
-   pointer-events: all;
-   z-index: 5;
-}
-#mail-container:active #mail-letter {
-   opacity: 0.9;
-}
-#mail-letter {
-   width: calc(var(--size) * 1.414);
-   height: var(--size);
-   background-color: #000;
-   background-image: url(../images/sealed-letter.png);
-   background-size: 100% 100%;
-   position: absolute;
-   top: 0;
-   left: 0;
-   z-index: 2;
-   cursor: pointer;
-   opacity: 0.9;
-   box-shadow: 0 1px 5px 2px rgba(0, 0, 0, 0.3);
-}
-#mail-container:hover #mail-letter {
-   opacity: 1;
-}
-#mail-container:active #mail-letter {
-   opacity: 0.8;
-}
-#mail-container.opening:not(.opened) #mail-letter {
-   animation: openLetter 0.8s forwards ease-in-out;
-}
-#mail-container.opened #mail-letter {
-   opacity: 0;
-   top: 2vh;
-   visibility: hidden;
-}
-/* @keyframes openLetter {
-   50% {
-      opacity: 0.85;
-      top: 0;
-   }
-   100% {
-      opacity: 0;
-      top: 2vh;
-      visibility: hidden;
-   }
-} */
 #paper {
    --scale: 1.5;
    --size: 10rem;
@@ -362,6 +304,9 @@
    transform: translate(-50%, -50%);
    pointer-events: all;
 }
+.ct-95 #paper {
+   font-family: "MS Sans Serif";
+}
 #paper h3 {
    text-align: center;
    font-size: 1.3rem;
@@ -370,6 +315,10 @@
 }
 #paper p {
    margin: 0.75rem 0.4rem;
+}
+#paper span {
+   font-weight: bold;
+   cursor: pointer;
 }
 #paper .reward-header {
    font-size: 1.2rem;
