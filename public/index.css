@@ -559,6 +559,9 @@ div#changelog {
    background-color: #c5c5c5;
 }
 
+.button.dark {
+   cursor: default !important;
+}
 .ct-95 .button.dark {
    border-top-color: #d6d6d6;
    border-left-color: #d6d6d6;

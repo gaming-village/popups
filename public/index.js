@@ -1319,15 +1319,20 @@ document.addEventListener('keydown', function(event) {
       keySwitchView(keyCode - 48);
    }
    // If the input is a letter press or space
-   if (keyCode >= 65 && keyCode <= 90 || keyCode === 32) keyPress();
+   const key = String.fromCharCode(keyCode);
+   if (keyCode >= 65 && keyCode <= 90 || keyCode === 32) keyPress(key);
 });
 
-function writeLorem(loremN = 1, giveLorem = true) {
+function writeLorem(loremN = 1, giveLorem = true, pressedKey = null) {
    const currentText = getElement("current-lorem-text");
-   currentText.innerHTML += loremTemplate.split("")[iterationCount % loremLength];
+   const nextLetter = loremTemplate.split("")[iterationCount % loremLength];
+   currentText.innerHTML += nextLetter;
 
    let loremPerWrite = 0.05;
    if (Game.loremQuota.quotaIdx >= 1) loremPerWrite *= 2;
+   // Triple lorem gain if typed correct letter
+   if (pressedKey.toLowerCase() === nextLetter.toLowerCase()) loremPerWrite *= 3;
+
    if (!(iterationCount % 5) && giveLorem) Game.addLorem(loremPerWrite);
 
    const loremContainer = getElement("loremContainer");
@@ -1369,11 +1374,11 @@ function writeLorem(loremN = 1, giveLorem = true) {
       loremContainer.appendChild(currentLoremText);
    }
 }
-function keyPress() {
+function keyPress(key) {
    // Stop if the lurem impsir popup is blocking production.
    if (!popups.luremImpsir.canLorem) return;
 
-   writeLorem();
+   writeLorem(1, true, key);
 }
 function showPopupsAttempt() {
    switch (iterationCount - checkOffset) {
@@ -1540,7 +1545,7 @@ function showLetter(letterObj) {
    const viewNames = ["corporate-overview"];
    let idx = 0;
    for (const textName of textNames) {
-      content = content.replace(textName, `<span onclick="switchView('${viewNames[idx]}'); hideMailbox();">${textName}</span>`);
+      content = content.replace(textName, `<span class="link" onclick="switchView('${viewNames[idx]}'); hideMailbox();">${textName}</span>`);
       idx++;
    }
 
@@ -1558,12 +1563,12 @@ function showLetter(letterObj) {
             <div class="reward-box"><img src="${letter.rewards.img}"></div>
             <div class="reward-text">${letter.rewards.text}</div>
          </div>
-         <button class='paper-button'>Claim all</button>
+         <button class='paper-button button'>Claim all</button>
          `;
 
          const claimAllButton = paper.querySelector('.paper-button');
          if (letter.rewards.opened) {
-            claimAllButton.classList.add('opened');
+            claimAllButton.classList.add("opened", "dark");
             getElement(boxId).classList.add('opened');
          }
          // Add claim all button functionality

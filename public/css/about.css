@@ -316,42 +316,21 @@
 #paper p {
    margin: 0.75rem 0.4rem;
 }
-#paper span {
+#paper span.link {
    font-weight: bold;
    cursor: pointer;
 }
+#paper .from {
+   font-style: italic;
+}
 #paper .reward-header {
-   font-size: 1.2rem;
-   color: #fff;
-   text-shadow: 0 0 4px #000, 0 0 3px #000, 0 0 2px #000, 0 0 1px #000;
+   text-decoration: underline;
+   font-size: 1.1rem;
    margin: 1.5rem 0 0.5rem 0.5rem;
 }
 #paper button {
-   font-size: 1rem;
-   font-weight: 500;
-   font-family: 'Times New Roman', Times, serif;
-   background-color: #ddd;
-   padding: 0.1rem 0.5rem;
-   border-radius: 4px;
-   border: 1px solid #000;
-   margin: 0 0 0.5rem 50%;
-   display: block;
+   margin: 0.5rem 0 0.5rem 50%;
    transform: translateX(-50%);
-   cursor: pointer;
-   box-shadow: 0 -2px 4px 1px #bbb inset;
-}
-#paper button.opened {
-   color: #999;
-   background-color: #ccc;
-   box-shadow: 0 -2px 4px 1px #777 inset;
-   cursor: default;
-}
-#paper button:not(.opened):hover {
-   box-shadow: 0 -2px 2px 1px #aaa inset;
-}
-#paper button:not(.opened):active {
-   background-color: #cfcfcf;
-   box-shadow: 0 -2px 4px 1px #888 inset;
 }
 
 .reward-type-box {
