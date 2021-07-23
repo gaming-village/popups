@@ -411,11 +411,13 @@ const Game = {
          }
       },
       set job(newJob) {
-         console.log(`New job: ${newJob}`);
          this.job_internal = newJob;
          const jobData = loremCorpData.jobs[newJob];
+         console.log(jobData);
 
          getElement('welcome').innerHTML = jobData.welcomeText;
+
+         getElement("job-display-name").innerHTML = jobData.displayText;
 
          // Create job views (e.g. intern)
          this.createJobViews();
@@ -749,10 +751,23 @@ const terminal = {
                terminal.writeLine(['WARNING: ', '#ffbb29'], ['Popup ', '#888'], [`'${name}'`, '#aaa'], [' is not unlocked yet.', '#888'])
                return;
             } else if (!popups[name].displayed) {
-               terminal.writeLine(['WARNING: ', '#ffbb29'], ['Popup ', '#888'], [`'${name}'`, '#aaa'], [' is not visible.', '#888'])
+               terminal.writeLine(['WARNING: ', '#ffbb29'], ['Popup ', '#888'], [`'${name}'`, '#aaa'], [' is not visible.', '#888']);
                return;
             }
             popups[name].hide();
+         }
+      },
+      unlock: {
+         all: () => {
+            popupsUnlocked = 0;
+            for (const popup of Object.values(popupData)) {
+               if (popup.unlocked) continue;
+               popup.unlocked = true;
+               popupsUnlocked++;
+            }
+            cookies.unlockedMalware.update();
+
+            terminal.writeLine([popupsUnlocked, '#aaa'], [' popups were unlocked.', '#888']);
          }
       },
       js: {
@@ -1331,7 +1346,7 @@ function writeLorem(loremN = 1, giveLorem = true, pressedKey = null) {
    let loremPerWrite = 0.05;
    if (Game.loremQuota.quotaIdx >= 1) loremPerWrite *= 2;
    // Triple lorem gain if typed correct letter
-   if (pressedKey.toLowerCase() === nextLetter.toLowerCase()) loremPerWrite *= 3;
+   if (pressedKey !== null && pressedKey.toLowerCase() === nextLetter.toLowerCase()) loremPerWrite *= 3;
 
    if (!(iterationCount % 5) && giveLorem) Game.addLorem(loremPerWrite);
 

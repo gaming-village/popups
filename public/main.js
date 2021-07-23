@@ -128,6 +128,7 @@ const LoadData = () => {
    cookies.receivedLetters = new CookieObjectManager('receivedLetters', letters, 'received');
    cookies.openedLetters = new CookieObjectManager('openedLetters', letters, 'opened');
    cookies.unlockedShops = new CookieObjectManager('unlockedShops', blackMarketShops, 'unlocked');
+   cookies.unlockedMalware = new CookieObjectManager("unlockedMalware", popupData, "unlocked");
 
    setSettingsCookie();
    setMiscCookie();

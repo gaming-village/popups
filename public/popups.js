@@ -142,7 +142,7 @@ class LuremImpsir extends Popup {
       this.timerObj.addEventListener("click", () => {
          if (!this.timerObj.classList.contains('dark')) this.hide();
       });
-   }
+   }s
    show(noMove = false, manualForce = false) {
       super.show(noMove, manualForce);
       if (!this.displayed) return;
@@ -304,7 +304,8 @@ class RainText {
 class Visitor extends Popup {
    constructor(popupDataName) {
       super(popupDataName);
-      this.rewards = [-7, 7, "Popup wave", "3x points (5s)"];
+      // this.rewards = [-7, 7, "Popup wave", "3x points (5s)"];
+      this.rewards = ["3x points (5s)"];
       getElement("visitor-open-button").addEventListener("click", () => {
          this.spinBox();
          setTimeout(() => {

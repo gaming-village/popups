@@ -608,7 +608,7 @@ const loremCorpData = {
          buttonText: 'Interns',
          requirement: 40,
          stats: {
-            loremProduction: 0.3,
+            loremProduction: 0.2,
          },
          cost: {
             lorem: 10,
@@ -629,7 +629,7 @@ const loremCorpData = {
          requirement: 250,
          letterName: 'internPromotion',
          stats: {
-            loremProduction: 7
+            loremProduction: 5
          },
          cost: {
             lorem: 250,
@@ -640,6 +640,10 @@ const loremCorpData = {
          }
       },
       technician: {
+         welcomeText: `<h1>Welcome</h1>
+         <p>Greetings Lorem Technician.</p>
+         <p>You are responsible for the finer details of lorem production, meaning that you are now an integral part of our company.</p>
+         <p>You have gained the ability to hire Employees to aid your production.</p>`,
          displayText: 'Technician',
          salary: '$200',
          buttonText: 'Technicians',
@@ -657,6 +661,9 @@ const loremCorpData = {
          }
       },
       manager: {
+         welcomeText: `<h1>Welcome</h1>
+         <p>Greetings Manager.</p>
+         <p>As one of our more valuable employees, you have access to a variety of subordinates in order to more effectively manage your production.</p>`,
          displayText: 'Manager',
          salary: '$2500',
          buttonText: 'Managers',
