@@ -107,7 +107,7 @@
       </div>-->
 
       <!-- Lorem Generator Text Box -->
-      <div id="loremContainer" class="canLorem xp-font center" display-text="Type to generate your lorem.">
+      <div id="loremContainer" class="canLorem xp-font center" display-text="Type to generate lorem.">
          <span id="current-lorem-text"></span>
       </div>
 
@@ -984,7 +984,9 @@
                   <div class='left-column'>
                      <h3>Claimed Rewards</h3>
                      
-                     <ul id="lorem-quota-claimed-rewards"></ul>
+                     <ul id="lorem-quota-claimed-rewards">
+                        <li>No rewards claimed!</li>
+                     </ul>
                   </div>
                   <div class='right-column'>
                      <h3>Overview</h3>
@@ -993,11 +995,11 @@
                </div>
                <div class='section'>
                   <h1>Claim Quota</h1>
-                  <h3 id="lorem-quota-status"></h3>
+                  <h3 id="lorem-quota-status">Quota Status: <span>Unavailable</span></h3>
                   <p id="lorem-quota-progress2"></p>
 
                   <div class='button-container'>
-                     <button id="claim-quota-button" class='button'>Claim</button>
+                     <button id="claim-quota-button" class='button dark'>Claim</button>
                   </div>
                </div>
             </div>
@@ -1008,7 +1010,25 @@
    <div id='settings' class='view'>
       <div class='main'>
          <h1>Settings</h1>
-         <p>Manage your Computer's visual preferences.</p>
+         <p>Manage your Computer's visual, performance and audio preferences.</p>
+
+         <h2>Audio</h2>
+         <div id='settings-audio-master' class='section'>
+            <div class='cf'>
+               <p class='label'>Master volume</p>
+               <p class='selected-val'>50%</p>
+            </div>
+            <input type='range' min='1' max='100' />
+         </div>
+         <div class="left-column">
+         <div id='settings-audio-general' class='section'>
+            <div class='cf'>
+               <p class='label'>Popup Audio</p>
+               <p class='selected-val'>50%</p>
+            </div>
+            <input type='range' min='1' max='100' />
+            </div>
+         </div>
 
          <h2>Numerals</h2>
          <div id='settings-dpp' class='section'>

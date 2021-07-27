@@ -343,10 +343,10 @@ span.progress-red {
 }
 .ct-95 .alert-box {
    font: normal 1rem 'MS Sans Serif';
-   background-color: #ddd;
+   background-color: #eee;
    border-radius: 3px;
    border: 2px solid rgb(26, 57, 197);
-   box-shadow: 0 0 1px 1px #fff;
+   box-shadow: 0 0 3px 1px #fff;
 }
 .alert-box h3 {
    color: #666;
@@ -751,6 +751,9 @@ button.close-button {
    border: 1px solid #23455d;
    box-shadow: 0px 0px 0px 1px #e1ecf8;
    position: relative;
+}
+.ct-95 .popup-container-3 .display-container {
+   background-color: #fff;
 }
 .popup-container-3 .top-bar {
    width: calc(100% - 0.6rem);

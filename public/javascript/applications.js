@@ -9,6 +9,18 @@ class Application {
 
       dragElement(getElement(name), getElement(name + '-top'));
    }
+   get position() {
+      const pos = getElement(this.name).getBoundingClientRect();
+      return {
+         x: pos.left,
+         y: pos.top
+      };
+   }
+   set position(newPos) {
+      const obj = getElement(this.name);
+      obj.style.top = newPos.y + "vh";
+      obj.style.left = newPos.x + "vw";
+   }
    get displayName() {
       let returnVal = this.name.split('-');
       returnVal = returnVal.map(item => capitalize(item));
@@ -21,18 +33,21 @@ class Application {
       getElement("computer-nav").appendChild(this.navObject);
 
       this.navObject.addEventListener("click", () => {
-         this.opened ? this.hideApplication() : this.openApplication();
+         this.opened ? this.hide() : this.open();
       });
 
       this.navObject.querySelector('.text').innerHTML = this.displayName;
    }
-   openApplication() {
+   open(updateCookie = true) {
       this.opened = true;
       getElement(this.name).classList.remove("hidden");
+      if (updateCookie) updateApplicationPositions();
       this.navObject.classList.remove("closed");
    }
-   hideApplication() {
+   hide() {
+
       this.opened = false;
+      updateApplicationPositions();
       getElement(this.name).classList.add("hidden");
       this.navObject.classList.add("closed");
    }

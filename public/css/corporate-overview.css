@@ -175,7 +175,8 @@
    text-decoration: none !important;
 }
 #lorem-quota-status span {
-   font-weight: bold;
+   color: rgb(255, 0, 0);
+   text-shadow: 2px 1px 1px #333;
 }
 #lorem-quota-progress2 {
    font-family: "MS Sans Serif";

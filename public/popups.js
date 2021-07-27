@@ -247,7 +247,7 @@ class Rain extends Popup {
       this.totalSapAmount = 0;
       this.createLetterInterval = setInterval(() => {
          const sapAmount = popupData.rain.stats.sapAmount;
-         if (sapAmount > Game.loremCount) return;
+         if (sapAmount > Game.lorem) return;
 
          const MAX_LETTER_COUNT = 20;
          if (this.letters.length < MAX_LETTER_COUNT && Game.settings.rainLetters) {
@@ -304,8 +304,10 @@ class RainText {
 class Visitor extends Popup {
    constructor(popupDataName) {
       super(popupDataName);
-      // this.rewards = [-7, 7, "Popup wave", "3x points (5s)"];
-      this.rewards = ["3x points (5s)"];
+
+      this.tripleLorem = false;
+
+      this.rewards = [-7, 7, "Popup wave", "3x points (5s)"];
       getElement("visitor-open-button").addEventListener("click", () => {
          this.spinBox();
          setTimeout(() => {
@@ -314,13 +316,17 @@ class Visitor extends Popup {
       });
    }
    spinBox() {
-      getElement("visitor-open-button").style.pointerEvents = "none";
-      getElement("visitor-status").innerHTML = "Spinning...";
-      getElement("visitor-status").classList.remove("specialReward");
+      const openButton = getElement("visitor-open-button");
+      openButton.style.pointerEvents = "none";
+      openButton.classList.add("dark");
+
+      openButton.innerHTML = "Spinning...";
+      // getElement("visitor-status").classList.remove("specialReward");
+
       this.visitorStatusType = 0;
       this.updateStatusInterval = setInterval(() => {
          this.visitorStatusType = this.visitorStatusType === 0 ? 1 : 0;
-         getElement("visitor-status").innerHTML = this.visitorStatusType === 0 ? "Spinning.." : "Spinning...";
+         openButton.innerHTML = this.visitorStatusType === 0 ? "Spinning.." : "Spinning...";
       }, 200);
 
       // Show the box spinning
@@ -354,26 +360,33 @@ class Visitor extends Popup {
       clearInterval(this.updateStatusInterval);
       clearInterval(this.randomiseBoxText);
 
+      const openButton = getElement("visitor-open-button");
+
       if (typeof this.currentReward == "number") {
-         // Points
          Game.addLorem(this.currentReward);
-         let s = "s";
-         if ((this.currentReward == 1) || (this.currentReward == -1)) s = "";
+
+         const s = Math.abs(this.currentReward) === 1 ? "" : "s";
          if (this.currentReward > 0) {
             getElement("visitor-value").innerHTML = `+${this.currentReward} point${s}!`;
-            getElement("visitor-status").innerHTML = "Yay!";
+            openButton.innerHTML = "Yay!";
          } else {
             getElement("visitor-value").innerHTML = `${this.currentReward} point${s}`;
             getElement("visitor-value").classList.add("negativeViewerReward");
-            getElement("visitor-status").innerHTML = "Aww...";
+            openButton.innerHTML = "Aww...";
          }
       } else {
-         // Special
-         getElement("visitor-status").innerHTML = "Special!";
-         getElement("visitor-status").classList.add("specialReward");
+         openButton.innerHTML = "Special!";
 
-         // Show 3 random popups
-         if (this.currentReward == "Popup wave") this.showRandomPopups();
+         this.runConfetti(randomInt(50, 75));
+
+         if (this.currentReward === "Popup wave") {
+            this.showRandomPopups();
+         } else if (this.currentReward === "3x points (5s)") {
+            this.tripleLorem = true;
+            setTimeout(() => {
+               this.tripleLorem = false;
+            }, 5000);
+         }
       }
 
       setTimeout(() => {
@@ -383,20 +396,16 @@ class Visitor extends Popup {
    showRandomPopups() {
       const potentialPopups = Object.assign({}, popups);
 
-      // Stop popups which are already visible from being displayed.
-      const popupLength = Object.keys(potentialPopups).length;
-      for (let i = popupLength - 1; i >= 0; i--) {
-         if (!potentialPopups[Object.keys(potentialPopups)[i]].displayObj.classList.contains("hidden")) {
-            delete potentialPopups[Object.keys(potentialPopups)[i]];
+      for (const popup of Object.entries(potentialPopups)) {
+         if (popup[1].displayed) {
+            delete potentialPopups[popup[0]];
          }
       }
 
-      // Show 3 random popups.
-      const showPopupAmount = Math.min(Object.keys(potentialPopups).length, 3);
-      for (let i = 0; i < showPopupAmount; i++) {
-         let randomName = Object.keys(potentialPopups)[randomInt(0, Object.keys(potentialPopups).length)];
-         let chosenPopup = potentialPopups[randomName];
-         chosenPopup.show();
+      const popupShowAmount = Math.min(Object.keys(potentialPopups).length, 3);
+      for (let i = 0; i < popupShowAmount; i++) {
+         const randomName = randElem(Object.keys(potentialPopups));
+         popups[randomName].show();
          delete potentialPopups[randomName];
       }
    }
@@ -411,12 +420,16 @@ class Visitor extends Popup {
 
       this.currentReward = "";
       this.displayObj.style.opacity = 1;
-      getElement("visitor-open-button").style.pointerEvents = "visible";
+
+      const openButton = getElement("visitor-open-button");
+      openButton.style.pointerEvents = "visible";
+      openButton.classList.remove("dark");
+      openButton.innerHTML = "Open";
+
       getElement("visitor-value").innerHTML = "??";
       getElement("visitor-value").classList.remove("negativeViewerReward");
-      getElement("visitor-status").innerHTML = "";
 
-      this.runConfetti();
+      this.runConfetti(randomInt(15, 20));
    }
    hide() {
       this.displayOpacity = 1;
@@ -430,8 +443,7 @@ class Visitor extends Popup {
          }
       }, 40)
    }
-   runConfetti() {
-      const confettiCount = randomInt(75, 150);
+   runConfetti(confettiCount) {
       const confettiList = [];
       const confettiContainer = document.createDocumentFragment();
       for (let i = 0; i < confettiCount; i++) {
@@ -584,7 +596,7 @@ class Chunky extends Popup {
       if (this.chunkyRage <= 99) {
          let chunkyReward = getElement("chunky-reward");
          chunkyReward.classList.remove("hidden");
-         const displayPoints = formatFloat(Game.loremCount / 5);
+         const displayPoints = formatFloat(Game.lorem / 5);
          chunkyReward.innerHTML = "+20% points. (" + displayPoints + " points)";
          Game.multLorem(1.2);
       }

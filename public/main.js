@@ -79,6 +79,9 @@ function slugCase(str) {
    const slug = str.replace(/([A-Z])/g, '-$1').toLowerCase();
    return slug;
 }
+function topHeight() {
+   return getElement("info-bar").getBoundingClientRect().height;
+}
 
 
 
@@ -133,6 +136,9 @@ const LoadData = () => {
    setSettingsCookie();
    setMiscCookie();
    setOpenedRewards();
+   if (typeof Game !== "undefined") {
+      setApplicationPositions();
+   }
 }
 
 const getSettingsCookie = () => {
@@ -297,13 +303,68 @@ function updateOpenedRewardsCookie() {
    setCookie("openedRewards", newCookie, 31);
 }
 
+function setApplicationPositions() {
+   let cookie = getCookie("applicationPositions");
+   if (cookie === "") {
+      console.log("SETTING DEFAULT VALUES");
+      for (const application of Object.values(applications)) {
+         cookie += `${application.id}.0x${topHeight()}*1,`;
+      }
+      cookie = cookie.substring(0, cookie.length - 1);
+      setCookie("applicationPositions", cookie, 30);
+   }
+
+   cookie.split(",").forEach((applicationData) => {
+      const id = parseInt(applicationData.split(".")[0]);
+      let currentApplication = null;
+      for (const application of Object.values(applications)) {
+         if (application.id === id) {
+            currentApplication = application;
+            break;
+         }
+      }
+      console.log("-==---=--=--=-=-=");
+      console.log(`Name: ${currentApplication.name}`);
+
+      const pos = applicationData.split(".")[1].split("x").join("*").split("*");
+      console.log(`Position: ${pos[0]}x ${pos[1]}y`);
+      currentApplication.position = {
+         x: pos[0],
+         y: pos[1]
+      };
+
+      const vis = parseInt(applicationData.split("*")[1]) === 1 ? true : false;
+      if (vis) {
+         currentApplication.open(false);
+      }
+   });
+}
+function updateApplicationPositions() {
+   console.log("updating positions");
+   let posStr = "";
+   for (const application of Object.values(applications)) {
+      console.log(`Name: ${application.name}`);
+      const id = application.id;
+      const pos = application.position;
+      console.log(`pos: ${pos.x}x ${pos.y}y`);
+      const x = Math.round(scalePX(pos.x, "vw"));
+      const y = scalePX(pos.y - topHeight(), "vh");
+      const vis = application.opened ? "1" : "0";
+
+      let newStr = `${id}.${x}x${y}*${vis},`;
+      posStr += newStr;
+   }
+   posStr = posStr.substring(0, posStr.length - 1);
+   setCookie("applicationPositions", posStr, 30);
+}
+
 function setCookie(cname, cvalue, exdays) {
    if (exdays) {
       var d = new Date();
       d.setTime(d.getTime() + (exdays * 24 * 60 * 60 * 1000));
       var expires = 'expires=' + d.toGMTString();
    } else {
-      var expires = '';
+      var expires = "";
    }
    document.cookie = cname + '=' + cvalue + ';' + expires + ';path=/';
 }

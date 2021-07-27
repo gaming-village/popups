@@ -2,8 +2,18 @@ const popups = {};
 const semiPopups = {};
 const applications = {};
 
+const setApplicationIDs = () => {
+   let id = 1;
+   for (const application of Object.values(applications)) {
+      application.id = id;
+      id++;
+   }
+   console.log(applications);
+};
+
 const Game = {
    currentView: "",
+   inFocus: false,
    settings: {
       dpp: 2,
       progressType: 2,
@@ -78,10 +88,10 @@ const Game = {
          getElement("lorem-quota").classList.remove("hidden");
       },
       updateProgress: function() {
-         const progress = Game.loremCount / this.quota * 100;
+         const progress = Game.lorem / this.quota * 100;
 
          getElement("lorem-quota").querySelector(".progress-bar").style.width = progress + "%";
-         const displayProgress = formatProg(Game.loremCount, this.quota, true)
+         const displayProgress = formatProg(Game.lorem, this.quota, true)
          getElement("lorem-quota-progress").innerHTML = "Progress: <span>" + displayProgress + "</span>";
          getElement("lorem-quota-progress2").innerHTML = `Progress: <span>${displayProgress}</span>`;
 
@@ -142,7 +152,7 @@ const Game = {
          getElement("quota-amount").innerHTML = startQuota;
 
          getElement("claim-quota-button").addEventListener("click", () => {
-            if (Game.loremCount >= this.quota) {
+            if (Game.lorem >= this.quota) {
                this.quotaIdx += 1;
                this.quota = loremQuotaData[this.quotaIdx].requirement;
 
@@ -195,7 +205,7 @@ const Game = {
 
          // Setup the promote button
          getElement("promote-button").addEventListener('click', () => {
-            if (Game.loremCount < loremCorpData.jobs[this.job].requirement) return;
+            if (Game.lorem < loremCorpData.jobs[this.job].requirement) return;
 
             getElement("promote-button").classList.add("dark");
 
@@ -207,7 +217,7 @@ const Game = {
             updateMiscCookie();
             this.updatePromotionProgress();
 
-            Game.addLorem(-Game.loremCount);
+            Game.addLorem(-Game.lorem);
 
             // Receive the promotion letter
             const letterName = nextJob[1].letterName;
@@ -225,7 +235,7 @@ const Game = {
       updatePromotionProgress: function() {
          // Update the progress bar and text
          const req = loremCorpData.jobs[this.job].requirement;
-         const progress = Game.loremCount / req * 100;
+         const progress = Game.lorem / req * 100;
 
          if (progress >= 100) {
             getElement("promote-button").classList.remove("dark");
@@ -233,7 +243,7 @@ const Game = {
             getElement("promote-button").classList.add("dark");
          }
 
-         getElement("job-status").querySelector("h2.center").innerHTML = formatProg(Game.loremCount, req, true);
+         getElement("job-status").querySelector("h2.center").innerHTML = formatProg(Game.lorem, req, true);
          const displayProgress = Math.min(progress, 100);
          getElement('job-status').querySelector('.progress-bar').style.width = displayProgress + '%';
       },
@@ -400,7 +410,7 @@ const Game = {
                const currentWorkerCount = this.workers[job[0]];
                const cost = this.getWorkerCost(job[0], currentWorkerCount);
 
-               if (Game.loremCount >= cost) {
+               if (Game.lorem >= cost) {
                   this.workers[job[0]] += 1;
                   Game.addLorem(-cost);
 
@@ -495,7 +505,7 @@ const Game = {
          if (loremCookie == "") {
             setCookie("lorem", 0, 31);
          } else {
-            Game.loremCount = parseFloat(loremCookie);
+            Game.lorem = parseFloat(loremCookie);
          }
       }, 
       setupPackets: () => {
@@ -510,8 +520,8 @@ const Game = {
                transferButton.classList.remove("blocked");
             }, 5000);
             
-            Game.addPackets(Game.loremCount);
-            Game.addLorem(-Game.loremCount);
+            Game.addPackets(Game.lorem);
+            Game.addLorem(-Game.lorem);
          });
          
          const packetCookie = getCookie("packets");
@@ -546,30 +556,34 @@ const Game = {
          });
       }
    },
-   loremCount: 0,
+   lorem: 0,
    addLorem: (add, force = false) => {
       if (semiPopups.scourgeOfChunky.activated && !force) return;
 
-      Game.loremCount += add;
+      if (popups.visitor.tripleLorem) {
+         add *= 3;
+      }
+
+      Game.lorem += add;
       Game.stats.totalLoremMined += add;
-      Game.updateLorem(add);
+      Game.updateLorem(formatFloat(add));
    },
    multLorem: (mult, force = false) => {
       if (semiPopups.scourgeOfChunky.activated && !force) return;
 
-      const loremBefore = Game.loremCount;
-      Game.loremCount *= mult;
+      const loremBefore = Game.lorem;
+      Game.lorem *= mult;
       Game.stats.totalLoremMined *= mult;
 
       // Find the difference in points.
-      const difference = Game.loremCount - loremBefore;
-      Game.updateLorem(difference);
+      const difference = Game.lorem - loremBefore;
+      Game.updateLorem(formatFloat(difference));
    },
    updateLorem: (add) => {
       createMiningEntry(add);
       displayPoints(add);
       applications.eventViewer.createEvent(['Gained ', '#ccc'], [add, '#fff'], [' lorem', '#ccc']);
-      setCookie("lorem", Game.loremCount, 31);
+      setCookie("lorem", Game.lorem, 31);
       Game.checkLoremLetters();
 
       new PointIncrementText(add);
@@ -615,10 +629,10 @@ const Game = {
    // },
 
    checkLoremLetters: () => {
-      if (Game.loremCount >= 2) receiveLetter('motivationalLetter');
-      if (Game.loremCount >= 5) receiveLetter('greetings')
-      if (Game.loremCount >= 8) receiveLetter('invitation');
-      if (Game.loremCount >= 15) receiveLetter('rumors');
+      if (Game.lorem >= 2) receiveLetter('motivationalLetter');
+      if (Game.lorem >= 5) receiveLetter('greetings')
+      if (Game.lorem >= 8) receiveLetter('invitation');
+      if (Game.lorem >= 15) receiveLetter('rumors');
    },
 
    maxPopups: 7,
@@ -974,11 +988,11 @@ class LoremQuota {
       this.updateRewards();
    }
    setQuotaProgress() {
-      let progress = Game.loremCount / this.quota * 100;
+      let progress = Game.lorem / this.quota * 100;
       if (progress > 100 && typeof Game.loremQuota !== 'undefined') {
          console.log('success! ' + progress)
          this.reachQuota();
-         progress = Game.loremCount / this.quota * 100;
+         progress = Game.lorem / this.quota * 100;
       }
 
       getElement('quota-progress').innerHTML = `Progress: ${formatFloat(progress)}%`;
@@ -1013,7 +1027,6 @@ const welcomeScreen = {
       <p>- Lorem Corp.</p>`,
       about: `<p>Lorem Corp. is the leading corporation in the field of Lorem production.</p>
       <p>As an intern, it is your right to tirelessly produce lorem with no pay. Any behaviour which may be deemed 'unnecessary' will result in immediate action.</p>
-      <p>Here at Lorem Corp., the safety of the higher-ups is integral to our business.</p>
       <p>To start your labour, press the 'Continue' button.</p>`
    },
    load: function() {
@@ -1051,10 +1064,14 @@ const welcomeScreen = {
    show: function() {
       getElement('welcome-screen').classList.remove('hidden');
       getElement('mask').classList.remove('hidden');
+
+      Game.inFocus = true;
    },
    hide: function() {
       getElement('welcome-screen').remove();
       getElement('mask').classList.add('hidden');
+
+      Game.inFocus = false;
    }
 }
 
@@ -1084,7 +1101,7 @@ function instantiateClasses() {
 }
 
 function displayPoints(add) {
-   const loremCount = formatFloat(Game.loremCount);
+   const loremCount = formatFloat(Game.lorem);
    
    // Update all listed element's text using their ID's
    const loremElements = ['total-lorem-mined', 'pointCounter', 'lorem-count', 'black-market-lorem-transfer-amount'];
@@ -1093,7 +1110,7 @@ function displayPoints(add) {
    }
 
    getElement('corporate-lorem-count').querySelector('p').innerHTML = loremCount;
-   getElement('packet-transfer-amount').innerHTML = formatFloat(Game.loremCount * Game.transferRate);
+   getElement('packet-transfer-amount').innerHTML = formatFloat(Game.lorem * Game.transferRate);
    
    updateLoremCounter(add);
    if (Game.loremQuota.unlocked) Game.loremQuota.updateProgress();
@@ -1143,8 +1160,9 @@ const setupNavBar = () => {
    views.forEach(view => getElement(`nav-${view}`).addEventListener("click", () => switchView(view)));
 }
 function switchView(view) {
+   if (Game.inFocus) return;
+
    Game.currentView = view;
-   // Switch to the view.
    getElement(`nav-${view}`).classList.add("selected");
    getElement(view).classList.remove("hidden");
    // Run any functions specific to that view.
@@ -1216,6 +1234,7 @@ window.onload = () => {
 
    instantiateClasses();
 
+   setApplicationIDs();
    LoadData();
 
    setupNavBar();
@@ -1297,7 +1316,6 @@ function changeViewHeights() {
 
 const loremTemplate = "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Asperiores, aliquid! Officia amet adipisci porro repellat deserunt vero quos ad id sint dolore iure odio reprehenderit dolores sed, molestias vitae dicta! ";
 const adTexts = [" Full version costs $204967.235 ", " Go to www.this.is.a.site for free viruses! ", "Top 10 Top 10 list ! "];
-const loremBlockSize = 500;
 
 const loremLength = loremTemplate.length;
 var iterationCount = 0;
@@ -1346,7 +1364,7 @@ function writeLorem(loremN = 1, giveLorem = true, pressedKey = null) {
    let loremPerWrite = 0.05;
    if (Game.loremQuota.quotaIdx >= 1) loremPerWrite *= 2;
    // Triple lorem gain if typed correct letter
-   if (pressedKey !== null && pressedKey.toLowerCase() === nextLetter.toLowerCase()) loremPerWrite *= 3;
+   if (pressedKey !== null && (pressedKey.toLowerCase() === nextLetter.toLowerCase())) loremPerWrite *= 3;
 
    if (!(iterationCount % 5) && giveLorem) Game.addLorem(loremPerWrite);
 
@@ -1374,19 +1392,6 @@ function writeLorem(loremN = 1, giveLorem = true, pressedKey = null) {
       const newLoremContainer = document.createElement('span');
       loremContainer.appendChild(newLoremContainer);
       newLoremContainer.id = 'current-lorem-text';
-   }
-
-   // Reset the block if block size is reached
-   if (iterationCount >= loremBlockSize) {
-      Game.addLorem(10);
-      iterationCount = 0;
-
-      for (const text of loremContainer.querySelectorAll('*')) text.remove();
-
-      // Recreate the current-lorem-text
-      const currentLoremText = document.createElement('span');
-      currentLoremText.id = 'current-lorem-text';
-      loremContainer.appendChild(currentLoremText);
    }
 }
 function keyPress(key) {
@@ -1449,6 +1454,7 @@ function loremAdClick(ad) {
 
 var selectedMessage = -1;
 function showInbox() {
+   Game.inFocus = true;
    getElement("mail-inbox").classList.remove("hidden");
    getElement('mask').classList.remove('hidden');
 
@@ -1462,6 +1468,7 @@ function showInbox() {
    }
 }
 function hideInbox() {
+   Game.inFocus = false;
    getElement("mail-inbox").classList.add("hidden");
    hideLetter();
 }
@@ -1560,7 +1567,7 @@ function showLetter(letterObj) {
    const viewNames = ["corporate-overview"];
    let idx = 0;
    for (const textName of textNames) {
-      content = content.replace(textName, `<span class="link" onclick="switchView('${viewNames[idx]}'); hideMailbox();">${textName}</span>`);
+      content = content.replace(textName, `<span class="link" onclick="hideMailbox(); switchView('${viewNames[idx]}');">${textName}</span>`);
       idx++;
    }
 
@@ -1581,17 +1588,16 @@ function showLetter(letterObj) {
          <button class='paper-button button'>Claim all</button>
          `;
 
-         const claimAllButton = paper.querySelector('.paper-button');
+         const claimAllButton = paper.querySelector("button");
          if (letter.rewards.opened) {
             claimAllButton.classList.add("opened", "dark");
+            claimAllButton.innerHTML = "Already claimed!";
             getElement(boxId).classList.add('opened');
          }
-         // Add claim all button functionality
+         
          claimAllButton.addEventListener('click', () => {
-            openReward(letter)
-         });
-
-         getElement(boxId).addEventListener('click', () => {
+            claimAllButton.classList.add("opened", "dark");
+            claimAllButton.innerHTML = "Already claimed!";
             openReward(letter);
          });
       }
@@ -1744,6 +1750,10 @@ function dragElement(elmnt, start) {
    }
 
    function closeDragElement() {
+      // If the element is an application
+      if (elmnt.classList.contains("popup-container-3")) {
+         updateApplicationPositions();
+      }
       // stop moving when mouse button is released:
       document.onmouseup = null;
       document.onmousemove = null;
