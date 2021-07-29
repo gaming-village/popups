@@ -558,7 +558,7 @@ const Game = {
    },
    lorem: 0,
    addLorem: (add, force = false) => {
-      if (semiPopups.scourgeOfChunky.activated && !force) return;
+      if (semiPopups.scourgeOfChunky.activated && add > 0 && !force) return;
 
       if (popups.visitor.tripleLorem) {
          add *= 3;
@@ -1124,8 +1124,10 @@ function updateLoremCounter(add) {
    text.classList.add("loremCounterAddText");
    getElement("lorem-counter-display").appendChild(text);
 
-   const xVel = getCurve();
-   const yVel = 1 - xVel;
+   let xVel = getCurve();
+   let yVel = 1 - xVel;
+   if (Math.random() < 0.5) xVel *= -1;
+   if (Math.random() < 0.5) yVel *= -1;
 
    let xPos = 0;
    let yPos = 0;
@@ -1227,6 +1229,14 @@ const handleIdleTime = () => {
    setInterval(updateIdleTime, IDLE_CHECK_INTERVAL * 1000);
    updateIdleTime();
 }
+
+const wait = (delay = 0) =>
+  new Promise(resolve => setTimeout(resolve, delay));
+
+document.addEventListener('DOMContentLoaded', () =>
+  wait(1000).then(() => {
+     getElement("loading-screen").classList.add("hidden");
+  }));
 
 window.onload = () => {
    console.log("Welcome to the console!");
@@ -1397,6 +1407,7 @@ function writeLorem(loremN = 1, giveLorem = true, pressedKey = null) {
 function keyPress(key) {
    // Stop if the lurem impsir popup is blocking production.
    if (!popups.luremImpsir.canLorem) return;
+   if (Game.currentView !== "computer") return;
 
    writeLorem(1, true, key);
 }

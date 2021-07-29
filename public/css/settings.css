@@ -9,7 +9,6 @@
    width: 50%;
    max-height: calc(100% - 5rem);
    padding: 0 0.5rem 0.5rem;
-   /* margin-left: 50%; */
    overflow-y: scroll;
    overflow-x: hidden;
    position: absolute;
@@ -38,7 +37,12 @@
 }
 #settings :is(.left-column, .right-column) {
    width: 50%;
-   display: inline-block;
+}
+#settings .left-column {
+   float: left;
+}
+#settings .right-column {
+   float: right;
 }
 #settings .section {
    width: calc(100% - 4rem);

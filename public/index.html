@@ -21,6 +21,12 @@
 </head>
 
 <body>
+   <div id="loading-screen">
+      <img src="images/warning-icon.png" />
+      <h1>Lorem Ipsum Generator</h1>
+      <h2>Loading assets...</h2>
+   </div>
+
    <div id='mask' class='hidden'></div>
    <!-- Game Version -->
    <div id='game-version' class="xp-font">Build 0.1.0</div>
@@ -163,6 +169,7 @@
                Event viewer
             </div>
          </div>
+         <div class="open-settings"></div>
          <div id='event-viewer-display' class='display-container'>
             <!-- Events will be created here -->
          </div>
@@ -1021,12 +1028,21 @@
             <input type='range' min='1' max='100' />
          </div>
          <div class="left-column">
-         <div id='settings-audio-general' class='section'>
-            <div class='cf'>
-               <p class='label'>Popup Audio</p>
-               <p class='selected-val'>50%</p>
+            <div id='settings-audio-popup' class='section'>
+               <div class='cf'>
+                  <p class='label'>Popup volume</p>
+                  <p class='selected-val'>50%</p>
+               </div>
+               <input type='range' min='1' max='100' />
             </div>
-            <input type='range' min='1' max='100' />
+         </div>
+         <div class="right-column">
+            <div id='settings-audio-other' class='section'>
+               <div class='cf'>
+                  <p class='label'>Other volume</p>
+                  <p class='selected-val'>50%</p>
+               </div>
+               <input type='range' min='1' max='100' />
             </div>
          </div>
 

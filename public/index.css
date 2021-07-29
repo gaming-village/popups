@@ -29,6 +29,36 @@ html, body {
    outline: none;
 }
 
+#loading-screen {
+   font-family: "MS Sans Serif";
+   background-color: rgb(0, 31, 56);
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   z-index: 10;
+   display: flex;
+   flex-direction: column;
+   align-items: center;
+   justify-content: center;
+}
+#loading-screen h1 {
+   font-size: 2rem;
+   color: #fff;
+   margin: 0;
+}
+#loading-screen img {
+   --size: 100px;
+   width: var(--size);
+   height: var(--size);
+}
+#loading-screen h2 {
+   font-size: 1rem;
+   font-weight: normal;
+   color: #ccc;
+}
+
 /* Terminal */
 #terminal {
    width: 100vw;

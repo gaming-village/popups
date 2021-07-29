@@ -45,7 +45,6 @@ class Application {
       this.navObject.classList.remove("closed");
    }
    hide() {
-
       this.opened = false;
       updateApplicationPositions();
       getElement(this.name).classList.add("hidden");
