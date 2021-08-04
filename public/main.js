@@ -82,6 +82,17 @@ function slugCase(str) {
 function topHeight() {
    return getElement("info-bar").getBoundingClientRect().height;
 }
+function randomiseArray(arr) {
+   copyArr = arr.slice();
+   returnArr = [];
+   const len = copyArr.length;
+   for (let i = 0; i < len; i++) {
+      const randIdx = Math.floor(Math.random() * copyArr.length);
+      returnArr.push(copyArr[randIdx]);
+      copyArr.splice(randIdx, 1);
+   }
+   return returnArr;
+}
 
 
 

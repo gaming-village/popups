@@ -1263,77 +1263,111 @@ class DevHire extends Popup {
    constructor(popupDataName) {
       super(popupDataName);
 
-      const questionSegments = 1;
-      for (let i = 1; i <= questionSegments; i++) {
-         const correctQuestion = randomInt(1, 3, true);
-         let equations = ["9 - 4 =", "2 * 5 =", "6 / 2 =", "9 + 9 =", "1 + 0 ="];
-         let answers = ["5", "10", "3", "18", "1"];
-         const correctIndex = randomInt(0, equations.length);
-         getElement("prompt-equation").innerHTML = equations[correctIndex];
-         getElement(`dev-hire-q${i}_${correctQuestion}`).classList.add("correct-button");
-         getElement(`dev-hire-q${i}_${correctQuestion}`).innerHTML = answers[correctIndex];
-         equations.splice(correctIndex, 1);
-         answers.splice(correctIndex, 1);
+      this.setupPrompts();
+   }
+   async setupPrompts() {
+      const PROMPT_COUNT = randomInt(3, 4, true);
 
-         for (let k = 1; k <= 3; k++) {
-            if (k != correctQuestion) {
-               const incorrectAnswer = getElement(`dev-hire-q${i}_${k}`);
-               incorrectAnswer.onclick = () => {
-                  this.hideAllPrompts();
-               }
-               const incorrectIndex = randomInt(0, equations.length);
-               incorrectAnswer.innerHTML = answers[incorrectIndex];
-               equations.splice(incorrectIndex, 1);
-               answers.splice(incorrectIndex, 1);
+      getElement("dev-hire-close").addEventListener("click", async () => {
+         this.showStartPrompt1()
+         .then(this.showStartPrompt2)
+         .then(async () => {
+            for (let currentCount = 1; currentCount <= PROMPT_COUNT; currentCount++) {
+               const difficulty = Math.floor((currentCount + 1) / 2);
+               const equation = this.randomEquation(difficulty);
+               await this.showEquation(equation);
             }
-         }
-      }
-
-      const promptCount = document.getElementsByClassName("dev-hire-prompt").length;
-      for (let i = 1; i <= promptCount; i++) {
-         getElement(`dev-hire-prompt-${i}`).querySelector(".correct-button").addEventListener("click", () => {
-            if (i < promptCount) {
-               this.showPrompt(i + 1);
-            } else {
-               this.hide();
-            }
+         })
+         .then(() => {
+            this.hide();
          });
-      }
-
-      getElement("dev-hire-close").addEventListener("click", () => {
-         this.showPrompt(1);
       });
+   }
+   showStartPrompt1() {
+      return new Promise((resolve) => {
+         const prompt1 = getElement("dev-hire-prompt-1");
+         prompt1.classList.remove("hidden");
+         prompt1.querySelector("button").addEventListener("click", () => {
+            prompt1.classList.add("hidden");
+            resolve();
+         });
+      });
+   }
+   showStartPrompt2() {
+      return new Promise((resolve) => {
+         const prompt2 = getElement("dev-hire-prompt-2");
+         prompt2.classList.remove("hidden");
+         prompt2.querySelector("button").addEventListener("click", () => {
+            prompt2.classList.add("hidden");
+            resolve();
+         });
+      });
+   }
+   showEquation({ question, answer, wrongAnswers }) {
+      return new Promise((resolve) => {
+         const template = getElement("dev-hire-prompt-template").cloneNode(true);
+         template.id = "";
+         template.classList.remove("hidden");
+         this.displayObj.appendChild(template);
 
-      const list = getElement("dev-hire-list");
-      getElement("dev-hire-requirements").addEventListener("click", () => {
-         if (list.classList.contains("hidden")) {
-            list.classList.remove("hidden");
-         } else {
-            list.classList.add("hidden");
+         template.querySelector("p").innerHTML = question;
+
+         // Create buttons
+         const frag = document.createDocumentFragment();
+         const answers = randomiseArray([answer, ...wrongAnswers]);
+         for (const text of answers) {
+            const button = document.createElement("button");
+            button.classList.add("button");
+            button.innerHTML = text;
+            frag.appendChild(button);
+
+            button.addEventListener("click", () => {
+               template.remove();
+               if (text === answer) resolve();
+            });
          }
-      })
+         template.appendChild(frag);
+      });
    }
-   hideAllPrompts() {
-      const prompts = document.getElementsByClassName("dev-hire-prompt");
-      for (const prompt of prompts) prompt.classList.add("hidden");
-   }
-   showPrompt(promptN) {
-      console.log(promptN);
-      getElement(`dev-hire-prompt-${promptN}`).classList.remove("hidden");
-      if (promptN > 1) getElement(`dev-hire-prompt-${promptN - 1}`).classList.add("hidden");
-   }
-   show(noMove = false, manualForce = false) {
-      super.show(noMove, manualForce);
-      if (!this.displayed) return;
-
-      getElement("dev-hire-prompt-4").classList.add("hidden");
-   }
-   updatePrompt3() {
-      const equationType = randomInt(0, 5);
-      getElement("prompt-equation").innerHTML = equations[equationType];
-      getElement("equ-correct").innerHTML = answers[equationType];
-      getElement("equ-in-1").innerHTML = parseInt(answers[equationType]) + 9;
-      getElement("equ-in-2").innerHTML = randomInt(parseInt(answers[equationType]), parseInt(answers[equationType]) + 5, true);
+   randomEquation(difficulty) {
+      switch (difficulty) {
+         case 1: {
+            const firstNum = randomInt(1, 2, true);
+            const secondNum = randomInt(1, 2, true);
+            const sign = randomSign() ? "+" : "-";
+            const question = `${firstNum} ${sign} ${secondNum}`;
+            const answer = eval(question);
+            return {
+               question: `${question} =`,
+               answer: answer,
+               wrongAnswers: [answer + randomInt(1, 2, true), answer - randomInt(3, 5, true)]
+            }
+         }
+         case 2: {
+            const firstNum = randomInt(-6, 6, true);
+            const secondNum = randomInt(-6, 6, true);
+            const question = `${firstNum} * ${secondNum}`;
+            const answer = eval(question);
+            return {
+               question: `${question} =`,
+               answer: answer,
+               wrongAnswers: [answer + randomInt(1, 5, true), answer - randomInt(3, 5, true)]
+            }
+         }
+         case 3:
+            const base = randomInt(2, 4, true);
+            const power = randomInt(1, 3, true);
+            const sign = randomSign() ? "+" : "-";
+            const secondNum = randomInt(1, 6, true);
+            const answer = Math.pow(base, power) + eval(sign + secondNum);
+            return {
+               question: `${base}<sup>${power}</sup> ${sign} ${secondNum} =`,
+               answer: answer,
+               wrongAnswers: [answer + randomInt(2, 5, true) * randomSign(), answer + randomInt(3, 27, true)]
+            }
+         default:
+            return null;
+      }
    }
 }
 class Clippy extends Popup {

@@ -482,16 +482,16 @@ const blackMarketShops = {
          description: "Purchase malware to corrupt your device."
       }
    },
-   applications: {
-      name: "applications",
+   minigames: {
+      name: "minigames",
       cost: 4,
       unlocked: false,
       clickEvent: () => {
 
       },
       display: {
-         title: "Applications",
-         description: "Purchase additional programs to aid your cause."
+         title: "Minigames",
+         description: "Unlock minigames to upgrade your packet production."
       }
    },
    binaries: {
@@ -508,7 +508,14 @@ const blackMarketShops = {
    }
 };
 
-dailyIndoctrinationEditions = {
+const minigames = {
+   phishing: {
+      name: "Phishing",
+      description: "Phish in different biomes for users!"
+   }
+};
+
+const dailyIndoctrinationEditions = {
    // HOW IT WORKS:
    // As much of the most current stage of text is generated, and then the remaining space is distributed to the other stages.
 
@@ -533,7 +540,7 @@ const loremQuotaData = {
    1: {
       requirement: 100,
       rewardTitle: `Job listing`,
-      rewardText: `Hire a gang of 3 unpaid intern to mine for you.`
+      rewardText: `Hire a gang of 3 unpaid interns to mine for you.`
    },
    2: {
       requirement: 300,

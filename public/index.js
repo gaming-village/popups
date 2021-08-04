@@ -8,7 +8,6 @@ const setApplicationIDs = () => {
       application.id = id;
       id++;
    }
-   console.log(applications);
 };
 
 const Game = {
@@ -134,6 +133,12 @@ const Game = {
       updateCorporateOverviewScreen: function() {
          const quotaStage = this.quotaIdx + 1;
          getElement("lorem-quota-stage").innerHTML = `Current quota stage: ${quotaStage}`;
+         const rewardContainer = getElement("lorem-quota-claimed-rewards");
+
+         for (const child of rewardContainer.children) {
+            console.log(child)
+            child.remove();
+         }
 
          const frag = document.createDocumentFragment();
          Object.values(loremQuotaData).every((quota, idx) => {
@@ -144,7 +149,7 @@ const Game = {
             frag.appendChild(li);
             return true;
          });
-         getElement("lorem-quota-claimed-rewards").appendChild(frag);
+         rewardContainer.appendChild(frag);
       },
       setup: function(startQuota) {
          this.quota = startQuota;
@@ -173,13 +178,12 @@ const Game = {
       setWorkerGainInterval: function() {
          const ms = 500;
          setInterval(() => {
-            if (this.workers.intern <= 0) return;
-   
             let loremGain = 0;
             for (const worker of Object.entries(loremCorpData.jobs)) {
                const workerCount = this.workers[worker[0]];
                loremGain += worker[1].stats.loremProduction * workerCount / (1000 / ms);
             }
+            if (loremGain === 0) return;
             Game.addLorem(loremGain);
          }, ms);
       },
@@ -497,6 +501,23 @@ const Game = {
       },
       clickShop: (shop) => {
          shop.clickEvent();
+      },
+      minigames: {
+         setup: () => {
+            const frag = document.createDocumentFragment();
+            for (const minigame of Object.values(minigames)) {
+               const box = document.createElement("div");
+               box.classList.add("minigame");
+               box.innerHTML = `
+               <h2>${minigame.name}</h2>
+               <p>${minigame.description}</p>
+               `
+
+               frag.appendChild(box);
+            }
+
+            getElement("minigames-container").appendChild(frag);
+         }
       }
    },
    setup: {
@@ -1307,6 +1328,8 @@ window.onload = () => {
    receiveLetter('start');
 
    Game.settings.setup();
+
+   Game.blackMarket.minigames.setup();
 
    handleIdleTime();
 }

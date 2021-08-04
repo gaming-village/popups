@@ -788,21 +788,14 @@
 
             <div id="dev-hire-prompt-1" class="dev-hire-prompt hidden">
                <p class="center">Do you really want to close this?</p>
-               <button class='button centered correct-button'>Yes</button>
+               <button class='button'>Yes</button>
             </div>
             <div id="dev-hire-prompt-2" class="dev-hire-prompt hidden">
                <p class="center">Are you assure?</p>
                <button class='button centered correct-button'>Yes</button>
             </div>
-            <div id="dev-hire-prompt-3" class="dev-hire-prompt hidden">
-               <p class="center" id="prompt-equation"></p>
-               <button id="dev-hire-q1_1" class='button inline-block'></button>
-               <button id="dev-hire-q1_2" class='button inline-block'></button>
-               <button id="dev-hire-q1_3" class='button inline-block'></button>
-            </div>
-            <div id="dev-hire-prompt-4" class="dev-hire-prompt hidden">
-               <p class="center">Click again to confirm.</p>
-               <button class='button centered correct-button'>Ok</button>
+            <div id="dev-hire-prompt-template" class="dev-hire-prompt hidden">
+               <p class="center"></p>
             </div>
          </div>
       </div>
@@ -866,6 +859,13 @@
    </div>
 
    <div id='black-market' class='view'>
+      <div id="minigames-opener">
+         <div class="container">
+            <h1>Minigames</h1>
+            <div id="minigames-container"></div>
+         </div>
+      </div>
+
       <div id="black-market-stars"></div>
       <div id="black-market-header-container">
          <div id="black-market-title" class="black-market-container">
