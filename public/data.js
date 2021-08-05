@@ -487,7 +487,7 @@ const blackMarketShops = {
       cost: 4,
       unlocked: false,
       clickEvent: () => {
-
+         Game.blackMarket.minigames.open();
       },
       display: {
          title: "Minigames",
@@ -511,7 +511,16 @@ const blackMarketShops = {
 const minigames = {
    phishing: {
       name: "Phishing",
-      description: "Phish in different biomes for users!"
+      description: "Phish for users' data.",
+      open: () => {
+         window.location = "./html/minigames/phishing.html";
+      },
+      viruses: {
+         browserHijacker: {
+            health: 100,
+            text: "A Browser Hijacker has implanted itself in your browser!"
+         }
+      }
    }
 };
 

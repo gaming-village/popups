@@ -503,7 +503,15 @@ const Game = {
          shop.clickEvent();
       },
       minigames: {
-         setup: () => {
+         open: () => {
+            getElement("minigames-opener").classList.remove("hidden");
+            Game.inFocus = false;
+         },
+         close: () => {
+            getElement("minigames-opener").classList.add("hidden");
+            Game.inFocus = true;
+         },
+         setup: function() {
             const frag = document.createDocumentFragment();
             for (const minigame of Object.values(minigames)) {
                const box = document.createElement("div");
@@ -511,12 +519,17 @@ const Game = {
                box.innerHTML = `
                <h2>${minigame.name}</h2>
                <p>${minigame.description}</p>
-               `
+               `;
+
+               box.addEventListener("click", minigame.open);
 
                frag.appendChild(box);
             }
-
             getElement("minigames-container").appendChild(frag);
+
+            getElement("minigames-opener").querySelector("button").addEventListener("click", () => {
+               this.close();
+            });
          }
       }
    },
@@ -1230,6 +1243,10 @@ const updateIdleTime = () => {
 const handleIdleTime = () => {
    const timeIdle = getTimeIdle();
 
+   const IDLE_CHECK_INTERVAL = 5;
+   setInterval(updateIdleTime, IDLE_CHECK_INTERVAL * 1000);
+   updateIdleTime();
+
    let workerSecondGain = 0;
    for (const worker of Object.entries(loremCorpData.jobs)) {
       const workerCount = Game.loremCorp.workers[worker[0]];
@@ -1245,10 +1262,6 @@ const handleIdleTime = () => {
       title: 'New idle profits.',
       body: `Your workers generated ${formatFloat(totalGain)} lorem.`
    });
-
-   const IDLE_CHECK_INTERVAL = 5;
-   setInterval(updateIdleTime, IDLE_CHECK_INTERVAL * 1000);
-   updateIdleTime();
 }
 
 const wait = (delay = 0) =>

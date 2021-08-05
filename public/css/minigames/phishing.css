@@ -1,0 +1,100 @@
+#bobber {
+   --size: 16px;
+   width: 5px;
+   height: 5px;
+   background-color: #fff;
+   border: 1px solid #000;
+   border-radius: 100%;
+   position: absolute;
+   transform: translate(-50%, -50%);
+   animation: bobber-fade 2s linear infinite;
+   box-shadow: 0 0 8px 2px #000;
+   z-index: 2;
+}
+@keyframes bobber-fade {
+   0% {
+      box-shadow: 0 0 8px 2px #000;
+   }
+   50% {
+      box-shadow: 0 0 8px 2px #bbb;
+   }
+   100% {
+      box-shadow: 0 0 8px 2px #000;
+   }
+}
+#bobber.splash {
+   animation: bobber-splash 0.8s forwards ease-in-out;
+}
+@keyframes bobber-splash {
+   0% {
+      opacity: 0.8;
+   }
+   30% {
+      opacity: 0.3;
+   }
+   100% {
+      opacity: 1;
+   }
+}
+#bobber.exit {
+   animation: bobber-exit 0.5s forwards ease-in-out;
+}
+@keyframes bobber-exit {
+   0% {
+      opacity: 1;
+   }
+   100% {
+      opacity: 0;
+   }
+}
+#bobber.bobbing {
+   animation: bobber-bob 0.5s forwards ease-in-out;
+}
+@keyframes bobber-bob {
+   0% {
+      opacity: 1;
+   }
+   15% {
+      opacity: 0;
+   }
+   100% {
+      opacity: 1;
+   }
+}
+
+#splash {
+   position: absolute;
+   transform: translate(-50%, -50%);
+   background-image: radial-gradient(#fff 30%, rgba(0, 0, 0, 0.3) 50%, #fff 70%);
+   animation: splash-entrance 1s cubic-bezier(0,.39,.5,.97) forwards;
+   z-index: 1;
+}
+@keyframes splash-entrance {
+   0% {
+      width: 5px;
+      height: 5px;
+      opacity: 1;
+   }
+   100% {
+      width: 75px;
+      height: 75px;
+      opacity: 0;
+   }
+}
+
+.dot {
+   width: 5px;
+   height: 5px;
+   background-color: red;
+   position: absolute;
+   transform: translate(-50%, -50%);
+}
+
+#fish {
+   width: 7px;
+   height: 7px;
+   background-color: blue;
+   border-radius: 100%;
+   position: absolute;
+   transform: translate(-50%, -50%);
+}

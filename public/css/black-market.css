@@ -331,7 +331,9 @@
    align-items: center;
 }
 #minigames-opener .container {
-   background-color: rgba(0, 0, 0, 0.5);
+   background-color: rgba(0, 0, 0, 0.6);
+   padding: 0 2rem;
+   border: 2px solid #000;
    z-index: 2;
 }
 #minigames-opener .container h1 {
@@ -340,6 +342,7 @@
    font-size: 2rem;
    text-align: center;
    letter-spacing: 0.075rem;
+   margin: 0 0 0.5rem 0;
 }
 #minigames-container {
    max-width: 25rem;
@@ -352,6 +355,7 @@
    height: 7rem;
    background-color: blue;
    margin: 2px;
+   cursor: pointer;
 }
 #minigames-container .minigame h2 {
    color: #eee;
@@ -362,4 +366,8 @@
    color: #ddd;
    text-align: center;
    margin-bottom: 0;
+}
+#minigames-opener button {
+   margin-left: 50%;
+   transform: translateX(-50%);
 }

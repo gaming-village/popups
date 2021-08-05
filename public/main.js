@@ -93,6 +93,9 @@ function randomiseArray(arr) {
    }
    return returnArr;
 }
+function timer(ms) {
+   return new Promise(res => setTimeout(res, ms));
+}
 
 
 
