@@ -2,11 +2,52 @@
 
 <html>
    <head>
+      <title>Phishing</title>
+      <link type="text/css" rel="stylesheet" href="../../css/minigames/phishing.css" />
       <script src="../../javascript/phishing.js"></script>
       <script src="../../main.js"></script>
-      <link type="text/css" rel="stylesheet" href="../../css/minigames/phishing.css" />
+      <script src="../../data.js"></script>
    </head>
    <body>
+      <div id="chat"></div>
+      <div id="loot-notice"></div>
 
+      <div id="combat-box" class="hidden">
+         <div id="virus-name"></div>
+         <div id="virus-health"></div>
+         <div id="virus-box">
+            <img id="virus-img" />
+         </div>
+         <button>Attack</button>
+      </div>
+
+
+      <!-- Menu -->
+      <button id="open-menu">Menu</button>
+      <div id="menu" class="menu-panel hidden">
+         <div class="row">
+            <div id="menu-almunac-opener" class="item">
+               <div class="label">Almunac</div>
+               <img src="../../images/phishing/almunac.png" />
+            </div>
+            <div id="menu-upgrades-opener" class="item">
+               <div class="label">Upgrades</div>
+               <img src="../../images/phishing/upgrades.png" />
+            </div>
+            <div id="menu-quests-opener" class="item">
+               <div class="label">Quests</div>
+               <img src="../../images/phishing/quests.png" />
+            </div>
+         </div>
+         <button id="close-menu">Close</button>
+      </div>
+      <div id="menu-almunac" class="menu-panel hidden"></div>
+      <div id="menu-upgrades" class="menu-panel hidden">
+         <div id="menu-upgrades-container" class="row"></div>
+         <button>Back</button>
+      </div>
+      <div id="menu-quests" class="menu-panel hidden">
+         <button>Back</button>
+      </div>
    </body>
 </html>

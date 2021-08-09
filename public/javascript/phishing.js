@@ -5,13 +5,351 @@ const Game = {
          func();
       }
    },
+   packets: null,
+   setPackets: function() {
+      this.packets = parseFloat(getCookie("packets"));
+   },
+   addPackets: function(add) {
+      this.packets += add;
+      setCookie("packets", this.packets, 30);
+   },
+   menu: {
+      context: null,
+      items: {
+         almunac: {
+            name: "menu-almunac",
+            hoverText: "Open the almunac.",
+            onClick: () => {
+               Game.menu.openPanel("menu-almunac");
+               Game.menu.almunac.openPage(1);
+            }
+         },
+         upgrades: {
+            name: "menu-upgrades",
+            hoverText: "Open the upgrades menu.",
+            onClick: () => {
+               Game.menu.openPanel("menu-upgrades");
+            },
+            setup: () => {
+               console.log("A");
+               getElement("menu-upgrades").querySelector("button").addEventListener("click", () => Game.menu.openPanel("menu"));
+            }
+         },
+         quests: {
+            name: "menu-quests",
+            hoverText: "Open the quests menu.",
+            onClick: () => {
+               Game.menu.openPanel("menu-quests");
+            },
+            setup: () => {
+               getElement("menu-quests").querySelector("button").addEventListener("click", () => Game.menu.openPanel("menu"));
+            }
+         }
+      },
+      open: function() {
+         getElement("menu").classList.remove("hidden");
+         this.context = "menu";
+      },
+      close: function() {
+         getElement("menu").classList.add("hidden");
+         this.context = null;
+      },
+      get visible() {
+         for (const menu of document.getElementsByClassName("menu-panel")) {
+            if (!menu.classList.contains("hidden")) return true;
+         }
+         return false;
+      },
+      openPanel: function(panelName) {
+         for (const panel of document.getElementsByClassName("menu-panel")) {
+            panel.classList.add("hidden");
+         }
+
+         getElement(panelName).classList.remove("hidden");
+         this.context = panelName;
+      },
+      setup: function() {
+         // Items
+         for (const item of Object.values(this.items)) {
+            const itemOpener = getElement(item.name + "-opener");
+            itemOpener.addEventListener("click", item.onClick);
+            Game.menu.addHoverText(itemOpener, item.hoverText);
+
+            if (typeof item.setup === "function") item.setup();
+         }
+
+         // Menu buttons
+         getElement("open-menu").addEventListener("click", () => {
+            if (!this.visible) this.open();
+         });
+         getElement("close-menu").addEventListener("click", this.close);
+
+         this.upgrades.setup();
+      },
+      addHoverText: (elem, text) => {
+         elem.addEventListener("mouseover", () => {
+            const hoverTool = document.createElement("div");
+            hoverTool.id = "hover-tool";
+            hoverTool.innerHTML = text;
+            document.body.appendChild(hoverTool);
+
+            const bounds = elem.getBoundingClientRect();
+            hoverTool.style.left = bounds.x + bounds.width/2 + "px";
+            hoverTool.style.top = bounds.y + bounds.height/2 + "px";
+         });
+         elem.addEventListener("mouseout", () => {
+            getElement("hover-tool").remove();
+         })
+      },
+      almunac: {
+         openPage: (pageNumber) => {
+            const almunac = getElement("menu-almunac");
+
+            // Kill all previous children
+            const children = almunac.children;
+            while (children[0]) {
+               children[0].remove();
+            }
+
+            const viruses = Object.values(minigames.phishing.viruses);
+            console.log(viruses);
+            const ITEMS_IN_ROW = 5;
+            for (let i = 0; i < 3; i++) {
+               const row = document.createElement("div");
+               row.classList.add("row");
+               almunac.appendChild(row);
+
+               for (let k = 0; k < ITEMS_IN_ROW; k++) {
+                  const virus = viruses[i * ITEMS_IN_ROW + k];
+                  
+                  const item = document.createElement("div");
+                  item.classList.add("item");
+                  row.appendChild(item);
+
+                  const img = document.createElement("div");
+                  img.classList.add("img");
+                  item.appendChild(img);
+                  
+                  if (virus !== undefined) {
+                     const label = document.createElement("div");
+                     label.classList.add("label");
+                     label.innerHTML = virus.displayName;
+                     item.appendChild(label);
+
+                     Game.menu.addHoverText(item, virus.name);
+                     img.style.backgroundImage = `url(${virus.imgSrc})`;
+                  } else {
+                     Game.menu.addHoverText(item, "You have not phished this virus yet!");
+                     img.style.backgroundImage = "url(../../images/phishing/unknown.png)";
+                  }
+               }
+            }
+
+            const bottomRow = document.createElement("div");
+            bottomRow.classList.add("row");
+            almunac.appendChild(bottomRow);
+
+            const backButton = document.createElement("button");
+            backButton.innerHTML = "Back";
+            bottomRow.appendChild(backButton);
+            backButton.addEventListener("click", () => Game.menu.openPanel("menu"));
+         }
+      },
+      upgrades: {
+         upgrades: {
+            phishingHole: {
+               name: "Phishing Hole",
+               description: "Gain increased Luck for phishing in an area.",
+               imgUrl: "../../images/phishing/upgrades/phishing-hole.png"
+            },
+            bait: {
+               name: "Worm Bait",
+               description: "The longer without a catch, the more likely a catch is to happen.",
+               imgUrl: "../../images/phishing/upgrades/worm-bait.png"
+            }
+         },
+         setup: function() {
+            const container = getElement("menu-upgrades-container");
+            for (const upgrade of Object.values(this.upgrades)) {
+               const item = document.createElement("div");
+               item.classList.add("item");
+               container.appendChild(item);
+
+               const label = document.createElement("div");
+               label.classList.add("label");
+               label.innerHTML = upgrade.name;
+               item.appendChild(label);
+
+               const img = document.createElement("img");
+               img.src = upgrade.imgUrl;
+               item.appendChild(img);
+
+               Game.menu.addHoverText(item, upgrade.description);
+            }
+         }
+      }
+   },
+   chat: {
+      createEntry: (text) => {
+         return new Promise(resolve => {
+            const entry = document.createElement("div");
+            entry.classList.add("entry");
+            entry.innerHTML = text;
+            getElement("chat").appendChild(entry);
+
+            resolve();
+         });
+      }
+   },
+   lootNotice: {
+      createEntry: text => {
+         const lootEntry = document.createElement("div");
+         lootEntry.classList.add("loot-entry");
+         lootEntry.innerHTML = text;
+
+         getElement("loot-notice").appendChild(lootEntry);
+      }
+   },
+   combat: {
+      setup: function() {
+         getElement("combat-box").querySelector("button").addEventListener("click", () => this.attack());
+      },
+
+      virus: {},
+
+      visible: false,
+      show: function() {
+         getElement("combat-box").classList.remove("hidden");
+         this.visible = true;
+
+         this.texts = [];
+         Game.tickFunctions.combatText = () => {
+            for (const fallingText of this.texts) {
+               fallingText[1] += 3;
+               fallingText[0].style.top = fallingText[1] + "%";
+
+               if (fallingText[1] >= 100) {
+                  fallingText[0].remove();
+                  delete fallingText;
+               }
+            }
+
+            if (Math.random() < 0.7) return;
+
+            const text = document.createElement("div");
+            text.classList.add("combat-text");
+            text.innerHTML = randomSign() === 1 ? "1" : "0";
+            text.style.left = randomFloat(0, 100) + "%";
+
+            const hexval = randomInt(128, 256);
+            text.style.color = `rgb(${hexval}, ${hexval}, ${hexval})`;
+            
+            this.texts.push([text, 0]);
+
+            getElement("virus-box").appendChild(text);
+         };
+      },
+      hide: function() {
+         getElement("combat-box").classList.add("hidden");
+         this.visible = false;
+
+         delete Game.tickFunctions.combatText;
+      },
+      summonVirus: function(virus) {
+         getElement("virus-name").innerHTML = virus.name;
+         getElement("virus-health").innerHTML = virus.health;
+         const virusImg = getElement("virus-img");
+         virusImg.src = virus.imgSrc;
+
+         let flipDirection = 1;
+         Game.tickFunctions.moveVirus = () => {
+            if (Math.random() < 0.97) return;
+            virusImg.style.transform = `translate(-50%, -50%) scaleX(${flipDirection})`;
+            flipDirection = flipDirection === 1 ? -1 : 1;
+         };
+
+         this.virus.name = virus.name;
+         this.virus.health = virus.health;
+         console.log(this);
+      },
+      attack: function() {
+         this.virus.health -= 20;
+         getElement("virus-health").innerHTML = this.virus.health;
+
+         if (this.virus.health <= 0) {
+            this.kill();
+         }
+      },
+      kill: async function() {
+         delete Game.tickFunctions.moveVirus;
+
+         this.hide();
+
+         // Kill all virus text
+         const virusTexts = document.getElementsByClassName("combat-text");
+         while (virusTexts[0]) {
+            virusTexts[0].remove();
+         }
+
+         await this.getLoot()
+         .then(async drops => await this.giveLoot(drops));
+      },
+      getLoot: function() {
+         return new Promise(resolve => {
+            const name = this.virus.name;
+            
+            let virus;
+            for (const currentVirus of Object.values(minigames.phishing.viruses)) {
+               if (currentVirus.name === name) {
+                  virus = currentVirus;
+                  break;
+               }
+            }
+
+            const drops = {};
+            console.log(drops);
+            for (const drop of Object.entries(virus.drops)) {
+               if (Math.random() * 100 > drop[1].chance) continue;
+
+               const dropAmount = Array.isArray(drop[1].amount) ? randomInt(drop[1].amount[0], drop[1].amount[1], true) : drop[1].amount;
+               console.log(dropAmount);
+
+               drops[drop[0]] = dropAmount;
+            }
+            console.log(drops);
+
+            resolve(drops);
+         });
+      },
+      giveLoot: drops => {
+         console.log(drops);
+
+         if (Object.keys(drops).length === 0) return;
+
+         for (const drop of Object.entries(drops)) {
+            console.log(drop);
+            Game.lootNotice.createEntry(`+${drop[1]} ${drop[0]}s`);
+         }
+      }
+   },
    phishing: {
+      virusChance: 70,
+
+      setupLootTable: function() {
+         this.lootTable = new LootTable();
+         for (const virus of Object.values(minigames.phishing.viruses)) {
+            this.lootTable.addItem(virus.name, virus.weight);
+         }
+      },
+
       thrown: false,
       thrownTime: 0,
       waitingForCatch: false,
+      fishComing: false,
       catchable: false,
       throw: async function(pos) {
-         if (this.thrown) return;
+         const bobber = getElement("bobber");
+         if (this.thrown || (typeof bobber === "undefined" && bobber === null)) return;
       
          this.thrown = true;
          this.waitingForCatch = true;
@@ -23,7 +361,8 @@ const Game = {
          this.createPath(pos)
          .then(async path => await this.moveFish(path))
          .then(async pos => await this.bob(pos))
-         .then(() => console.log("Done!"));
+         .then(() => console.log("Done!"))
+         .catch(e => console.log(e));
       },
       waitForCatch: () => {
          return new Promise((resolve) => {
@@ -41,14 +380,14 @@ const Game = {
       },
       createPath: function(pos) {
          return new Promise((resolve) => {
-            const dist = randomInt(300, 400, true);
+            const dist = randomInt(350, 450, true);
             let xRel = randomInt(0, dist, true);
             let yRel = Math.sqrt(Math.pow(dist, 2) - Math.pow(xRel, 2));
             xRel *= randomSign();
             yRel *= randomSign();
 
             const path = [];
-            const WAYPOINT_COUNT = 20;
+            const WAYPOINT_COUNT = 18;
             for (let i = 0; i < WAYPOINT_COUNT; i++) {
                let x = pos.x + xRel * i / WAYPOINT_COUNT;
                let y = pos.y + yRel * i / WAYPOINT_COUNT;
@@ -67,8 +406,8 @@ const Game = {
             resolve(path);
          });
       },
-      moveFish: (waypoints) => {
-         return new Promise(async (resolve) => {
+      moveFish: function(waypoints) {
+         return new Promise(async (resolve, reject) => {
             const fish = document.createElement("fish");
             fish.id = "fish";
             fish.style.left = waypoints[0].x + "px";
@@ -76,9 +415,17 @@ const Game = {
 
             document.body.appendChild(fish);
 
+            this.fishComing = true;
+
             const PROG_STEPS_PER_WAYPOINT = 5;
             for (let i = 0; i < waypoints.length - 1; i++) {
                for (let k = 1; k <= PROG_STEPS_PER_WAYPOINT; k++) {
+                  if (this.fishComing === false) {
+                     console.log("cringing!");
+                     reject();
+                     return;
+                  }
+
                   await timer(randomInt(10, 60, true));
                   const xDif = waypoints[i + 1].x - waypoints[i].x;
                   const yDif = waypoints[i + 1].y - waypoints[i].y;
@@ -87,7 +434,7 @@ const Game = {
                }
             }
 
-            console.log(waypoints[waypoints.length - 1]);
+            this.fishComing = false;
             resolve(waypoints[waypoints.length - 1]);
          });
       },
@@ -110,7 +457,7 @@ const Game = {
                bobber.classList.remove("bobbing");
                this.catchable = false;
                this.removeFish();
-         }, 500);
+            }, 900);
          });
       },
       createDot: (pos) => {
@@ -147,6 +494,7 @@ const Game = {
          }, 1000);
       },
       reel: function(pos) {
+         console.log(this.thrown);
          if (!this.thrown) return;
 
          const bobber = getElement("bobber");
@@ -155,14 +503,59 @@ const Game = {
 
          this.thrownTime = 0;
 
-         setTimeout(() => bobber.remove(), 800);
+         console.log(this.fishComing);
+         if (this.fishComing) {
+            this.fishComing = false;
+            console.log("fish coming!");
+            this.removeFish();
+         }
 
          if (this.catchable) {
-
+            console.log("caught!");
+            this.catch();
          }
+         setTimeout(bobber.remove(), 800);
       },
-      catch: () => {
+      catch: async function() {
+         await this.getRandomCatch()
+         .then(async item => await this.handleCatch(item))
+         // .then(async item => await Game.chat.createEntry(item));
+      },
+      getRandomCatch: function() {
+         return new Promise(resolve => {
+            if (Math.random() * 100 < this.virusChance) {
+               const randomVirus = this.lootTable.getRandom();
+               resolve(randomVirus);
+               return;
+            }
+            resolve("PACKETS");
+         });
+      },
+      handleCatch: function(caughtItem) {
+         return new Promise(resolve => {
+            if (caughtItem === "PACKETS") {
+               const packetAddCount = randomFloat(1, 5);
+               Game.addPackets(packetAddCount);
+               Game.chat.createEntry(`You phished up ${formatFloat(packetAddCount, 2)} packets.`);
+               Game.lootNotice.createEntry(`+${formatFloat(packetAddCount, 2)} packets`);
 
+
+               resolve("PACKETS");
+               return;
+            }
+
+            console.log(caughtItem);
+            for (const virus of Object.values(minigames.phishing.viruses)) {
+               if (virus.name === caughtItem) {
+                  Game.chat.createEntry(virus.text);
+                  Game.combat.summonVirus(virus);
+               }
+            }
+
+            Game.combat.show();
+
+            resolve(caughtItem);
+         });
       }
    }
 };
@@ -179,11 +572,14 @@ const handleClick = (clickType, pos) => {
 }
 
 // Stop right click from opening that context menu
-window.addEventListener("contextmenu", (event) => {
+window.addEventListener("contextmenu", event => {
    event.preventDefault();
 });
 
-document.addEventListener("mousedown", (event) => {
+document.addEventListener("mousedown", event => {
+   if (event.target.tagName !== "HTML") return;
+   if (Game.combat.visible || Game.menu.visible) return;
+
    event = event || window.event;
    let clickType;
    if ("buttons" in event) {
@@ -201,6 +597,11 @@ document.addEventListener("mousedown", (event) => {
 
 window.onload = () => {
    const TICKS_PER_SECOND = 10;
-
    setInterval(Game.tick, 1000 / TICKS_PER_SECOND);
+
+   Game.setPackets();
+   Game.phishing.setupLootTable();
+   Game.phishing.lootTable.listItems();
+   Game.combat.setup();
+   Game.menu.setup();
 }

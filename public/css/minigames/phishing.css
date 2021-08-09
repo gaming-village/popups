@@ -1,3 +1,112 @@
+@import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
+
+html, body {
+   padding: 0;
+   margin: 0;
+   overflow: hidden;
+}
+
+
+.hidden {
+   display: none !important;
+}
+
+#chat {
+   font-family: "Rubik";
+   width: 20rem;
+   max-height: 7rem;
+   position: absolute;
+   bottom: 2rem;
+   left: 10px;
+   overflow: scroll;
+}
+#chat .entry {
+   background-color: #eee;
+   margin: 1px 0;
+}
+
+#loot-notice {
+   font-family: "Rubik";
+   width: 15rem;
+   max-height: 10rem;
+   position: absolute;
+   top: 0.5rem;
+   left: 0.5rem;
+}
+.loot-entry {
+   background-color: #eee;
+   margin: 1px 0;
+   animation: lootEntryAnimation 5s ease-in-out forwards;
+}
+@keyframes lootEntryAnimation {
+   0% {
+      opacity: 0;
+      transform: translateX(-1rem);
+   }
+   5% {
+      opacity: 1;
+      transform: translateX(0);
+   }
+   95% {
+      opacity: 1;
+      transform: translateX(0);
+   }
+   100% {
+      opacity: 0;
+      transform: translateX(1rem);
+   }
+}
+
+#combat-box {
+   padding: 5px;
+   border: 2px solid #000;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   z-index: 4;
+}
+#virus-name {
+   text-align: center;
+   margin-bottom: 5px;
+   margin-left: 50%;
+   display: inline-block;
+   transform: translateX(-50%);
+}
+#virus-health {
+   float: right;
+}
+#virus-box {
+   min-width: 20rem;
+   min-height: 8rem;
+   border: 2px solid #000;
+   position: relative;
+   overflow: hidden;
+}
+#virus-img {
+   width: 64px;
+   height: 64px;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   z-index: 6;
+}
+#combat-box button {
+   font-size: 1rem;
+   border: 2px solid #000;
+   margin: 5px 0 0 50%;
+   transform: translateX(-50%);
+   cursor: pointer;
+}
+#combat-box .combat-text {
+   position: absolute;
+   pointer-events: none;
+}
+
+
+
+/***** PHISHING *****/
 #bobber {
    --size: 16px;
    width: 5px;
@@ -97,4 +206,101 @@
    border-radius: 100%;
    position: absolute;
    transform: translate(-50%, -50%);
+}
+
+#open-menu {
+   position: absolute;
+   bottom: 0.2rem;
+   right: 0.2rem;
+}
+.menu-panel button {
+   margin-left: 50%;
+   transform: translateX(-50%);
+}
+.menu-panel .item {
+   --size: 4rem;
+   width: var(--size);
+   height: var(--size);
+   background-color: #ddd;
+   padding: 1px;
+   margin: 1px;
+   border: 1px solid #999;
+   display: inline-block;
+   cursor: pointer;
+   position: relative;
+   overflow: hidden;
+   white-space: nowrap;
+   text-overflow: ellipsis;
+   box-shadow: 0 0 0 1px #d2d2d2;
+}
+.menu-panel .item:hover {
+   background-color: #e5e5e5;
+}
+.menu-panel .item:active {
+   background-color: #d4d4d4;
+}
+.menu-panel .label {
+   font-family: "Rubik";
+   font-size: 0.85rem;
+   position: absolute;
+   top: -3px;
+   left: 0;
+   opacity: 0.75;
+   z-index: 1;
+}
+.item:hover .label {
+   opacity: 1;
+   z-index: 2;
+}
+
+.menu-panel {
+   border: 2px solid #666;
+   padding: 4px;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+}
+.menu-panel .img {
+   --size: 40px;
+   width: var(--size);
+   height: var(--size);
+   background-size: var(--size) var(--size);
+   position: absolute;
+   left: 50%;
+   bottom: 0;
+   transform: translateX(-50%);
+   pointer-events: none;
+}
+.menu-panel img {
+   --size: 40px;
+   width: var(--size);
+   height: var(--size);
+   position: absolute;
+   left: 50%;
+   bottom: 0;
+   transform: translateX(-50%);
+   pointer-events: none;
+}
+
+#hover-tool {
+   background-color: rgba(245, 245, 245, 0.85);
+   position: absolute;
+   pointer-events: none;
+   transform: translateY(-50%);
+}
+
+button {
+   background-color: #e5e5e5;
+   padding: 0.1rem 0.3rem;
+   border: 1px solid #000;
+   border-radius: 0;
+   box-shadow: 0 0 0 1px #999;
+   cursor: pointer;
+}
+button:hover {
+   background-color: #f2f2f2;
+}
+button:active {
+   background-color: #e0e0e0;
 }

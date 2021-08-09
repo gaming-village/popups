@@ -110,6 +110,47 @@ class Sound {
 
 
 
+/***** LOOT TABLES *****/
+class LootTable {
+   constructor() {
+      this.items = {};
+   }
+   addItem(item, weight) {
+      if (this.items.hasOwnProperty(item)) {
+         return new Error("Item already exists!");
+      }
+
+      this.items[item] = weight;
+   }
+   removeItem(item) {
+      if (!this.items.hasOwnProperty(item)) {
+         return new Error("Item does not exist!");
+      }
+
+      delete this.items[item];
+   }
+   listItems() {
+      console.table(this.items);
+   }
+   getRandom() {
+      let totalWeight = 0;
+      for (const weight of Object.values(this.items)) {
+         totalWeight += weight;
+      }
+      
+      const itemWeight = randomInt(0, totalWeight) + 1;
+      let currentWeight = 0;
+      for (const item of Object.entries(this.items)) {
+         currentWeight += item[1];
+         if (itemWeight <= currentWeight) {
+            return item[0];
+         }
+      }
+   }
+}
+
+
+
 /***** COOKIE STUFF *****/
 class CookieObjectManager {
    constructor(name, obj, prop) {

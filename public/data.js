@@ -511,14 +511,126 @@ const blackMarketShops = {
 const minigames = {
    phishing: {
       name: "Phishing",
-      description: "Phish for users' data.",
+      description: "Receivez messages from other users.",
       open: () => {
          window.location = "./html/minigames/phishing.html";
       },
       viruses: {
+         worm: {
+            name: "WORM",
+            displayName: "Worm",
+            weight: 100,
+            health: 10,
+            text: "You have been infected by a <b>Worm</b>!",
+            drops: {
+               viralClump: {
+                  amount: [1, 2],
+                  chance: 90
+               },
+               glitchedPacket: {
+                  amount: 1,
+                  chance: 10
+               }
+            },
+            imgSrc: "../../images/phishing/viruses/worm.png"
+         },
          browserHijacker: {
+            name: "BROWSER_HIJACKER",
+            displayName: "Browser Hijacker",
+            weight: 50,
+            health: 40,
+            text: "A <b>Browser Hijacker</b> has implanted itself in your browser.",
+            drops: {
+               viralClump: {
+                  amount: [1, 3],
+                  chance: 100
+               }
+            },
+            imgSrc: "../../images/phishing/viruses/worm.png"
+         },
+         trojan: {
+            name: "TROJAN",
+            displayName: "Trojan",
+            weight: 30,
             health: 100,
-            text: "A Browser Hijacker has implanted itself in your browser!"
+            text: "Your computer has been invaded by a <b>Trojan</b>!",
+            drops: {
+               viralClump: {
+                  amount: [2, 5],
+                  chance: 100
+               }
+            },
+            imgSrc: "../../images/phishing/viruses/worm.png"
+         },
+         keyLogger: {
+            name: "KEY_LOGGER",
+            displayName: "Key Logger",
+            weight: 20,
+            health: 250,
+            text: "A <b>Key Logger</b> has been imbedded in the depths of your computer.",
+            drops: {
+               viralClump: {
+                  amount: [3, 9],
+                  chance: 100
+               }
+            },
+            imgSrc: "../../images/phishing/viruses/worm.png"
+         },
+         fileInfector: {
+            name: "FILE_INFECTOR",
+            displayName: "File Infector",
+            weight: 10,
+            health: 1500,
+            text: "File Infector",
+            drops: {
+               viralClump: {
+                  amount: [5, 11],
+                  chance: 100
+               }
+            },
+            imgSrc: "../../images/phishing/viruses/worm.png"
+         },
+         ransomware: {
+            name: "RANSOMWARE",
+            displayName: "Ransomware",
+            weight: 5,
+            health: 2500,
+            text: "Ransomware",
+            drops: {
+               viralClump: {
+                  amount: [6, 14],
+                  chance: 100
+               }
+            },
+            imgSrc: "../../images/phishing/viruses/worm.png"
+         },
+         adware: {
+            name: "ADWARE",
+            displayName: "Adware",
+            weight: 3,
+            health: 5000,
+            text: "Adware",
+            drops: {
+               viralClump: {
+                  amount: [9, 15],
+                  chance: 100
+               }
+            },
+            imgSrc: "../../images/phishing/viruses/worm.png"
+         },
+         botnet: {
+            name: "BOTNET",
+            displayName: "Botnet",
+            weight: 2,
+            health: 10000,
+            text: "Botnet",
+            drops: {
+               viralClump: {
+                  amount: [10, 17],
+                  chance: 100
+               }
+            },
+            imgSrc: "../../images/phishing/viruses/worm.png"
          }
       }
    }
