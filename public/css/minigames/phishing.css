@@ -57,6 +57,24 @@ html, body {
    }
 }
 
+#sidebar {
+   font-family: "Rubik";
+   font-size: 1.05rem;
+   background-color: rgba(0, 0, 0, 0.1);
+   border: 1px solid #444;
+   padding: 0.1rem 0.25rem;
+   position: fixed;
+   top: 50%;
+   right: 0;
+   text-shadow: 0 0 2px #fff;
+   z-index: 5;
+}
+#sidebar p {
+   color: #000;
+   margin: 0;
+   line-height: 1.3rem;
+}
+
 #combat-box {
    padding: 5px;
    border: 2px solid #000;
@@ -91,6 +109,17 @@ html, body {
    left: 50%;
    transform: translate(-50%, -50%);
    z-index: 6;
+}
+#virus-img.hit {
+   animation: virus-hit 0.3s ease-in-out forwards;
+}
+@keyframes virus-hit {
+   0% {
+      opacity: 0.2;
+   }
+   100% {
+      opacity: 1;
+   }
 }
 #combat-box button {
    font-size: 1rem;
@@ -213,6 +242,16 @@ html, body {
    bottom: 0.2rem;
    right: 0.2rem;
 }
+.menu-panel {
+   font-family: "Rubik";
+   border: 2px solid #888;
+   border-radius: 2px;
+   padding: 4px;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+}
 .menu-panel button {
    margin-left: 50%;
    transform: translateX(-50%);
@@ -221,9 +260,9 @@ html, body {
    --size: 4rem;
    width: var(--size);
    height: var(--size);
-   background-color: #ddd;
+   background-color: #eee;
    padding: 1px;
-   margin: 1px;
+   margin: 2px;
    border: 1px solid #999;
    display: inline-block;
    cursor: pointer;
@@ -234,13 +273,16 @@ html, body {
    box-shadow: 0 0 0 1px #d2d2d2;
 }
 .menu-panel .item:hover {
-   background-color: #e5e5e5;
+   background-color: #f4f4f4;
 }
 .menu-panel .item:active {
-   background-color: #d4d4d4;
+   background-color: #e5e5e5;
+}
+.item.dark {
+   background-color: #ddd !important;
+   border-color: #888 !important;
 }
 .menu-panel .label {
-   font-family: "Rubik";
    font-size: 0.85rem;
    position: absolute;
    top: -3px;
@@ -253,13 +295,9 @@ html, body {
    z-index: 2;
 }
 
-.menu-panel {
-   border: 2px solid #666;
-   padding: 4px;
-   position: absolute;
-   top: 50%;
-   left: 50%;
-   transform: translate(-50%, -50%);
+.menu-panel p {
+   text-align: center;
+   margin: 0.1rem 0 0.3rem;
 }
 .menu-panel .img {
    --size: 40px;
@@ -284,13 +322,62 @@ html, body {
 }
 
 #hover-tool {
+   font-family: "Rubik";
    background-color: rgba(245, 245, 245, 0.85);
+   border: 1px solid #777;
+   padding: 0 0.1rem;
    position: absolute;
    pointer-events: none;
    transform: translateY(-50%);
 }
+#hover-tool p {
+   margin: 0;
+   line-height: 1.2rem;
+}
+
+.drkgrn {
+   color: rgb(13, 109, 0);
+}
+.grn {
+   color: rgb(27, 230, 0);
+}
+.red {
+   color: rgb(209, 0, 0);
+}
+.ong {
+   color: rgb(231, 158, 0);
+}
+.aqu {
+   color: rgb(0, 127, 136);
+}
+
+.button-container {
+   display: inline-block;
+   margin-left: 50%;
+   margin-top: 0.5rem;
+   transform: translateX(-50%);
+}
+.button-container button {
+   display: inline-block;
+   margin: 0;
+   transform: none;
+}
+
+#menu-upgrades-upgrade-viewer .spread {
+   margin: 0.5rem 0;
+   display: flex;
+   justify-content: space-between;
+}
+#menu-upgrades-upgrade-viewer img {
+   position: relative;
+   left: 0;
+   transform: none;
+}
 
 button {
+   font-family: "Rubik";
+   font-weight: bold;
+   font-size: 0.95rem;
    background-color: #e5e5e5;
    padding: 0.1rem 0.3rem;
    border: 1px solid #000;
@@ -299,7 +386,7 @@ button {
    cursor: pointer;
 }
 button:hover {
-   background-color: #f2f2f2;
+   background-color: #eee;
 }
 button:active {
    background-color: #e0e0e0;

@@ -12,6 +12,11 @@
       <div id="chat"></div>
       <div id="loot-notice"></div>
 
+      <div id="sidebar">
+         <p id="notoriety-counter"></p>
+         <p id="chunk-counter"></p>
+      </div>
+
       <div id="combat-box" class="hidden">
          <div id="virus-name"></div>
          <div id="virus-health"></div>
@@ -43,8 +48,30 @@
       </div>
       <div id="menu-almunac" class="menu-panel hidden"></div>
       <div id="menu-upgrades" class="menu-panel hidden">
+         <p><b>Your upgrades</b></p>
          <div id="menu-upgrades-container" class="row"></div>
          <button>Back</button>
+      </div>
+      <div id="menu-upgrades-shop" class="menu-panel hidden">
+         <p><b>Upgrades</b></p>
+         <div id="menu-upgrades-shop-container"></div>
+         <div class="button-container">
+            <button class="close">Done</button>
+            <button class="clear">Clear</button>
+         </div>
+      </div>
+      <div id="menu-upgrades-upgrade-viewer" class="menu-panel hidden">
+         <p class="title"></p>
+         <div class="spread">
+            <div class="requirements"></div>
+            <img />
+            <div class="stats"></div>
+         </div>
+         <p class="description"></p>
+         <div class="button-container">
+            <button class="use">Equip</button>
+            <button class="back">Back</button>
+         </div>
       </div>
       <div id="menu-quests" class="menu-panel hidden">
          <button>Back</button>

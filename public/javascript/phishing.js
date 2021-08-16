@@ -13,6 +13,41 @@ const Game = {
       this.packets += add;
       setCookie("packets", this.packets, 30);
    },
+   updateResources: () => {
+      let newCookie = "";
+      for (const resource of minigames.phishing.resources) {
+         newCookie += Game[resource] + ",";
+      }
+      newCookie = newCookie.substring(0, newCookie.length - 1);
+      setCookie("phishing-resources", newCookie);
+
+      getElement("notoriety-counter").innerHTML = `Notoriety: <span class="red"><b>${count}</b>`;
+      getElement("chunk-counter").innerHTML = `Chunks: <span class="drkgrn">${count}</span>`;
+   },
+   setResources: () => {
+      const resources = getCookie("phishing-resources");
+      console.log(resources);
+      if (resources === "") {
+         let newCookie = "";
+         for (const resource of minigames.phishing.resources) {
+            Game[resource] = 0;
+            newCookie += "0,";
+         }
+         newCookie = newCookie.substring(0, newCookie.length - 1);
+         setCookie("phishing-resources", newCookie);
+         return;
+      }
+
+      resources.split(",").forEach((count, idx) => {
+         const resource = minigames.phishing.resources[idx];
+         Game[resource] = parseFloat(count);
+         if (resource === "notoriety") {
+            getElement("notoriety-counter").innerHTML = `Notoriety: <span class="red"><b>${count}</b>`;
+         } else if (resource === "chunks") {
+            getElement("chunk-counter").innerHTML = `Chunks: <span class="drkgrn">${count}</span>`;
+         }
+      });
+   },
    menu: {
       context: null,
       items: {
@@ -29,9 +64,9 @@ const Game = {
             hoverText: "Open the upgrades menu.",
             onClick: () => {
                Game.menu.openPanel("menu-upgrades");
+               Game.menu.upgrades.open();
             },
             setup: () => {
-               console.log("A");
                getElement("menu-upgrades").querySelector("button").addEventListener("click", () => Game.menu.openPanel("menu"));
             }
          },
@@ -84,7 +119,9 @@ const Game = {
          });
          getElement("close-menu").addEventListener("click", this.close);
 
-         this.upgrades.setup();
+         this.upgrades.getUpgrades();
+         this.upgradesShop.setup();
+         this.upgradeViewer.setup();
       },
       addHoverText: (elem, text) => {
          elem.addEventListener("mouseover", () => {
@@ -110,6 +147,10 @@ const Game = {
             while (children[0]) {
                children[0].remove();
             }
+
+            const header = document.createElement("p");
+            header.innerHTML = "<b>The Almunac</b>";
+            almunac.appendChild(header);
 
             const viruses = Object.values(minigames.phishing.viruses);
             console.log(viruses);
@@ -156,36 +197,253 @@ const Game = {
          }
       },
       upgrades: {
+         currentUpgrades: {
+            1: null,
+            2: null
+         },
+         setUpgrades: function() {
+            let newCookie = "";
+            for (const upgrade of Object.entries(this.upgrades)) {
+               if (Object.values(this.currentUpgrades).includes(upgrade[0])) {
+                  const idx = Object.values(this.currentUpgrades).indexOf(upgrade[0]);
+                  const status = Object.keys(this.currentUpgrades)[idx];
+                  newCookie += status;
+               } else {
+                  newCookie += "0";
+               }
+            }
+            setCookie("phishing-upgrades", newCookie);
+         },
+         getUpgrades: function() {
+            let upgradesCookie = getCookie("phishing-upgrades");
+
+            if (upgradesCookie === "") {
+               Object.keys(this.upgrades).forEach(() => upgradesCookie += "0");
+               setCookie("phishing-upgrades", upgradesCookie);
+            }
+
+            Object.entries(this.upgrades).forEach((upgrade, idx) => {
+               const status = parseInt(upgradesCookie.split("")[idx]);
+               if (status !== 0) {
+                  this.currentUpgrades[status] = upgrade[0];
+               }
+            });
+         },
          upgrades: {
             phishingHole: {
                name: "Phishing Hole",
                description: "Gain increased Luck for phishing in an area.",
-               imgUrl: "../../images/phishing/upgrades/phishing-hole.png"
+               imgUrl: "../../images/phishing/upgrades/phishing-hole.png",
+               requirements: {
+                  chunks: 10,
+                  notoriety: 1
+               }
             },
             bait: {
                name: "Worm Bait",
                description: "The longer without a catch, the more likely a catch is to happen.",
-               imgUrl: "../../images/phishing/upgrades/worm-bait.png"
+               imgUrl: "../../images/phishing/upgrades/worm-bait.png",
+               requirements: {
+                  chunks: 50,
+                  notoriety: 2
+               }
+            },
+            test: {
+               name: "test",
+               description: "Text",
+               imgUrl: "../../images/phishing/upgrades/worm-bait.png",
+               requirements: {
+                  chunks: 100,
+                  notoriety: 3
+               }
             }
          },
-         setup: function() {
+         open: function() {
             const container = getElement("menu-upgrades-container");
-            for (const upgrade of Object.values(this.upgrades)) {
+
+            const prevItems = container.getElementsByClassName("item");
+            while (prevItems[0]) {
+               prevItems[0].remove();
+            }
+
+            const items = [];
+            const ITEM_COUNT = 2;
+            for (let i = 0; i < ITEM_COUNT; i++) {
                const item = document.createElement("div");
                item.classList.add("item");
                container.appendChild(item);
+               items.push(item);
+
+               item.addEventListener("click", () => {
+                  Game.menu.upgradeViewer.currentSlot = i + 1;
+                  Game.menu.upgradesShop.currentSlot = i + 1;
+                  Game.menu.openPanel("menu-upgrades-shop");
+                  Game.menu.upgradesShop.open();
+               });
+            }
+
+            for (const currentUpgrade of Object.entries(this.currentUpgrades)) {
+               console.log(currentUpgrade);
+               const item = items[parseInt(currentUpgrade[0]) - 1];
 
                const label = document.createElement("div");
                label.classList.add("label");
-               label.innerHTML = upgrade.name;
                item.appendChild(label);
 
-               const img = document.createElement("img");
-               img.src = upgrade.imgUrl;
-               item.appendChild(img);
+               if (currentUpgrade[1] !== null) {
+                  const upgrade = this.upgrades[currentUpgrade[1]];
 
-               Game.menu.addHoverText(item, upgrade.description);
+                  label.innerHTML = upgrade.name;
+
+                  const img = document.createElement("img");
+                  item.appendChild(img);
+                  img.src = upgrade.imgUrl;
+
+                  Game.menu.addHoverText(item, `<p class="aqu">Upgrade Slot ${currentUpgrade[0]}</p><p>Selected: <span class="ong">${upgrade.name}</span></p>`);
+               } else {
+                  label.innerHTML = "None";
+
+                  Game.menu.addHoverText(item, "<p>This slot is empty.</p><p>Click to equip an upgrade.</p>");
+               }
             }
+         }
+      },
+      upgradesShop: {
+         currentSlot: null,
+         open: function() {
+            const container = getElement("menu-upgrades-shop-container");
+
+            // Remove previous rows
+            const prevRows = container.getElementsByClassName("row");
+            while (prevRows[0]) {
+               prevRows[0].remove();
+            }
+
+            const MAX_ITEMS_PER_ROW = 5;
+            const MAX_ROWS = 3;
+
+            const upgradeCount = Object.keys(Game.menu.upgrades.upgrades).length;
+            const maxRows = Math.min(Math.floor((upgradeCount - 1) / MAX_ITEMS_PER_ROW) + 1, MAX_ROWS);
+            for (let i = 0; i < maxRows; i++) {
+               const row = document.createElement("div");
+               row.classList.add("row");
+               container.appendChild(row);
+
+               const itemsInRow = Math.min(upgradeCount - i * MAX_ITEMS_PER_ROW, MAX_ITEMS_PER_ROW);
+               for (let k = 0; k < itemsInRow; k++) {
+                  const item = document.createElement("div");
+                  item.classList.add("item");
+                  row.appendChild(item);
+
+                  const upgrades = Object.entries(Game.menu.upgrades.upgrades);
+                  const idx = i * MAX_ITEMS_PER_ROW + k;
+                  const upgrade = upgrades[idx][1];
+
+                  // If the upgrade is already equipped, become sad
+                  let isEquipped = false;
+                  const upgradeName = upgrades[idx][0];
+                  console.log(upgradeName);
+                  for (const currentUpgrade of Object.values(Game.menu.upgrades.currentUpgrades)) {
+                     if (currentUpgrade === upgradeName) {
+                        isEquipped = true;
+                        break;
+                     }
+                  }
+
+                  if (isEquipped) {
+                     Game.menu.addHoverText(item, `<p class="red">This upgrade is already equipped!</p>`);
+                     item.classList.add("dark");
+                  }
+
+                  const label = document.createElement("div");
+                  label.classList.add("label");
+                  label.innerHTML = upgrade.name;
+                  item.appendChild(label);
+                  
+                  const img = document.createElement("img");
+                  img.src = upgrade.imgUrl;
+                  item.appendChild(img);
+
+                  item.addEventListener("click", () => {
+                     if (isEquipped) return;
+                     Game.menu.upgradeViewer.open(upgrade);
+                     Game.menu.openPanel("menu-upgrades-upgrade-viewer");
+                  });
+               }
+
+               const clearButton = getElement("menu-upgrades-shop").querySelector(".clear");
+               if (Game.menu.upgrades.currentUpgrades[this.currentSlot] === null) {
+                  clearButton.classList.add("hidden");
+               } else {
+                  clearButton.classList.remove("hidden");
+               }
+            }
+         },
+         setup: function() {
+            getElement("menu-upgrades-shop").querySelector(".close").addEventListener("click", () => {
+               Game.menu.openPanel("menu-upgrades");
+            });
+
+            const clearButton = getElement("menu-upgrades-shop").querySelector(".clear");
+            clearButton.addEventListener("click", () => {
+               Game.menu.upgrades.currentUpgrades[this.currentSlot] = null;
+               Game.menu.upgrades.setUpgrades();
+               Game.menu.upgrades.open();
+               Game.menu.openPanel("menu-upgrades");
+            });
+            Game.menu.addHoverText(clearButton, "<p>Clear this upgrade slot, for some reason.</p>");
+         }
+      },
+      upgradeViewer: {
+         currentUpgrade: null,
+         currentSlot: null,
+         open: function(upgrade) {
+            this.currentUpgrade = upgrade;
+
+            const container = getElement("menu-upgrades-upgrade-viewer");
+
+            container.querySelector(".title").innerHTML = `<b>${upgrade.name}</b>`;
+
+            let requirements = "";
+            for (const req of Object.entries(upgrade.requirements)) {
+               if (req[0] === "chunks") {
+                  requirements += `<p>${req[1]} <span class="drkgrn">Chunks</span></p>`;
+               } else if (req[0] === "notoriety") {
+                  requirements += `<p>${req[1]} <span class="red">Notoriety</span></p>`;
+               }
+            }
+            container.querySelector(".requirements").innerHTML = requirements;
+
+            let stats = "<p><b>Statistics</b></p>";
+            container.querySelector(".stats").innerHTML = stats;
+
+            container.querySelector("img").src = upgrade.imgUrl;
+
+            container.querySelector(".description").innerHTML = upgrade.description;
+         },
+         use: function() {
+            // Get the upgrade name
+            let upgradeName = null;
+            for (const upgrade of Object.entries(Game.menu.upgrades.upgrades)) {
+               if (upgrade[1] === this.currentUpgrade) {
+                  upgradeName = upgrade[0];
+                  break;
+               }
+            }
+
+            Game.menu.upgrades.currentUpgrades[this.currentSlot] = upgradeName;
+            Game.menu.upgrades.setUpgrades();
+            Game.menu.upgrades.open();
+            Game.menu.openPanel("menu-upgrades");
+         },
+         setup: function() {
+            getElement("menu-upgrades-upgrade-viewer").querySelector(".back").addEventListener("click", () => {
+               Game.menu.openPanel("menu-upgrades-shop");
+            });
+
+            getElement("menu-upgrades-upgrade-viewer").querySelector(".use").addEventListener("click", () => {
+               this.use();
+            });
          }
       }
    },
@@ -273,8 +531,12 @@ const Game = {
          console.log(this);
       },
       attack: function() {
-         this.virus.health -= 20;
+         this.virus.health -= 5;
          getElement("virus-health").innerHTML = this.virus.health;
+
+         const virusImg = getElement("virus-img");
+         virusImg.classList.remove("hit");
+         virusImg.classList.add("hit");
 
          if (this.virus.health <= 0) {
             this.kill();
@@ -327,8 +589,11 @@ const Game = {
          if (Object.keys(drops).length === 0) return;
 
          for (const drop of Object.entries(drops)) {
+            Game.lootNotice.createEntry(`+${drop[1]} ${drop[0]}`);
             console.log(drop);
-            Game.lootNotice.createEntry(`+${drop[1]} ${drop[0]}s`);
+            if (drop[0] === "chunks") {
+               
+            }
          }
       }
    },
@@ -445,7 +710,7 @@ const Game = {
          while (dots[0]) dots[0].parentNode.removeChild(dots[0]);
       },
       bob: function(pos) {
-         return new Promise((resolve) => {
+         return new Promise(resolve => {
             const bobber = getElement("bobber");
             bobber.classList.add("bobbing");
             this.catchable = true;
@@ -604,4 +869,5 @@ window.onload = () => {
    Game.phishing.lootTable.listItems();
    Game.combat.setup();
    Game.menu.setup();
+   Game.setResources();
 }

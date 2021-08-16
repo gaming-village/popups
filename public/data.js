@@ -511,10 +511,11 @@ const blackMarketShops = {
 const minigames = {
    phishing: {
       name: "Phishing",
-      description: "Receivez messages from other users.",
+      description: "Receive messages from other users.",
       open: () => {
          window.location = "./html/minigames/phishing.html";
       },
+      resources: ["chunks", "notoriety", "xp"],
       viruses: {
          worm: {
             name: "WORM",
@@ -523,7 +524,7 @@ const minigames = {
             health: 10,
             text: "You have been infected by a <b>Worm</b>!",
             drops: {
-               viralClump: {
+               chunks: {
                   amount: [1, 2],
                   chance: 90
                },
@@ -541,12 +542,12 @@ const minigames = {
             health: 40,
             text: "A <b>Browser Hijacker</b> has implanted itself in your browser.",
             drops: {
-               viralClump: {
+               chunks: {
                   amount: [1, 3],
                   chance: 100
                }
             },
-            imgSrc: "../../images/phishing/viruses/worm.png"
+            imgSrc: "../../images/phishing/viruses/browser-hijacker.png"
          },
          trojan: {
             name: "TROJAN",
@@ -555,12 +556,12 @@ const minigames = {
             health: 100,
             text: "Your computer has been invaded by a <b>Trojan</b>!",
             drops: {
-               viralClump: {
+               chunks: {
                   amount: [2, 5],
                   chance: 100
                }
             },
-            imgSrc: "../../images/phishing/viruses/worm.png"
+            imgSrc: "../../images/phishing/viruses/trojan.png"
          },
          keyLogger: {
             name: "KEY_LOGGER",
@@ -569,12 +570,12 @@ const minigames = {
             health: 250,
             text: "A <b>Key Logger</b> has been imbedded in the depths of your computer.",
             drops: {
-               viralClump: {
+               chunks: {
                   amount: [3, 9],
                   chance: 100
                }
             },
-            imgSrc: "../../images/phishing/viruses/worm.png"
+            imgSrc: "../../images/phishing/viruses/key-logger.png"
          },
          fileInfector: {
             name: "FILE_INFECTOR",
@@ -583,12 +584,12 @@ const minigames = {
             health: 1500,
             text: "File Infector",
             drops: {
-               viralClump: {
+               chunks: {
                   amount: [5, 11],
                   chance: 100
                }
             },
-            imgSrc: "../../images/phishing/viruses/worm.png"
+            imgSrc: "../../images/phishing/viruses/file-infector.png"
          },
          ransomware: {
             name: "RANSOMWARE",
@@ -597,12 +598,12 @@ const minigames = {
             health: 2500,
             text: "Ransomware",
             drops: {
-               viralClump: {
+               chunks: {
                   amount: [6, 14],
                   chance: 100
                }
             },
-            imgSrc: "../../images/phishing/viruses/worm.png"
+            imgSrc: "../../images/phishing/viruses/ransomware.png"
          },
          adware: {
             name: "ADWARE",
@@ -611,12 +612,12 @@ const minigames = {
             health: 5000,
             text: "Adware",
             drops: {
-               viralClump: {
+               chunks: {
                   amount: [9, 15],
                   chance: 100
                }
             },
-            imgSrc: "../../images/phishing/viruses/worm.png"
+            imgSrc: "../../images/phishing/viruses/adware.png"
          },
          botnet: {
             name: "BOTNET",
@@ -625,12 +626,12 @@ const minigames = {
             health: 10000,
             text: "Botnet",
             drops: {
-               viralClump: {
+               chunks: {
                   amount: [10, 17],
                   chance: 100
                }
             },
-            imgSrc: "../../images/phishing/viruses/worm.png"
+            imgSrc: "../../images/phishing/viruses/botnet.png"
          }
       }
    }
