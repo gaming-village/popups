@@ -13,7 +13,11 @@ const Game = {
       this.packets += add;
       setCookie("packets", this.packets, 30);
    },
-   updateResources: () => {
+   addResource: function(resource, count) {
+      Game[resource] += count;
+      this.updateResources();
+   },
+   updateResources: function() {
       let newCookie = "";
       for (const resource of minigames.phishing.resources) {
          newCookie += Game[resource] + ",";
@@ -21,12 +25,10 @@ const Game = {
       newCookie = newCookie.substring(0, newCookie.length - 1);
       setCookie("phishing-resources", newCookie);
 
-      getElement("notoriety-counter").innerHTML = `Notoriety: <span class="red"><b>${count}</b>`;
-      getElement("chunk-counter").innerHTML = `Chunks: <span class="drkgrn">${count}</span>`;
+      this.displayResourceCounts();
    },
-   setResources: () => {
+   setResources: function() {
       const resources = getCookie("phishing-resources");
-      console.log(resources);
       if (resources === "") {
          let newCookie = "";
          for (const resource of minigames.phishing.resources) {
@@ -41,6 +43,13 @@ const Game = {
       resources.split(",").forEach((count, idx) => {
          const resource = minigames.phishing.resources[idx];
          Game[resource] = parseFloat(count);
+      });
+      this.displayResourceCounts();
+   },
+   displayResourceCounts: () => {
+      const resources = getCookie("phishing-resources");
+      resources.split(",").forEach((count, idx) => {
+         const resource = minigames.phishing.resources[idx];
          if (resource === "notoriety") {
             getElement("notoriety-counter").innerHTML = `Notoriety: <span class="red"><b>${count}</b>`;
          } else if (resource === "chunks") {
@@ -592,7 +601,7 @@ const Game = {
             Game.lootNotice.createEntry(`+${drop[1]} ${drop[0]}`);
             console.log(drop);
             if (drop[0] === "chunks") {
-               
+               Game.addResource("chunks", drop[1]);
             }
          }
       }

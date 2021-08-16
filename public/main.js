@@ -369,7 +369,7 @@ function setApplicationPositions() {
       setCookie("applicationPositions", cookie, 30);
    }
 
-   cookie.split(",").forEach((applicationData) => {
+   cookie.split(",").forEach(applicationData => {
       const id = parseInt(applicationData.split(".")[0]);
       let currentApplication = null;
       for (const application of Object.values(applications)) {
