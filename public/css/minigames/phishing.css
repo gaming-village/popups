@@ -148,6 +148,7 @@ html, body {
    animation: bobber-fade 2s linear infinite;
    box-shadow: 0 0 8px 2px #000;
    z-index: 2;
+   pointer-events: none;
 }
 @keyframes bobber-fade {
    0% {
@@ -206,6 +207,7 @@ html, body {
    background-image: radial-gradient(#fff 30%, rgba(0, 0, 0, 0.3) 50%, #fff 70%);
    animation: splash-entrance 1s cubic-bezier(0,.39,.5,.97) forwards;
    z-index: 1;
+   pointer-events: none;
 }
 @keyframes splash-entrance {
    0% {
@@ -226,6 +228,7 @@ html, body {
    background-color: red;
    position: absolute;
    transform: translate(-50%, -50%);
+   pointer-events: none;
 }
 
 #fish {
@@ -235,6 +238,7 @@ html, body {
    border-radius: 100%;
    position: absolute;
    transform: translate(-50%, -50%);
+   pointer-events: none;
 }
 
 #open-menu {

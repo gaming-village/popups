@@ -528,10 +528,17 @@ const minigames = {
                   amount: [1, 2],
                   chance: 90
                },
+               xp: {
+                  amount: 2,
+                  chance: 100
+               },
                glitchedPacket: {
                   amount: 1,
                   chance: 10
                }
+            },
+            requirements: {
+               notoriety: 1
             },
             imgSrc: "../../images/phishing/viruses/worm.png"
          },
@@ -545,7 +552,14 @@ const minigames = {
                chunks: {
                   amount: [1, 3],
                   chance: 100
+               },
+               xp: {
+                  amount: 5,
+                  chance: 100
                }
+            },
+            requirements: {
+               notoriety: 2
             },
             imgSrc: "../../images/phishing/viruses/browser-hijacker.png"
          },
@@ -559,7 +573,14 @@ const minigames = {
                chunks: {
                   amount: [2, 5],
                   chance: 100
+               },
+               xp: {
+                  amount: 10,
+                  chance: 100
                }
+            },
+            requirements: {
+               notoriety: 3
             },
             imgSrc: "../../images/phishing/viruses/trojan.png"
          },
@@ -573,7 +594,14 @@ const minigames = {
                chunks: {
                   amount: [3, 9],
                   chance: 100
+               },
+               xp: {
+                  amount: 30,
+                  chance: 100
                }
+            },
+            requirements: {
+               notoriety: 4
             },
             imgSrc: "../../images/phishing/viruses/key-logger.png"
          },
@@ -587,7 +615,14 @@ const minigames = {
                chunks: {
                   amount: [5, 11],
                   chance: 100
+               },
+               xp: {
+                  amount: 75,
+                  chance: 100
                }
+            },
+            requirements: {
+               notoriety: 5
             },
             imgSrc: "../../images/phishing/viruses/file-infector.png"
          },
@@ -601,7 +636,14 @@ const minigames = {
                chunks: {
                   amount: [6, 14],
                   chance: 100
+               },
+               xp: {
+                  amount: 100,
+                  chance: 100
                }
+            },
+            requirements: {
+               notoriety: 6
             },
             imgSrc: "../../images/phishing/viruses/ransomware.png"
          },
@@ -615,7 +657,14 @@ const minigames = {
                chunks: {
                   amount: [9, 15],
                   chance: 100
+               },
+               xp: {
+                  amount: 200,
+                  chance: 100
                }
+            },
+            requirements: {
+               notoriety: 8
             },
             imgSrc: "../../images/phishing/viruses/adware.png"
          },
@@ -629,7 +678,14 @@ const minigames = {
                chunks: {
                   amount: [10, 17],
                   chance: 100
+               },
+               xp: {
+                  amount: 300,
+                  chance: 100
                }
+            },
+            requirements: {
+               notoriety: 10
             },
             imgSrc: "../../images/phishing/viruses/botnet.png"
          }

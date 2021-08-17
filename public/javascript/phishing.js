@@ -14,6 +14,7 @@ const Game = {
       setCookie("packets", this.packets, 30);
    },
    addResource: function(resource, count) {
+      console.log(`Adding ${count} ${resource}`)
       Game[resource] += count;
       this.updateResources();
    },
@@ -50,10 +51,14 @@ const Game = {
       const resources = getCookie("phishing-resources");
       resources.split(",").forEach((count, idx) => {
          const resource = minigames.phishing.resources[idx];
+         console.log(resource);
+         console.log(count);
          if (resource === "notoriety") {
             getElement("notoriety-counter").innerHTML = `Notoriety: <span class="red"><b>${count}</b>`;
          } else if (resource === "chunks") {
             getElement("chunk-counter").innerHTML = `Chunks: <span class="drkgrn">${count}</span>`;
+         } else if (resource === "xp") {
+            getElement("xp-counter").innerHTML = `XP: <span class="drkgrn">${count}</span>`;
          }
       });
    },
@@ -148,10 +153,10 @@ const Game = {
          })
       },
       almunac: {
-         openPage: (pageNumber) => {
+         openPage: pageNumber => {
             const almunac = getElement("menu-almunac");
 
-            // Kill all previous children
+            // Remove all previous items
             const children = almunac.children;
             while (children[0]) {
                children[0].remove();
@@ -181,16 +186,34 @@ const Game = {
                   item.appendChild(img);
                   
                   if (virus !== undefined) {
+                     let isUnlocked = true;
+                     for (const req of Object.entries(virus.requirements)) {
+                        if (req[0] === "notoriety") {
+                           if (Game.notoriety < req[1]) {
+                              isUnlocked = false;
+                              break;
+                           }
+                        }
+                     }
+
                      const label = document.createElement("div");
                      label.classList.add("label");
-                     label.innerHTML = virus.displayName;
                      item.appendChild(label);
+                     
+                     if (isUnlocked) {
+                        label.innerHTML = virus.displayName;
+   
+                        Game.menu.addHoverText(item, virus.name);
+                        img.style.backgroundImage = `url(${virus.imgSrc})`;
+                     } else {
+                        label.innerHTML = "???";
 
-                     Game.menu.addHoverText(item, virus.name);
-                     img.style.backgroundImage = `url(${virus.imgSrc})`;
+                        Game.menu.addHoverText(item, "You have not phished this virus yet!");
+                        img.style.backgroundImage = "url(../../images/phishing/unknown.png)";
+                     }
                   } else {
-                     Game.menu.addHoverText(item, "You have not phished this virus yet!");
-                     img.style.backgroundImage = "url(../../images/phishing/unknown.png)";
+                     item.classList.add("dark");
+                     item.style.pointerEvents = "none";
                   }
                }
             }
@@ -537,7 +560,6 @@ const Game = {
 
          this.virus.name = virus.name;
          this.virus.health = virus.health;
-         console.log(this);
       },
       attack: function() {
          this.virus.health -= 5;
@@ -547,9 +569,7 @@ const Game = {
          virusImg.classList.remove("hit");
          virusImg.classList.add("hit");
 
-         if (this.virus.health <= 0) {
-            this.kill();
-         }
+         if (this.virus.health <= 0) this.kill();
       },
       kill: async function() {
          delete Game.tickFunctions.moveVirus;
@@ -602,6 +622,8 @@ const Game = {
             console.log(drop);
             if (drop[0] === "chunks") {
                Game.addResource("chunks", drop[1]);
+            } else if (drop[0] === "xp") {
+               Game.addResource("xp", drop[1]);
             }
          }
       }
@@ -812,7 +834,7 @@ const Game = {
                Game.addPackets(packetAddCount);
                Game.chat.createEntry(`You phished up ${formatFloat(packetAddCount, 2)} packets.`);
                Game.lootNotice.createEntry(`+${formatFloat(packetAddCount, 2)} packets`);
-
+               Game.addResource("xp", 1);
 
                resolve("PACKETS");
                return;
@@ -846,9 +868,7 @@ const handleClick = (clickType, pos) => {
 }
 
 // Stop right click from opening that context menu
-window.addEventListener("contextmenu", event => {
-   event.preventDefault();
-});
+window.addEventListener("contextmenu", event => event.preventDefault());
 
 document.addEventListener("mousedown", event => {
    if (event.target.tagName !== "HTML") return;
