@@ -147,7 +147,7 @@ const Game = {
          getElement("open-menu").addEventListener("click", () => {
             if (!this.visible) this.open();
          });
-         getElement("close-menu").addEventListener("click", this.close);
+         getElement("close-menu").addEventListener("click", () => this.close());
 
          this.upgrades.getUpgrades();
          this.upgradesShop.setup();
