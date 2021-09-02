@@ -65,9 +65,9 @@ const Game = {
    },
    levelUp: function() {
       this.notoriety += 1;
+      this.chat.createEntry(`You leveled up to Level ${this.notoriety}`);
    },
    addResource: function(resource, count) {
-      console.log(`Adding ${count} ${resource}`)
       Game[resource] += count;
 
       if (resource === "xp") this.checkXP();
@@ -135,6 +135,22 @@ const Game = {
       this.menu.upgrades.setUpgradesCookie();
 
       setCookie("phishing-unlocked-upgrades", 0);
+   },
+   setMiscCookie: () => {
+
+   },
+   updateMiscCookie: () => {
+      /***
+       * Bit 1: Has seen tutorial (1)
+      ***/
+   },
+   tutorial: {
+      show: () => {
+         getElement("tutorial").classList.remove("hidden");
+      },
+      hide: () => {
+         getElement("tutorial").remove();
+      }
    },
    menu: {
       context: null,
@@ -241,7 +257,6 @@ const Game = {
             almunac.appendChild(header);
 
             const viruses = Object.values(minigames.phishing.viruses);
-            console.log(viruses);
             const ITEMS_IN_ROW = 5;
             for (let i = 0; i < 3; i++) {
                const row = document.createElement("div");
@@ -506,7 +521,6 @@ const Game = {
          currentUpgrade: null,
          currentSlot: null,
          open: function(upgrade) {
-            console.log(upgrade);
             this.currentUpgrade = upgrade;
 
             const container = getElement("menu-upgrades-upgrade-viewer");
@@ -576,7 +590,6 @@ const Game = {
             Game.updateUnlockedUpgrades();
 
             const upgrade = Game.menu.upgrades.upgrades[upgradeName];
-            console.log(upgrade);
 
             for (const req of Object.entries(this.currentUpgrade.requirements)) {
                if (req[0] === "notoriety") continue;
@@ -721,16 +734,12 @@ const Game = {
             }
 
             const drops = {};
-            console.log(drops);
             for (const drop of Object.entries(virus.drops)) {
                if (Math.random() * 100 > drop[1].chance) continue;
 
                const dropAmount = Array.isArray(drop[1].amount) ? randomInt(drop[1].amount[0], drop[1].amount[1], true) : drop[1].amount;
-               console.log(dropAmount);
-
                drops[drop[0]] = dropAmount;
             }
-            console.log(drops);
 
             resolve(drops);
          });
@@ -940,6 +949,11 @@ const Game = {
             if (Math.random() * 100 < this.virusChance) {
                const lootTable = this.getVirusLootTable();
                const randomVirus = lootTable.getRandom();
+               // If the user can fish no viruses, do packets
+               if (randomVirus === undefined) {
+                  resolve("PACKETS")
+                  return;
+               }
                resolve(randomVirus);
                return;
             }
@@ -1011,7 +1025,6 @@ document.addEventListener("mousedown", event => {
 document.addEventListener("keydown", event => {
    switch (event.key) {
       case "Escape":
-         console.log(Game.menu.visible);
          Game.menu.visible ? Game.menu.close() : Game.menu.open();
          break;
    }
