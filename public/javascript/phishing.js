@@ -13,9 +13,27 @@ const Game = {
       this.packets += add;
       setCookie("packets", this.packets, 30);
    },
+   checkXP: function() {
+      while (true) {
+         const xpRequirement = this.xpRequirement;
+         if (this.xp < xpRequirement) break;
+         this.xp -= xpRequirement;
+         this.levelUp();
+      }
+   },
+   get xpRequirement() {
+      const XP_REQUIREMENTS = [5, 10, 25, 50, 100, 150, 250, 500];
+      return XP_REQUIREMENTS[this.notoriety];
+   },
+   levelUp: function() {
+      this.notoriety += 1;
+   },
    addResource: function(resource, count) {
       console.log(`Adding ${count} ${resource}`)
       Game[resource] += count;
+
+      if (resource === "xp") this.checkXP();
+
       this.updateResources();
    },
    updateResources: function() {
@@ -47,18 +65,16 @@ const Game = {
       });
       this.displayResourceCounts();
    },
-   displayResourceCounts: () => {
+   displayResourceCounts: function() {
       const resources = getCookie("phishing-resources");
       resources.split(",").forEach((count, idx) => {
          const resource = minigames.phishing.resources[idx];
-         console.log(resource);
-         console.log(count);
          if (resource === "notoriety") {
             getElement("notoriety-counter").innerHTML = `Notoriety: <span class="red"><b>${count}</b>`;
          } else if (resource === "chunks") {
             getElement("chunk-counter").innerHTML = `Chunks: <span class="drkgrn">${count}</span>`;
          } else if (resource === "xp") {
-            getElement("xp-counter").innerHTML = `XP: <span class="drkgrn">${count}</span>`;
+            getElement("xp-counter").innerHTML = `XP: <span class="drkgrn">${count}/${this.xpRequirement}</span>`;
          }
       });
    },
@@ -100,7 +116,7 @@ const Game = {
          this.context = "menu";
       },
       close: function() {
-         getElement("menu").classList.add("hidden");
+         getElement(this.context).classList.add("hidden");
          this.context = null;
       },
       get visible() {
@@ -567,6 +583,7 @@ const Game = {
 
          const virusImg = getElement("virus-img");
          virusImg.classList.remove("hit");
+         void virusImg.offsetWidth;
          virusImg.classList.add("hit");
 
          if (this.virus.health <= 0) this.kill();
@@ -613,13 +630,10 @@ const Game = {
          });
       },
       giveLoot: drops => {
-         console.log(drops);
-
          if (Object.keys(drops).length === 0) return;
 
          for (const drop of Object.entries(drops)) {
             Game.lootNotice.createEntry(`+${drop[1]} ${drop[0]}`);
-            console.log(drop);
             if (drop[0] === "chunks") {
                Game.addResource("chunks", drop[1]);
             } else if (drop[0] === "xp") {
@@ -696,7 +710,6 @@ const Game = {
                   y: y
                };
                path.unshift(currentPos);
-               this.createDot(currentPos);
             }
 
             resolve(path);
@@ -752,19 +765,10 @@ const Game = {
             setTimeout(() => {
                bobber.classList.remove("bobbing");
                this.catchable = false;
-               this.removeFish();
             }, 900);
          });
       },
-      createDot: (pos) => {
-         const dot = document.createElement("div");
-         dot.classList.add("dot");
-         dot.style.left = pos.x + "px";
-         dot.style.top = pos.y + "px";
-
-         document.body.appendChild(dot);
-      },
-      createBobber: (pos) => {
+      createBobber: pos => {
          const bobber = document.createElement("div");
          bobber.id = "bobber";
          bobber.classList.add("splash");
@@ -790,7 +794,6 @@ const Game = {
          }, 1000);
       },
       reel: function(pos) {
-         console.log(this.thrown);
          if (!this.thrown) return;
 
          const bobber = getElement("bobber");
@@ -799,23 +802,20 @@ const Game = {
 
          this.thrownTime = 0;
 
-         console.log(this.fishComing);
          if (this.fishComing) {
             this.fishComing = false;
-            console.log("fish coming!");
             this.removeFish();
          }
 
          if (this.catchable) {
-            console.log("caught!");
             this.catch();
+            this.removeFish();
          }
          setTimeout(bobber.remove(), 800);
       },
       catch: async function() {
          await this.getRandomCatch()
          .then(async item => await this.handleCatch(item))
-         // .then(async item => await Game.chat.createEntry(item));
       },
       getRandomCatch: function() {
          return new Promise(resolve => {
@@ -889,6 +889,15 @@ document.addEventListener("mousedown", event => {
    handleClick(clickType, pos);
 });
 
+document.addEventListener("keydown", event => {
+   switch (event.key) {
+      case "Escape":
+         console.log(Game.menu.visible);
+         Game.menu.visible ? Game.menu.close() : Game.menu.open();
+         break;
+   }
+});
+
 window.onload = () => {
    const TICKS_PER_SECOND = 10;
    setInterval(Game.tick, 1000 / TICKS_PER_SECOND);
@@ -899,4 +908,5 @@ window.onload = () => {
    Game.combat.setup();
    Game.menu.setup();
    Game.setResources();
+   Game.displayResourceCounts();
 }

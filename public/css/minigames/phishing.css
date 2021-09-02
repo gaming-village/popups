@@ -111,7 +111,7 @@ html, body {
    z-index: 6;
 }
 #virus-img.hit {
-   animation: virus-hit 0.3s ease-in-out forwards;
+   animation: virus-hit 0.2s ease-in-out forwards;
 }
 @keyframes virus-hit {
    0% {
