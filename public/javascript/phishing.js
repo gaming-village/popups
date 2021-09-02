@@ -750,14 +750,6 @@ const Game = {
    },
    phishing: {
       virusChance: 70,
-
-      setupLootTable: function() {
-         this.lootTable = new LootTable();
-         for (const virus of Object.values(minigames.phishing.viruses)) {
-            this.lootTable.addItem(virus.name, virus.weight);
-         }
-      },
-
       thrown: false,
       thrownTime: 0,
       waitingForCatch: false,
@@ -923,10 +915,31 @@ const Game = {
          await this.getRandomCatch()
          .then(async item => await this.handleCatch(item))
       },
+      hasUnlockedVirus: function(name) {
+         const virus = minigames.phishing.viruses[name];
+         for (const req of Object.entries(virus.requirements)) {
+            if (req[0] === "notoriety") {
+               if (Game.notoriety < parseInt(req[1])) {
+                  return false;
+               }
+            }
+         }
+         return true;
+      },
+      getVirusLootTable: function() {
+         const lootTable = new LootTable();
+         for (const virus of Object.entries(minigames.phishing.viruses)) {
+            if (this.hasUnlockedVirus(virus[0])) {
+               lootTable.addItem(virus[1].name, virus[1].weight);
+            }
+         }
+         return lootTable;
+      },
       getRandomCatch: function() {
          return new Promise(resolve => {
             if (Math.random() * 100 < this.virusChance) {
-               const randomVirus = this.lootTable.getRandom();
+               const lootTable = this.getVirusLootTable();
+               const randomVirus = lootTable.getRandom();
                resolve(randomVirus);
                return;
             }
@@ -1011,8 +1024,6 @@ window.onload = () => {
    Game.setPackets();
    Game.setUnlockedUpgrades();
 
-   Game.phishing.setupLootTable();
-   Game.phishing.lootTable.listItems();
    Game.combat.setup();
    Game.menu.setup();
    Game.setResources();
