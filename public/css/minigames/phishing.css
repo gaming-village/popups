@@ -370,6 +370,7 @@ html, body {
    justify-content: space-between;
 }
 #menu-upgrades-upgrade-viewer img {
+   margin: 0 10px;
    position: relative;
    left: 0;
    transform: none;
@@ -391,4 +392,9 @@ button:hover {
 }
 button:active {
    background-color: #e0e0e0;
+}
+button.dark {
+   color: #444;
+   background-color: #d0d0d0;
+   cursor: default;
 }

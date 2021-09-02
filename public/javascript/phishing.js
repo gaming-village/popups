@@ -13,6 +13,44 @@ const Game = {
       this.packets += add;
       setCookie("packets", this.packets, 30);
    },
+   setUnlockedUpgrades: function() {
+      // Set all upgrades to locked
+      let currentId = 1;
+      for (const upgrade of Object.values(this.menu.upgrades.upgrades)) {
+         upgrade.unlocked = false;
+         upgrade.id = currentId++;
+      }
+
+      const upgrades = getCookie("phishing-unlocked-upgrades");
+      if (upgrades === "") {
+         setCookie("phishing-unlocked-upgrades", 0);
+         return;
+      }
+
+      let binary = parseInt(upgrades).toString(2);
+      const upgradeCount = currentId - 1;
+      while (binary.length < upgradeCount) {
+         binary = "0" + binary;
+      }
+      binary.split("").forEach((bit, bitIdx) => {
+         if (parseInt(bit)) {
+            for (const upgrade of Object.values(this.menu.upgrades.upgrades)) {
+               if (upgrade.id === bitIdx) {
+                  upgrade.unlocked = true;
+               }
+            }
+         }
+      });
+   },
+   updateUnlockedUpgrades: function() {
+      let newCookie = 0;
+      Object.values(this.menu.upgrades.upgrades).forEach((upgrade, id) => {
+         if (upgrade.unlocked) {
+            newCookie += Math.pow(2, id);
+         }
+      });
+      setCookie("phishing-unlocked-upgrades", newCookie);
+   },
    checkXP: function() {
       while (true) {
          const xpRequirement = this.xpRequirement;
@@ -77,6 +115,12 @@ const Game = {
             getElement("xp-counter").innerHTML = `XP: <span class="drkgrn">${count}/${this.xpRequirement}</span>`;
          }
       });
+   },
+   reset: function() {
+      this.notoriety = 1;
+      this.xp = 0;
+      this.chunks = 0;
+      this.updateResources();
    },
    menu: {
       context: null,
@@ -249,7 +293,7 @@ const Game = {
             1: null,
             2: null
          },
-         setUpgrades: function() {
+         setUpgradesCookie: function() {
             let newCookie = "";
             for (const upgrade of Object.entries(this.upgrades)) {
                if (Object.values(this.currentUpgrades).includes(upgrade[0])) {
@@ -387,7 +431,7 @@ const Game = {
                   const idx = i * MAX_ITEMS_PER_ROW + k;
                   const upgrade = upgrades[idx][1];
 
-                  // If the upgrade is already equipped, become sad
+                  // If the upgrade is already equipped, do stuff
                   let isEquipped = false;
                   const upgradeName = upgrades[idx][0];
                   console.log(upgradeName);
@@ -435,7 +479,7 @@ const Game = {
             const clearButton = getElement("menu-upgrades-shop").querySelector(".clear");
             clearButton.addEventListener("click", () => {
                Game.menu.upgrades.currentUpgrades[this.currentSlot] = null;
-               Game.menu.upgrades.setUpgrades();
+               Game.menu.upgrades.setUpgradesCookie();
                Game.menu.upgrades.open();
                Game.menu.openPanel("menu-upgrades");
             });
@@ -446,10 +490,10 @@ const Game = {
          currentUpgrade: null,
          currentSlot: null,
          open: function(upgrade) {
+            console.log(upgrade);
             this.currentUpgrade = upgrade;
 
             const container = getElement("menu-upgrades-upgrade-viewer");
-
             container.querySelector(".title").innerHTML = `<b>${upgrade.name}</b>`;
 
             let requirements = "";
@@ -466,8 +510,29 @@ const Game = {
             container.querySelector(".stats").innerHTML = stats;
 
             container.querySelector("img").src = upgrade.imgUrl;
-
             container.querySelector(".description").innerHTML = upgrade.description;
+
+            const useButton = container.querySelector(".use");
+            if (upgrade.unlocked) {
+               useButton.innerHTML = "Equip";
+            } else {
+               useButton.innerHTML = "Unlock";
+               if (this.canUnlockUpgrade()) {
+                  useButton.classList.remove("dark");
+               } else {
+                  useButton.classList.add("dark");
+               }
+            }
+         },
+         canUnlockUpgrade: function() {
+            let canUnlock = true;
+            for (const req of Object.entries(this.currentUpgrade.requirements)) {
+               if (Game[req[0]] < req[1]) {
+                  canUnlock = false;
+                  break;
+               }
+            }
+            return canUnlock;
          },
          use: function() {
             // Get the upgrade name
@@ -479,10 +544,35 @@ const Game = {
                }
             }
 
-            Game.menu.upgrades.currentUpgrades[this.currentSlot] = upgradeName;
-            Game.menu.upgrades.setUpgrades();
+            if (!this.currentUpgrade.unlocked) {
+               if (this.canUnlockUpgrade()) {
+                  this.unlockUpgrade(upgradeName);
+                  this.selectUpgrade(upgradeName, this.currentSlot);
+               }
+               return;
+            }
+
             Game.menu.upgrades.open();
             Game.menu.openPanel("menu-upgrades");
+         },
+         unlockUpgrade: function(upgradeName) {
+            this.currentUpgrade.unlocked = true;
+            Game.updateUnlockedUpgrades();
+
+            const upgrade = Game.menu.upgrades.upgrades[upgradeName];
+            console.log(upgrade);
+
+            for (const req of Object.entries(this.currentUpgrade.requirements)) {
+               if (req[0] === "notoriety") continue;
+               Game.addResource(req[0], -req[1]);
+            }
+
+            const useButton = getElement("menu-upgrades-upgrade-viewer").querySelector(".use");
+            useButton.innerHTML = "Equip";
+         },
+         selectUpgrade: function(name, slot) {
+            Game.menu.upgrades.currentUpgrades[slot] = name;
+            Game.menu.upgrades.setUpgradesCookie();
          },
          setup: function() {
             getElement("menu-upgrades-upgrade-viewer").querySelector(".back").addEventListener("click", () => {
@@ -903,6 +993,8 @@ window.onload = () => {
    setInterval(Game.tick, 1000 / TICKS_PER_SECOND);
 
    Game.setPackets();
+   Game.setUnlockedUpgrades();
+
    Game.phishing.setupLootTable();
    Game.phishing.lootTable.listItems();
    Game.combat.setup();
