@@ -117,10 +117,24 @@ const Game = {
       });
    },
    reset: function() {
-      this.notoriety = 1;
+      this.notoriety = 0;
       this.xp = 0;
       this.chunks = 0;
       this.updateResources();
+
+      // Set all slots to null
+      slotNum = 0;
+      while (true) {
+         slotNum++;
+         if (this.menu.upgrades.currentUpgrades.hasOwnProperty(slotNum.toString())) {
+            this.menu.upgrades.currentUpgrades[slotNum] = null;
+            continue;
+         }
+         break;
+      }
+      this.menu.upgrades.setUpgradesCookie();
+
+      setCookie("phishing-unlocked-upgrades", 0);
    },
    menu: {
       context: null,
@@ -210,7 +224,7 @@ const Game = {
          });
          elem.addEventListener("mouseout", () => {
             getElement("hover-tool").remove();
-         })
+         });
       },
       almunac: {
          openPage: pageNumber => {
@@ -327,8 +341,9 @@ const Game = {
                description: "Gain increased Luck for phishing in an area.",
                imgUrl: "../../images/phishing/upgrades/phishing-hole.png",
                requirements: {
-                  chunks: 10,
-                  notoriety: 1
+                  notoriety: 1,
+                  chunks: 10
+                  
                }
             },
             bait: {
@@ -336,8 +351,9 @@ const Game = {
                description: "The longer without a catch, the more likely a catch is to happen.",
                imgUrl: "../../images/phishing/upgrades/worm-bait.png",
                requirements: {
-                  chunks: 50,
-                  notoriety: 2
+                  notoriety: 2,
+                  chunks: 50
+                  
                }
             },
             test: {
@@ -345,8 +361,8 @@ const Game = {
                description: "Text",
                imgUrl: "../../images/phishing/upgrades/worm-bait.png",
                requirements: {
-                  chunks: 100,
-                  notoriety: 3
+                  notoriety: 3,
+                  chunks: 100
                }
             }
          },
@@ -375,7 +391,6 @@ const Game = {
             }
 
             for (const currentUpgrade of Object.entries(this.currentUpgrades)) {
-               console.log(currentUpgrade);
                const item = items[parseInt(currentUpgrade[0]) - 1];
 
                const label = document.createElement("div");
@@ -431,10 +446,11 @@ const Game = {
                   const idx = i * MAX_ITEMS_PER_ROW + k;
                   const upgrade = upgrades[idx][1];
 
+                  if (!upgrade.unlocked) item.classList.add("dark");
+
                   // If the upgrade is already equipped, do stuff
                   let isEquipped = false;
                   const upgradeName = upgrades[idx][0];
-                  console.log(upgradeName);
                   for (const currentUpgrade of Object.values(Game.menu.upgrades.currentUpgrades)) {
                      if (currentUpgrade === upgradeName) {
                         isEquipped = true;
