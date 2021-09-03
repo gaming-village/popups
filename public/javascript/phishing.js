@@ -32,10 +32,10 @@ const Game = {
       while (binary.length < upgradeCount) {
          binary = "0" + binary;
       }
-      binary.split("").forEach((bit, bitIdx) => {
-         if (parseInt(bit)) {
+      binary.split("").reverse().forEach((bit, bitIdx) => {
+            if (parseInt(bit)) {
             for (const upgrade of Object.values(this.menu.upgrades.upgrades)) {
-               if (upgrade.id === bitIdx) {
+               if (upgrade.id === bitIdx + 1) {
                   upgrade.unlocked = true;
                }
             }
@@ -49,6 +49,7 @@ const Game = {
             newCookie += Math.pow(2, id);
          }
       });
+      console.log(newCookie);
       setCookie("phishing-unlocked-upgrades", newCookie);
    },
    checkXP: function() {
@@ -65,7 +66,7 @@ const Game = {
    },
    levelUp: function() {
       this.notoriety += 1;
-      this.chat.createEntry(`You leveled up to Level ${this.notoriety}`);
+      this.chat.createEntry(`You leveled up to Level ${this.notoriety}!`);
    },
    addResource: function(resource, count) {
       Game[resource] += count;
@@ -112,7 +113,7 @@ const Game = {
          } else if (resource === "chunks") {
             getElement("chunk-counter").innerHTML = `Chunks: <span class="drkgrn">${count}</span>`;
          } else if (resource === "xp") {
-            getElement("xp-counter").innerHTML = `XP: <span class="drkgrn">${count}/${this.xpRequirement}</span>`;
+            getElement("xp-counter").innerHTML = `<span class="ong">XP</span>: <span class="lgtaqu">${count}</span><span class="gry">/${this.xpRequirement}</span>`;
          }
       });
    },
@@ -148,8 +149,13 @@ const Game = {
       show: () => {
          getElement("tutorial").classList.remove("hidden");
       },
-      hide: () => {
+      hide: function() {
+         if (!this.isVisible()) return;
          getElement("tutorial").remove();
+      },
+      isVisible: () => {
+         if (getElement("tutorial")) return true;
+         return false;
       }
    },
    menu: {
@@ -304,6 +310,11 @@ const Game = {
                      item.classList.add("dark");
                      item.style.pointerEvents = "none";
                   }
+
+                  item.addEventListener("click", () => {
+                     Game.menu.openPanel("menu-almunac-viewer");
+                     Game.menu.almunacViewer.open(virus);
+                  });
                }
             }
 
@@ -317,10 +328,28 @@ const Game = {
             backButton.addEventListener("click", () => Game.menu.openPanel("menu"));
          }
       },
+      almunacViewer: {
+         open: function(virus) {
+            console.log(virus);
+            const container = getElement("menu-almunac-viewer");
+
+            container.querySelector(".name").innerHTML = virus.displayName;
+            container.querySelector("img").src = virus.imgSrc;
+            container.querySelector(".description").innerHTML = virus.description;
+
+            container.querySelector(".times-phished").innerHTML = virus.stats.timesPhished;
+         }
+      },
       upgrades: {
          currentUpgrades: {
             1: null,
             2: null
+         },
+         hasUpgrade: function(upgradeName) {
+            for (const upgrade of Object.values(this.currentUpgrades)) {
+               if (upgrade === upgradeName) return true;
+            }
+            return false;
          },
          setUpgradesCookie: function() {
             let newCookie = "";
@@ -461,7 +490,10 @@ const Game = {
                   const idx = i * MAX_ITEMS_PER_ROW + k;
                   const upgrade = upgrades[idx][1];
 
-                  if (!upgrade.unlocked) item.classList.add("dark");
+                  if (!upgrade.unlocked) {
+                     item.classList.add("dark");
+                     Game.menu.addHoverText(item, `<p class="red">You have not unlocked this upgrade!</p>`);
+                  }
 
                   // If the upgrade is already equipped, do stuff
                   let isEquipped = false;
@@ -504,6 +536,7 @@ const Game = {
          },
          setup: function() {
             getElement("menu-upgrades-shop").querySelector(".close").addEventListener("click", () => {
+               Game.menu.upgrades.open();
                Game.menu.openPanel("menu-upgrades");
             });
 
@@ -544,7 +577,22 @@ const Game = {
 
             const useButton = container.querySelector(".use");
             if (upgrade.unlocked) {
-               useButton.innerHTML = "Equip";
+                // Get the upgrade name
+               let upgradeName = null;
+               for (const upgrade of Object.entries(Game.menu.upgrades.upgrades)) {
+                  if (upgrade[1] === this.currentUpgrade) {
+                     upgradeName = upgrade[0];
+                     break;
+                  }
+               }
+               
+               if (Game.menu.upgrades.hasUpgrade(upgradeName)) {
+                  useButton.innerHTML = "Equipped";
+                  useButton.classList.add("dark");
+               } else {
+                  useButton.innerHTML = "Equip";
+                  useButton.classList.remove("dark");
+               }
             } else {
                useButton.innerHTML = "Unlock";
                if (this.canUnlockUpgrade()) {
@@ -576,20 +624,21 @@ const Game = {
 
             if (!this.currentUpgrade.unlocked) {
                if (this.canUnlockUpgrade()) {
-                  this.unlockUpgrade(upgradeName);
-                  this.selectUpgrade(upgradeName, this.currentSlot);
+                  this.unlockUpgrade();
                }
                return;
             }
 
-            Game.menu.upgrades.open();
-            Game.menu.openPanel("menu-upgrades");
+            const useButton = getElement("menu-upgrades-upgrade-viewer").querySelector(".use");
+            if (!Game.menu.upgrades.hasUpgrade(upgradeName)) {
+               useButton.innerHTML = "Equipped";
+               useButton.classList.add("dark");
+               this.selectUpgrade(upgradeName, this.currentSlot);
+            }
          },
-         unlockUpgrade: function(upgradeName) {
+         unlockUpgrade: function() {
             this.currentUpgrade.unlocked = true;
             Game.updateUnlockedUpgrades();
-
-            const upgrade = Game.menu.upgrades.upgrades[upgradeName];
 
             for (const req of Object.entries(this.currentUpgrade.requirements)) {
                if (req[0] === "notoriety") continue;
@@ -601,10 +650,12 @@ const Game = {
          },
          selectUpgrade: function(name, slot) {
             Game.menu.upgrades.currentUpgrades[slot] = name;
+            console.log(Game.menu.upgrades.currentUpgrades);
             Game.menu.upgrades.setUpgradesCookie();
          },
          setup: function() {
             getElement("menu-upgrades-upgrade-viewer").querySelector(".back").addEventListener("click", () => {
+               Game.menu.upgradesShop.open();
                Game.menu.openPanel("menu-upgrades-shop");
             });
 
@@ -639,10 +690,36 @@ const Game = {
       setup: function() {
          getElement("combat-box").querySelector("button").addEventListener("click", () => this.attack());
       },
-
       virus: {},
-
       visible: false,
+      setVirusStatsCookie: function() {
+         let virusStatsCookie = getCookie("phishing-virus-stats");
+         if (virusStatsCookie === "") {
+            let newCookie = "";
+            for (const virus of Object.keys(minigames.phishing.viruses)) {
+               newCookie += "0,";
+            }
+            newCookie = newCookie.slice(0, -1);
+            setCookie("phishing-virus-stats", newCookie);
+            virusStatsCookie = newCookie;
+         }
+
+         for (let i = 0; i < Object.keys(minigames.phishing.viruses).length; i++) {
+            const virusData = virusStatsCookie.split(",")[i].split("-");
+            const virus = Object.values(minigames.phishing.viruses)[i];
+            virus.stats = {};
+            virus.stats.timesPhished = parseInt(virusData[0]);
+         }
+      },
+      updateVirusesPhishedCookie: function() {
+         let newCookie = "";
+         for (const virus of Object.values(minigames.phishing.viruses)) {
+            const stats = virus.stats;
+            newCookie += `${stats.timesPhished},`;
+         }
+         newCookie = newCookie.slice(0, -1);
+         setCookie("phishing-virus-stats", newCookie);
+      },
       show: function() {
          getElement("combat-box").classList.remove("hidden");
          this.visible = true;
@@ -695,6 +772,9 @@ const Game = {
 
          this.virus.name = virus.name;
          this.virus.health = virus.health;
+
+         virus.stats.timesPhished++;
+         this.updateVirusesPhishedCookie();
       },
       attack: function() {
          this.virus.health -= 5;
@@ -767,6 +847,10 @@ const Game = {
       throw: async function(pos) {
          const bobber = getElement("bobber");
          if (this.thrown || (typeof bobber === "undefined" && bobber === null)) return;
+
+         Game.tutorial.hide();
+
+         this.phishingHole.handleCast(pos);
       
          this.thrown = true;
          this.waitingForCatch = true;
@@ -836,8 +920,7 @@ const Game = {
             const PROG_STEPS_PER_WAYPOINT = 5;
             for (let i = 0; i < waypoints.length - 1; i++) {
                for (let k = 1; k <= PROG_STEPS_PER_WAYPOINT; k++) {
-                  if (this.fishComing === false) {
-                     console.log("cringing!");
+                  if (!this.fishComing) {
                      reject();
                      return;
                   }
@@ -900,8 +983,54 @@ const Game = {
             splash.remove();
          }, 1000);
       },
+      phishingHole: {
+         handleCast: function(pos) {
+            if (document.querySelector(".phishing-hole") === null) return;
+
+            const isInHole = this.isInHole(pos);
+            console.log("Phished in the Phishing Hole: " + isInHole);
+         },
+         isInHole: function(pos) {
+            // Distance from the cast spot to the phishing hole
+            const dist = Math.sqrt(Math.pow(this.transform.x - pos.x, 2) + Math.pow(this.transform.y - pos.y, 2)) - this.transform.r;
+            return dist <= 0;
+         },
+         create: function() {
+            // Delete previous phishing hole
+            this.remove();
+
+            const r = randomInt(20, 100);
+            const bounds = 20;
+            const w = window.innerWidth;
+            const x = randomFloat(bounds + r, w - bounds - r);
+            const h = window.innerHeight;
+            const y = randomFloat(bounds + r, h - bounds - r);
+            this.transform = {
+               x: x,
+               y: y,
+               r: r
+            };
+
+            const hole = document.createElement("div");
+            hole.classList.add("phishing-hole");
+            document.body.appendChild(hole);
+            hole.style.width = r * 2 + "px";
+            hole.style.height = r * 2 + "px";
+            hole.style.left = x + "px";
+            hole.style.top = y + "px";
+         },
+         remove: function() {
+            const phishingHole = document.querySelector(".phishing-hole");
+            if (phishingHole === null) return;
+            phishingHole.remove();
+         }
+      },
       reel: function(pos) {
          if (!this.thrown) return;
+
+         if (Game.menu.upgrades.hasUpgrade("phishingHole")) {
+            this.phishingHole.create();
+         }
 
          const bobber = getElement("bobber");
          bobber.classList.add("exit");
@@ -990,7 +1119,6 @@ const Game = {
 };
 
 const handleClick = (clickType, pos) => {
-   console.log(clickType);
    if (clickType === 1) {
       // Left click
       Game.phishing.throw(pos);
@@ -1036,6 +1164,7 @@ window.onload = () => {
 
    Game.setPackets();
    Game.setUnlockedUpgrades();
+   Game.combat.setVirusStatsCookie();
 
    Game.combat.setup();
    Game.menu.setup();

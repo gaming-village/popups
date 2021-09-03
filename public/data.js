@@ -520,6 +520,7 @@ const minigames = {
          worm: {
             name: "WORM",
             displayName: "Worm",
+            description: "This exceedingly common and weak virus sits dormant in your computer, waiting until you open it.",
             weight: 100,
             health: 10,
             text: "You have been infected by a <b>Worm</b>!",

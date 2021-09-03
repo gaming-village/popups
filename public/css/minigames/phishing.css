@@ -1,4 +1,5 @@
 @import url('https://fonts.googleapis.com/css2?family=Rubik:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Kaisei+HarunoUmi:wght@400;500;700&display=swap');
 
 html, body {
    padding: 0;
@@ -68,6 +69,7 @@ html, body {
    right: 0;
    text-shadow: 0 0 2px #fff;
    z-index: 5;
+   transform: translateY(-50%);
 }
 #sidebar p {
    color: #000;
@@ -248,13 +250,19 @@ html, body {
 }
 .menu-panel {
    font-family: "Rubik";
-   border: 2px solid #888;
-   border-radius: 2px;
+   background-color: #fafafa;
+   border: 2px solid #bbb;
+   border-radius: 3px;
    padding: 4px;
    position: absolute;
    top: 50%;
    left: 50%;
    transform: translate(-50%, -50%);
+}
+.menu-panel h3 {
+   text-align: center;
+   font-size: 1rem;
+   margin: 0;
 }
 .menu-panel button {
    margin-left: 50%;
@@ -339,11 +347,11 @@ html, body {
    line-height: 1.2rem;
 }
 
-.drkgrn {
-   color: rgb(13, 109, 0);
-}
 .grn {
    color: rgb(27, 230, 0);
+}
+.drkgrn {
+   color: rgb(13, 109, 0);
 }
 .red {
    color: rgb(209, 0, 0);
@@ -351,8 +359,17 @@ html, body {
 .ong {
    color: rgb(231, 158, 0);
 }
+.drkong {
+   color: rgb(211, 147, 9);
+}
+.lgtaqu {
+   color: rgb(19, 187, 199);
+}
 .aqu {
    color: rgb(0, 127, 136);
+}
+.gry {
+   color: #777;
 }
 
 .button-container {
@@ -402,12 +419,55 @@ button.dark {
 #tutorial {
    background-color: #f3f3f3;
    border-radius: 3px;
+   padding: 0.1rem 0.3rem 0.5rem;
    position: absolute;
    left: 50%;
    bottom: 5rem;
    transform: translateX(-50%);
-   box-shadow: 1px 2px 
+   box-shadow: 1px 2px 2px #bbb;
+}
+#tutorial .label {
+   color: #333;
+   text-align: center;
+   font-family: "Kaisei HarunoUmi";
+   font-weight: 500;
+   font-size: 0.95rem;
+   margin-left: 1px;
+}
+#tutorial .segment {
+   color: #111;
+   font-size: 1rem;
+   font-family: "Rubik";
 }
 #tutorial img {
-   /* width: 16px; */
+   width: 30px;
+   transform: translateY(10px);
+}
+
+#menu-almunac-viewer img {
+   width: 64px;
+   height: 64px;
+   margin-left: 50%;
+   position: static;
+}
+#menu-almunac-viewer .description {
+   max-width: 30vw;
+   margin-bottom: 0.8rem;
+}
+
+.left-column {
+   width: 50%;
+   float: left;
+}
+.right-column {
+   width: 50%;
+   float: right;
+}
+
+.phishing-hole {
+   border-radius: 100%;
+   border: 2px solid red;
+   position: absolute;
+   transform: translate(-50%, -50%);
+   pointer-events: none;
 }
