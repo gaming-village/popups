@@ -297,8 +297,7 @@ const letters = {
       from: "Lorem Corp",
       content: `<p>Greetings employee.</p>
       <p>If you have received this letter, you have been successfully integrated into Lorem Corp. You will go to the Generator and begin mining.</p>
-      <p>If you wish to see your position in the company, see the Corporate Overview tab.</p>
-      <p class="from">- Lorem Corp</p>`,
+      <p>If you wish to see your position in the company, see the Corporate Overview tab.</p>`,
       received: false
    },
    motivationalLetter: {
@@ -306,8 +305,7 @@ const letters = {
       from: "Lorem Corp",
       content: `<p>Greetings employees.</p>
       <p>The Motivation Department of Lorem Corp would like to send a reminder that any suspicious activity will result in your immediate termination.</p>
-      <p>We have also implemented a Lorem Quota. Those who meet the quota shall be rewarded.</p>
-      <p class="from">- Lorem Corp.</p>`,
+      <p>We have also implemented a Lorem Quota. Those who meet the quota shall be rewarded.</p>`,
       rewards: {
          type: "box",
          text: "Lorem Quota",
@@ -333,8 +331,7 @@ const letters = {
       title: "Addressing Rumors",
       from: "Lorem Corp",
       content: `<p>Greetings employees.</p>
-      <p>It has come to our attention that there have been several fallacious claims of malware-infected computers. Disregard them - our system is perfect and flawless.</p>
-      <p class="from">- Lorem Corp.</p>`,
+      <p>It has come to our attention that there have been several fallacious claims of malware-infected computers. Disregard them - our system is perfect and flawless.</p>`,
       received: false
    },
    invitation: {
@@ -359,8 +356,7 @@ const letters = {
       content: `<p>Greetings Intern.</p>
       <p>It is Lorem Corp's pleasure to announce that you have been promoted from an Intern to an Employee.</p>
       <p>Your annual salary has been increased from $0 to $15.</p>
-      <p>You have been given an extra 10 lorem in funding to perhaps acquire an intern in the Corporate Overview tab.</p>
-      <p class="from">- Lorem Corp.</p>`,
+      <p>You have been given an extra 10 lorem in funding to perhaps acquire an intern in the Corporate Overview tab.</p>`,
       rewards: {
          type: 'box',
          text: 'Funding',
@@ -378,8 +374,7 @@ const letters = {
       content: `<p>Greetings Employee.</p>
       <p>It is Lorem Corp's pleasure to announce that you have been promoted from an Employee to a Lorem Technician.</p>
       <p>Your annual salary has been increased from $15 to $200.</p>
-      <p>You have been given an extra 1 lorem in funding - use it wisely.</p>
-      <p class="from">- Lorem Corp.</p>`,
+      <p>You have been given an extra 1 lorem in funding - use it wisely.</p>`,
       rewards: {
          type: 'box',
          text: 'Funding',
@@ -397,8 +392,7 @@ const letters = {
       content: `<p>Greetings Technician.</p>
       <p>It is Lorem Corp's pleasure to announce that you have been promoted from a Lorem Technician to a Manager.</p>
       <p>Your annual salary has been increased from $200 to $2500.</p>
-      <p>You have been given an extra 1 lorem in funding - use it wisely.</p>
-      <p class="from">- Lorem Corp.</p>`,
+      <p>You have been given an extra 1 lorem in funding - use it wisely.</p>`,
       rewards: {
          type: 'box',
          text: 'Funding',
@@ -416,8 +410,7 @@ const letters = {
       content: `<p>Greetings Manager.</p>
       <p>It is Lorem Corp's pleasure to announce that you have been promoted from a Manager to a Supervisor.</p>
       <p>Your annual salary has been increased from $2500 to $17500.</p>
-      <p>You have been given an extra 1 lorem in funding - use it wisely.</p>
-      <p class="from">- Lorem Corp.</p>`,
+      <p>You have been given an extra 1 lorem in funding - use it wisely.</p>`,
       rewards: {
          type: 'box',
          text: 'Funding',
@@ -435,8 +428,7 @@ const letters = {
       content: `<p>Greetings Supervisor.</p>
       <p>It is Lorem Corp's pleasure to announce that you have been promoted from a Supervisor to an Executive.</p>
       <p>Your annual salary has been increased from $17500 to $52500.</p>
-      <p>You have been given an extra 1 lorem in funding - use it wisely.</p>
-      <p class="from">- Lorem Corp.</p>`,
+      <p>You have been given an extra 1 lorem in funding - use it wisely.</p>`,
       rewards: {
          type: 'box',
          text: 'Funding',
@@ -454,8 +446,7 @@ const letters = {
       content: `<p>Greetings Supervisor.</p>
       <p>It is Lorem Corp's pleasure to announce that you have been promoted from an Executive to a CEO.</p>
       <p>Your annual salary has been increased from $52500 to $215000.</p>
-      <p>You have been given an extra 1 lorem in funding - use it wisely.</p>
-      <p class="from">- Lorem Corp.</p>`,
+      <p>You have been given an extra 1 lorem in funding - use it wisely.</p>`,
       rewards: {
          type: 'box',
          text: 'Funding',

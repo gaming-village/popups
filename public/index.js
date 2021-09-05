@@ -1591,15 +1591,14 @@ function openReward(letter) {
 
    letter.rewards.reward();
 
-   const claimAllButton = getElement('paper').querySelector('.paper-button');
-   claimAllButton.classList.add('opened');
+   const claimAllButton = getElement("mail").querySelector('.paper-button');
+   claimAllButton.classList.add("opened");
 }
 function showLetter(letterObj) {
    const letter = letterObj[1];
 
-   // Show the paper
-   const paper = getElement('paper');
-   paper.classList.remove('hidden');
+   const container = getElement("mail");
+   container.classList.remove('hidden');
 
    const letterEntry = getElement(`inbox-entry-${letterObj[0]}`);
    letterEntry.classList.add('opened');
@@ -1618,16 +1617,23 @@ function showLetter(letterObj) {
       idx++;
    }
 
+   container.querySelector(".from").innerHTML = letter.from;
+   container.querySelector(".subject").innerHTML = letter.title;
+   container.querySelector(".header span").innerHTML = `${letter.title} - Microsoft Exchange`;
+
    // Update the paper's text
+   const paper = getElement("paper");
    paper.innerHTML = `<h3>${letter.title}</h3> ${content}`;
-   if (letter.rewards != undefined) {
-      paper.innerHTML += `
+
+   const rewards = container.querySelector(".rewards");
+   if (letter.rewards !== undefined) {
+      rewards.innerHTML = `
       <h2 class="reward-header">Rewards</h2>
       `;
 
       if (letter.rewards.type == "box") {
          const boxId = `letter-${letter.reference}-reward`;
-         paper.innerHTML += `
+         rewards.innerHTML += `
          <div id="${boxId}" class="reward-type-box">
             <div class="reward-box"><img src="${letter.rewards.img}"></div>
             <div class="reward-text">${letter.rewards.text}</div>
@@ -1635,7 +1641,7 @@ function showLetter(letterObj) {
          <button class='paper-button button'>Claim all</button>
          `;
 
-         const claimAllButton = paper.querySelector("button");
+         const claimAllButton = rewards.querySelector("button");
          if (letter.rewards.opened) {
             claimAllButton.classList.add("opened", "dark");
             claimAllButton.innerHTML = "Already claimed!";
@@ -1648,19 +1654,21 @@ function showLetter(letterObj) {
             openReward(letter);
          });
       }
+   } else {
+      rewards.innerHTML = "<span>This letter has no rewards.</span>";
    }
 }
 function hideLetter() {
-   getElement('paper').classList.add('hidden');
+   getElement("mail").classList.add('hidden');
 }
 function switchLetterVisibility(letterObj, forceShow = false) {
-   if (getElement("paper").classList.contains("hidden") || forceShow) {
+   if (getElement("mail").classList.contains("hidden") || forceShow) {
       // Show the letter and update the letter text.
       showLetter(letterObj);
    } else {
       hideLetter();
-      const selectedLetter = document.querySelector('.selected-letter');
-      selectedLetter.classList.remove('selected-letter');
+      const selectedLetter = document.querySelector(".selected-letter");
+      selectedLetter.classList.remove("selected-letter");
       selectedMessage = -1;
    }
 }
@@ -1673,7 +1681,6 @@ function receiveLetter(letterName) {
    cookies.receivedLetters.update();
 
    if (!letter.opened) {
-      console.log("A");
       newLetterAlert(letter);
       new Sound({
          path: './audio/new-mail.mp3'
