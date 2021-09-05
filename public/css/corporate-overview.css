@@ -1,6 +1,9 @@
 #corporate-overview {
    font-family: 'Windows';
 }
+/* .ct-95 #corporate-overview {
+   font-family: "MS Sans Serif";
+} */
 #corporate-overview .top-bar {
    width: 100%;
    background-color: #ccc;
@@ -24,7 +27,7 @@
 }
 #corporate-overview .left-bar h2 {
    text-decoration: underline;
-   font-size: 1.3rem;
+   font-size: 1.4rem;
    margin: 1rem 0 0.5rem 0.5rem;
 }
 #corporate-overview-promotion-progress {
@@ -132,8 +135,9 @@
 #corporate-overview .section h1 {
    color: #fff;
    text-align: center;
-   font-size: 1.4rem;
-   background-color: rgb(13, 44, 180);
+   font-size: 1.3rem;
+   font-weight: bold;
+   background-color: rgb(7, 30, 129);
    margin: 0 0 0.5rem;
 }
 #corporate-overview .section h2 {

@@ -84,6 +84,7 @@ const Game = {
       unlocked: false,
       unlock: function() {
          this.unlocked = true;
+         this.updateProgress();
          getElement("lorem-quota").classList.remove("hidden");
       },
       updateProgress: function() {
@@ -208,7 +209,7 @@ const Game = {
          this.job = job;
 
          // Setup the promote button
-         getElement("promote-button").addEventListener('click', () => {
+         getElement("promote-button").addEventListener("click", () => {
             if (Game.lorem < loremCorpData.jobs[this.job].requirement) return;
 
             getElement("promote-button").classList.add("dark");
@@ -229,8 +230,8 @@ const Game = {
          });
 
          const quotaMenuButton = getElement('quota-menu-button');
-         quotaMenuButton.addEventListener('click', () => {
-            this.showView('quota-menu', quotaMenuButton);
+         quotaMenuButton.addEventListener("click", () => {
+            this.showView("quota-menu", quotaMenuButton);
          });
 
          // Set the workers to make lorem
@@ -375,6 +376,45 @@ const Game = {
          const nextCost = formatFloat(this.getWorkerCost(job[0], this.workers[job[0]]));
          view.querySelector('.lorem-cost').innerHTML = nextCost;
       },
+      buyWorker: function(name, jobView, job) {
+         const currentWorkerCount = this.workers[name];
+         const cost = this.getWorkerCost(name, currentWorkerCount);
+
+         if (Game.lorem >= cost) {
+            console.log(name);
+            this.workers[name] += 1;
+            Game.addLorem(-cost);
+
+            new Sound({
+               path: './audio/click.mp3',
+               volume: 1
+            });
+
+            this.updateWorkerData(name);
+            this.updateWorkerInfo(jobView, job);
+         }
+      },
+      buyMaxWorkers: function(name, jobView, job) {
+         while (true) {
+            currentWorkerCount = this.workers[name];
+            const cost = this.getWorkerCost(name, currentWorkerCount);
+
+            if (Game.lorem >= cost) {
+               this.workers[name] += 1;
+               Game.addLorem(-cost);
+            } else {
+               break;
+            }
+         }
+
+         this.updateWorkerData(name);
+         this.updateWorkerInfo(jobView, job);
+
+         new Sound({
+            path: './audio/click.mp3',
+            volume: 1
+         });
+      },
       createJobViews: function() {
          // For each of the jobs, create a new view
          for (const job of Object.entries(loremCorpData.jobs)) {
@@ -411,16 +451,26 @@ const Game = {
 
             // Buy button functionality
             jobView.querySelector('.buy-button').addEventListener('click', () => {
-               const currentWorkerCount = this.workers[job[0]];
-               const cost = this.getWorkerCost(job[0], currentWorkerCount);
+               this.buyWorker(job[0], jobView, job);
+               // const currentWorkerCount = this.workers[job[0]];
+               // const cost = this.getWorkerCost(job[0], currentWorkerCount);
 
-               if (Game.lorem >= cost) {
-                  this.workers[job[0]] += 1;
-                  Game.addLorem(-cost);
+               // if (Game.lorem >= cost) {
+               //    console.log(job[0]);
+               //    this.workers[job[0]] += 1;
+               //    Game.addLorem(-cost);
 
-                  this.updateWorkerData(job[0]);
-                  this.updateWorkerInfo(jobView, job);
-               }
+               //    new Sound({
+               //       path: './audio/click.mp3',
+               //       volume: 1
+               //    });
+
+               //    this.updateWorkerData(job[0]);
+               //    this.updateWorkerInfo(jobView, job);
+               // }
+            });
+            jobView.querySelector(".buy-max-button").addEventListener("click", () => {
+               this.buyMaxWorkers(job[0], jobView, job);
             });
          }
       },
@@ -1061,6 +1111,7 @@ const welcomeScreen = {
       <p>- Lorem Corp.</p>`,
       about: `<p>Lorem Corp. is the leading corporation in the field of Lorem production.</p>
       <p>As an intern, it is your right to tirelessly produce lorem with no pay. Any behaviour which may be deemed 'unnecessary' will result in immediate action.</p>
+      <p>Lorem mining can be conducted by using the letter keys on your supplied keyboard.</p>
       <p>To start your labour, press the 'Continue' button.</p>`
    },
    load: function() {
@@ -1104,6 +1155,8 @@ const welcomeScreen = {
    hide: function() {
       getElement('welcome-screen').remove();
       getElement('mask').classList.add('hidden');
+
+      receiveLetter("start");
 
       Game.inFocus = false;
    }
@@ -1338,8 +1391,6 @@ window.onload = () => {
       welcomeScreen.hide();
    }
 
-   receiveLetter('start');
-
    Game.settings.setup();
 
    Game.blackMarket.minigames.setup();
@@ -1387,6 +1438,11 @@ document.addEventListener('keydown', function(event) {
    
    // Get the event key code
    const keyCode = event.keyCode;
+
+   // Hide mail on Escape key press
+   if (keyCode === 27 && !getElement("mail-inbox").classList.contains("hidden")) {
+      hideMailbox();
+   }
    
    if (terminal.displayed) {
       getElement('pointer-content').focus();
