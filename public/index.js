@@ -1673,7 +1673,11 @@ function receiveLetter(letterName) {
    cookies.receivedLetters.update();
 
    if (!letter.opened) {
+      console.log("A");
       newLetterAlert(letter);
+      new Sound({
+         path: './audio/new-mail.mp3'
+      });
    }
 
    applications.eventViewer.createEvent(['Received letter ', '#ccc'], [letterName, '#fff']);
