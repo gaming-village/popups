@@ -132,13 +132,12 @@ const Game = {
          }
       },
       updateCorporateOverviewScreen: function() {
-         const quotaStage = this.quotaIdx + 1;
+         const quotaStage = this.quotaIdx;
          getElement("lorem-quota-stage").innerHTML = `Current quota stage: ${quotaStage}`;
          const rewardContainer = getElement("lorem-quota-claimed-rewards");
 
-         for (const child of rewardContainer.children) {
-            console.log(child)
-            child.remove();
+         while (rewardContainer.children[0]) {
+            rewardContainer.children[0].remove();
          }
 
          const frag = document.createDocumentFragment();
@@ -449,29 +448,10 @@ const Game = {
 
             this.updateWorkerInfo(jobView, job);
 
-            // Buy button functionality
-            jobView.querySelector('.buy-button').addEventListener('click', () => {
-               this.buyWorker(job[0], jobView, job);
-               // const currentWorkerCount = this.workers[job[0]];
-               // const cost = this.getWorkerCost(job[0], currentWorkerCount);
-
-               // if (Game.lorem >= cost) {
-               //    console.log(job[0]);
-               //    this.workers[job[0]] += 1;
-               //    Game.addLorem(-cost);
-
-               //    new Sound({
-               //       path: './audio/click.mp3',
-               //       volume: 1
-               //    });
-
-               //    this.updateWorkerData(job[0]);
-               //    this.updateWorkerInfo(jobView, job);
-               // }
-            });
-            jobView.querySelector(".buy-max-button").addEventListener("click", () => {
-               this.buyMaxWorkers(job[0], jobView, job);
-            });
+            // Hire button
+            jobView.querySelector('.buy-button').addEventListener('click', () => this.buyWorker(job[0], jobView, job));
+            // Hire max button
+            jobView.querySelector(".buy-max-button").addEventListener("click", () => this.buyMaxWorkers(job[0], jobView, job));
          }
       },
       set job(newJob) {
@@ -744,6 +724,44 @@ const Game = {
    },
    stats: {
       totalLoremMined: 0
+   },
+   startMenu: {
+      panels: {
+         preferences: {
+            name: "Preferences",
+            imgSrc: "images/win95/win95-save.png"
+         }
+      },
+      opened: false,
+      buttonClick: function() {
+         this.opened ? this.close() : this.open();
+      },
+      open: function() {
+         this.opened = true;
+         getElement("start-menu").classList.remove("hidden");
+         getElement("start-icon").classList.add("opened");
+      },
+      close: function() {
+         this.opened = false;
+         getElement("start-menu").classList.add("hidden");
+         getElement("start-icon").classList.remove("opened");
+      },
+      setup: function() {
+         // Triggered on page load
+         for (const panel of Object.values(this.panels)) {
+            const obj = document.createElement("div");
+            obj.classList.add("section");
+
+            const name = `<span class="underline">` + panel.name[0] + "</span>" + panel.name.slice(1, panel.name.length);
+            console.log(name);
+            obj.innerHTML = `
+            <img src="${panel.imgSrc}" />
+            <p>${name}</p>
+            `;
+
+            getElement("start-menu").appendChild(obj);
+         }
+      }
    }
 };
 
@@ -1392,17 +1410,18 @@ window.onload = () => {
    }
 
    Game.settings.setup();
-
    Game.blackMarket.minigames.setup();
+   Game.startMenu.setup();
 
    handleIdleTime();
 }
 
 function setupComputerBar() {
    getElement('start-icon').addEventListener('click', () => {
-      new Sound({
-         path: './audio/windows-xp-startup.mp3'
-      });
+      Game.startMenu.buttonClick();
+      // new Sound({
+      //    path: './audio/windows-xp-startup.mp3'
+      // });
    });
 }
 
