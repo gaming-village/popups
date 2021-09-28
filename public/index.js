@@ -762,8 +762,7 @@ const Game = {
                   tileable: true
                }
             },
-            onOpen: function(applicationName) {
-               console.log(this.currentBackgroundImage);
+            open: function(applicationName) {
                let idx = 0;
                for (const bg of Object.entries(this.backgroundImages)) {
                   const obj = document.createElement("div");
@@ -801,6 +800,15 @@ const Game = {
                   }
                }
             },
+            close: function(applicationName) {
+               const application = getElement(applicationName);
+               application.classList.add("hidden");
+
+               const bgImageContainer = application.querySelector(".bg-image-container");
+               while (bgImageContainer.children[0]) {
+                  bgImageContainer.children[0].remove();
+               }
+            },
             updateBackgroundImage: function() {
                const bg = Object.entries(this.backgroundImages)[this.currentBackgroundImage];
                const computer = getElement("computer");
@@ -816,6 +824,13 @@ const Game = {
                   }
                }
             }
+         },
+         isOpened: function(applicationName) {
+            const application = getElement(applicationName);
+            if (application.classList.contains("hidden")) {
+               return false;
+            }
+            return true;
          }
       },
       opened: false,
@@ -848,11 +863,20 @@ const Game = {
             getElement("start-menu").appendChild(obj);
 
             obj.addEventListener("click", () => {
-               const section = getElement(panel.tree);
-               section.classList.remove("hidden");
+               const applicationName = panel.tree;
+               const applicationObj = getElement(applicationName);
 
-               if (this.applications[panel.tree].hasOwnProperty("onOpen")) {
-                  this.applications[panel.tree].onOpen(panel.tree);
+               const application = this.applications[applicationName];
+               if (!this.applications.isOpened(applicationName)) {
+                  if (application.hasOwnProperty("open")) {
+                     application.open(applicationName);
+                  }
+                  applicationObj.classList.remove("hidden");
+               } else {
+                  if (application.hasOwnProperty("close")) {
+                     application.close(applicationName);
+                  }
+                  applicationObj.classList.add("hidden");
                }
             });
          }
@@ -864,7 +888,7 @@ const fileSystem = {
    files: [],
    addApplication: function(application) {
       const newFile = getElement('file-template').cloneNode(true);
-      newFile.id = '';
+      newFile.id = "";
       newFile.classList.remove('hidden');
       newFile.querySelector('span').innerHTML = `${application.name}.app`;
 
@@ -1151,7 +1175,7 @@ class AlertBox {
       alertBox.querySelector("h3").innerHTML = title;
       alertBox.querySelector("h2").innerHTML = body;
 
-      alertBox.querySelector('.close-icon').addEventListener("click", () => {
+      alertBox.querySelector(".close-icon").addEventListener("click", () => {
          alertBox.remove();
          delete this;
       });
