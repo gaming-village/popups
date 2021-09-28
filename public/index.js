@@ -743,14 +743,23 @@ const Game = {
                },
                "xp-background.jpeg": {
                   type: "image",
-                  name: "Bliss"
+                  name: "Bliss",
+                  tileable: false
                },
                "windows-95-bg-2.jpeg": {
                   type: "image",
-                  name: "Honeycomb"
+                  name: "Honeycomb",
+                  tileable: true
                },
                "windows-95-bg-3.jpeg": {
-                  type: "image"
+                  type: "image",
+                  name: "Infinity",
+                  tileable: true
+               },
+               "windows-95-garden.png": {
+                  type: "image",
+                  name: "Garden",
+                  tileable: true
                }
             },
             onOpen: function(applicationName) {
@@ -800,6 +809,11 @@ const Game = {
                   computer.style.backgroundColor = bg[0];
                } else if (bg[1].type === "image") {
                   computer.style.backgroundImage = "url(images/backgrounds/" + bg[0] + ")";
+                  if (bg[1].tileable) {
+                     computer.classList.add("tileable");
+                  } else {
+                     computer.classList.remove("tileable");
+                  }
                }
             }
          }
