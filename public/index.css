@@ -1046,3 +1046,67 @@ button.close-button {
       background-size: 100% 80%;
    }
 }
+
+.windows-application {
+   max-width: 50%;
+   font-family: "MS Sans Serif";
+   background-color: #ccc;
+   border: 2px solid;
+   border-top-color: #fff;
+   border-left-color: #fff;
+   border-bottom-color: #000;
+   border-right-color: #000;
+   padding: 2px;
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+}
+.windows-application .title-bar {
+   color: #fff;
+   background-color: rgb(7, 30, 129);
+   font-weight: bold;
+   text-align: center;
+}
+.windows-application .header {
+   font-size: 1.2rem;
+   margin: 1rem 2px 0.5rem;
+}
+.windows-application p {
+   margin: 1rem 2px;
+}
+
+#start-menu-preferences .bg-image-container {
+   display: flex;
+}
+#start-menu-preferences .bg-image-container div {
+   width: 100px;
+   height: 100px;
+   border: 2px solid;
+   border-top-color: #fff;
+   border-left-color: #fff;
+   border-bottom-color: #000;
+   border-right-color: #000;
+   margin: 8px;
+   opacity: 0.5;
+   cursor: pointer;
+   position: relative;
+}
+#start-menu-preferences .bg-image-container div.selected {
+   border-top-color: #000;
+   border-left-color: #000;
+   border-bottom-color: #fff;
+   border-right-color: #fff;
+   opacity: 1;
+   cursor: default;
+}
+#start-menu-preferences .bg-image-container div span {
+   font-style: italic;
+   background-color: rgba(255, 255, 255, 0.4);
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50%, -50%);
+   display: inline-block;
+   white-space: nowrap;
+}

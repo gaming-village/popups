@@ -729,7 +729,79 @@ const Game = {
       panels: {
          preferences: {
             name: "Preferences",
-            imgSrc: "images/win95/win95-save.png"
+            imgSrc: "images/win95/win95-save.png",
+            tree: "start-menu-preferences"
+         }
+      },
+      applications: {
+         "start-menu-preferences": {
+            currentBackgroundImage: null,
+            backgroundImages: {
+               "#008080": {
+                  type: "color",
+                  name: "95 Green"
+               },
+               "xp-background.jpeg": {
+                  type: "image",
+                  name: "Bliss"
+               },
+               "windows-95-bg-2.jpeg": {
+                  type: "image",
+                  name: "Honeycomb"
+               },
+               "windows-95-bg-3.jpeg": {
+                  type: "image"
+               }
+            },
+            onOpen: function(applicationName) {
+               console.log(this.currentBackgroundImage);
+               let idx = 0;
+               for (const bg of Object.entries(this.backgroundImages)) {
+                  const obj = document.createElement("div");
+                  if (bg[1].type === "image") {
+                     obj.style.backgroundImage = "url(images/backgrounds/" + bg[0] + ")";
+                  } else if (bg[1].type === "color") {
+                     obj.style.backgroundColor = bg[0];
+                  }
+                  getElement(applicationName).querySelector(".bg-image-container").appendChild(obj);
+
+                  const currentIdx = idx;
+                  obj.addEventListener("click", () => {
+                     getElement(applicationName).querySelector(".bg-image-container .selected").classList.remove("selected");
+                     obj.classList.add("selected");
+
+                     this.currentBackgroundImage = currentIdx;
+                     updateMiscCookie();
+
+                     this.updateBackgroundImage();
+                  });
+
+                  const hoverText = document.createElement("span");
+                  hoverText.innerHTML = '"' + bg[1].name + '"';
+                  obj.appendChild(hoverText);
+                  hoverText.className = "hidden";
+                  obj.addEventListener("mouseover", () => {
+                     hoverText.classList.remove("hidden");
+                  });
+                  obj.addEventListener("mouseleave", () => {
+                     hoverText.classList.add("hidden");
+                  });
+                  
+                  if (idx++ === this.currentBackgroundImage) {
+                     obj.classList.add("selected");
+                  }
+               }
+            },
+            updateBackgroundImage: function() {
+               const bg = Object.entries(this.backgroundImages)[this.currentBackgroundImage];
+               const computer = getElement("computer");
+               if (bg[1].type === "color") {
+                  computer.style.backgroundImage = "none";
+                  computer.style.backgroundColor = bg[0];
+               } else if (bg[1].type === "image") {
+                  computer.style.backgroundImage = "url(images/backgrounds/" + bg[0] + ")";
+               }
+            }
          }
       },
       opened: false,
@@ -760,6 +832,15 @@ const Game = {
             `;
 
             getElement("start-menu").appendChild(obj);
+
+            obj.addEventListener("click", () => {
+               const section = getElement(panel.tree);
+               section.classList.remove("hidden");
+
+               if (this.applications[panel.tree].hasOwnProperty("onOpen")) {
+                  this.applications[panel.tree].onOpen(panel.tree);
+               }
+            });
          }
       }
    }
@@ -1413,6 +1494,10 @@ window.onload = () => {
    Game.blackMarket.minigames.setup();
    Game.startMenu.setup();
 
+   // Sets the background image of the computer (may have been changed in the preferences)
+   Game.startMenu.applications["start-menu-preferences"].updateBackgroundImage();
+
+   // Gives idle profits from workers
    handleIdleTime();
 }
 

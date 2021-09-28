@@ -250,6 +250,7 @@ function setMiscCookie() {
    // Bit 1: Black market (binary) (0/1 unlocked/locked)
    // Bits 2-3: Lorem Promotion Status (hexadecimal)
    // Bit 4: Job (0 = intern, etc.)
+   // Bits 5-6: Background image (generator)
 
    let miscCookie = getCookie('misc');
    if (miscCookie === "") {
@@ -258,8 +259,9 @@ function setMiscCookie() {
    }
 
    const bits = miscCookie.split('');
+   let promotionHex = "";
+   let currentBackgroundImage = "";
    bits.forEach((bit, idx) => {
-      let promotionHex = "";
       switch (idx + 1) {
          case 1:
             // Black Market
@@ -287,19 +289,23 @@ function setMiscCookie() {
 
             Game.loremCorp.setup(job);
             break;
+         case 5:
+            currentBackgroundImage += bit;
+            break;
+         case 6:
+            currentBackgroundImage += bit;
+            Game.startMenu.applications["start-menu-preferences"].currentBackgroundImage = parseInt(currentBackgroundImage);
+            break;
          default:
             console.warn('Bit ' + (idx + 1) + ' not accessed in misc cookie!')
       }
    });
 }
 function updateMiscCookie() {
-   let newCookie = '';
+   let newCookie = "";
 
    // Black market
    newCookie += Game.blackMarket.unlocked ? '1' : '0';
-
-   // Lorem quota unlocked
-   // newCookie += Game.loremQuota.unlocked ? '1' : '0';
 
    // Lorem promotion status
    // Find index of current quota
@@ -316,7 +322,6 @@ function updateMiscCookie() {
       quotaHex = '0' + quotaHex;
    }
    newCookie += quotaHex;
-   console.log(newCookie);
 
    // Lorem Corp Job
    let jobIndex = -1;
@@ -329,7 +334,13 @@ function updateMiscCookie() {
    });
    newCookie += jobIndex;
 
-   setCookie('misc', newCookie, 31);
+   let currentBackgroundImage = Game.startMenu.applications["start-menu-preferences"].currentBackgroundImage.toString();
+   if (currentBackgroundImage.length === 1) {
+      currentBackgroundImage = "0" + currentBackgroundImage;
+   }
+   newCookie += currentBackgroundImage;
+
+   setCookie("misc", newCookie, 31);
 }
 
 function setOpenedRewards() {
