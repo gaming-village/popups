@@ -1088,28 +1088,38 @@ button.close-button {
 #start-menu-preferences .bg-image-container {
    display: flex;
 }
-#start-menu-preferences .bg-image-container div {
+#start-menu-preferences .bg-image-container .bg-preview {
    width: 100px;
    height: 100px;
+   background-color: #000;
    border: 2px solid;
    border-top-color: #fff;
    border-left-color: #fff;
    border-bottom-color: #000;
    border-right-color: #000;
    margin: 8px;
-   opacity: 0.5;
    cursor: pointer;
    position: relative;
 }
-#start-menu-preferences .bg-image-container div.selected {
+#start-menu-preferences .bg-image-container .bg-preview.selected {
    border-top-color: #000;
    border-left-color: #000;
    border-bottom-color: #fff;
    border-right-color: #fff;
-   opacity: 1;
    cursor: default;
+   box-shadow: 4px 4px 0 0 #444;
 }
-#start-menu-preferences .bg-image-container div span {
+#start-menu-preferences .bg-image-container .bg-preview .bg {
+   width: 100%;
+   height: 100%;
+   position: absolute;
+   top: 0;
+   left: 0;
+}
+#start-menu-preferences .bg-image-container .bg-preview:not(.selected) .bg {
+   opacity: 0.5;
+}
+#start-menu-preferences .bg-image-container .bg-preview span {
    font-style: italic;
    background-color: rgba(255, 255, 255, 0.4);
    position: absolute;

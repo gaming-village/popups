@@ -761,18 +761,23 @@ const Game = {
             open: function(applicationName) {
                let idx = 0;
                for (const bg of Object.entries(this.backgroundImages)) {
-                  const obj = document.createElement("div");
+                  const container = document.createElement("div");
+                  container.classList.add("bg-preview");
+
+                  const bgPreview = document.createElement("div");
+                  bgPreview.classList.add("bg");
+                  container.appendChild(bgPreview);
                   if (bg[1].type === "image") {
-                     obj.style.backgroundImage = "url(images/backgrounds/" + bg[0] + ")";
+                     bgPreview.style.backgroundImage = "url(images/backgrounds/" + bg[0] + ")";
                   } else if (bg[1].type === "color") {
-                     obj.style.backgroundColor = bg[0];
+                     bgPreview.style.backgroundColor = bg[0];
                   }
-                  getElement(applicationName).querySelector(".bg-image-container").appendChild(obj);
+                  getElement(applicationName).querySelector(".bg-image-container").appendChild(container);
 
                   const currentIdx = idx;
-                  obj.addEventListener("click", () => {
+                  container.addEventListener("click", () => {
                      getElement(applicationName).querySelector(".bg-image-container .selected").classList.remove("selected");
-                     obj.classList.add("selected");
+                     container.classList.add("selected");
 
                      this.currentBackgroundImage = currentIdx;
                      updateMiscCookie();
@@ -782,17 +787,17 @@ const Game = {
 
                   const hoverText = document.createElement("span");
                   hoverText.innerHTML = '"' + bg[1].name + '"';
-                  obj.appendChild(hoverText);
+                  container.appendChild(hoverText);
                   hoverText.className = "hidden";
-                  obj.addEventListener("mouseover", () => {
+                  container.addEventListener("mouseover", () => {
                      hoverText.classList.remove("hidden");
                   });
-                  obj.addEventListener("mouseleave", () => {
+                  container.addEventListener("mouseleave", () => {
                      hoverText.classList.add("hidden");
                   });
                   
                   if (idx++ === this.currentBackgroundImage) {
-                     obj.classList.add("selected");
+                     container.classList.add("selected");
                   }
                }
             },
@@ -819,6 +824,9 @@ const Game = {
                      computer.classList.remove("tileable");
                   }
                }
+            },
+            setup: function() {
+               getElement("start-menu-preferences").querySelector(".title-bar img").addEventListener("click", () => this.close("start-menu-preferences"));
             }
          },
          isOpened: function(applicationName) {
@@ -827,6 +835,13 @@ const Game = {
                return false;
             }
             return true;
+         },
+         setupAll: function() {
+            for (const prop of Object.values(this)) {
+               if (prop.hasOwnProperty("setup")) {
+                  prop.setup();
+               }
+            }
          }
       },
       opened: false,
@@ -855,18 +870,11 @@ const Game = {
             parent.appendChild(container);
             container.style.left = "calc(100% + 2px)";
 
-            // Ideally at the top of where the section is.
-            // Must not go below the taskbar.
-            // console.log(parentSection);
             if (parentSection !== undefined) {
                const sectionBounds = parentSection.getBoundingClientRect();
                const parentBounds = parent.getBoundingClientRect();
                const sectionTop = sectionBounds.y - parentBounds.y - 2;
-               // const sectionBottom = 
-               // console.log(sectionBounds);
-               // console.log(top);
                container.style.top = sectionTop + "px";
-               // container.style.top = 
             }
          }
       },
@@ -960,6 +968,9 @@ const Game = {
                this.hideStartMenu();
             }
          });
+
+         // Sets up all the start menu applications
+         this.applications.setupAll();
       }
    }
 };
@@ -1661,8 +1672,8 @@ document.addEventListener('keydown', function(event) {
       return;
    }
    
-   // If the input is a number (49 57) excluding 0
-   if (keyCode >= 49 && keyCode <= 57) {
+   // If the input is a number from 1-9 (keycodes 49-57) and the command key isn't held
+   if (keyCode >= 49 && keyCode <= 57 && !event.metaKey) {
       keySwitchView(keyCode - 48);
    }
    // If the input is a letter press or space
