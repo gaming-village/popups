@@ -1067,6 +1067,15 @@ button.close-button {
    background-color: rgb(7, 30, 129);
    font-weight: bold;
    text-align: center;
+   position: relative;
+}
+.windows-application .title-bar img {
+   height: calc(100% - 4px);
+   position: absolute;
+   top: 50%;
+   right: 1px;
+   transform: translateY(-50%);
+   cursor: pointer;
 }
 .windows-application .header {
    font-size: 1.2rem;

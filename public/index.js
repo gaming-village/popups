@@ -667,31 +667,6 @@ const Game = {
       setCookie("packets", Game.packetCount, 31);
    },
 
-   // nextLoremQuota: 50,
-   // currentQuota: -1,
-   // get quotaPromotions () {
-   //    let returnArr = [];
-   //    for (const quotaReward of Object.values(loremQuotaData)) {
-   //       returnArr.push(quotaReward.requirement);
-   //    }
-   //    return returnArr;
-   // },
-   // updateQuotaFactor: () => {
-   //    // Increment the lorem quota by 1 from the quotaPromotions array
-   //    if (!Game.loremQuota.unlocked) return;
-
-   //    const quotaIndex = Game.quotaPromotions.indexOf(Game.nextLoremQuota);
-
-   //    Game.nextLoremQuota = Game.quotaPromotions[quotaIndex + 1];
-   //    console.log(quotaIndex + 1);
-
-   //    updateMiscCookie();
-   // },
-   // unlockLoremQuota: () => {
-   //    Game.loremQuota.unlocked = true;
-   //    getElement('lorem-quota').classList.remove('hidden');
-   // },
-
    checkLoremLetters: () => {
       if (Game.lorem >= 2) receiveLetter('motivationalLetter');
       if (Game.lorem >= 5) receiveLetter('greetings')
@@ -731,6 +706,27 @@ const Game = {
             name: "Preferences",
             imgSrc: "images/win95/win95-save.png",
             tree: "start-menu-preferences"
+         },
+         help: {
+            name: "Help",
+            imgSrc: "images/win95/question-book.png",
+            tree: {
+               guide: {
+                  name: "Guide",
+                  imgSrc: "images/win95/win95-save.png",
+                  tree: ""
+               },
+               faq: {
+                  name: "FaQ",
+                  imgSrc: "images/win95/win95-save.png",
+                  tree: ""
+               },
+               issues: {
+                  name: "Issues",
+                  imgSrc: "images/win95/win95-save.png",
+                  tree: ""
+               }
+            }
          }
       },
       applications: {
@@ -847,39 +843,123 @@ const Game = {
          getElement("start-menu").classList.add("hidden");
          getElement("start-icon").classList.remove("opened");
       },
-      setup: function() {
-         // Triggered on page load
-         for (const panel of Object.values(this.panels)) {
+      createPanelContainer: function(name, parent, parentSection) {
+         const container = document.createElement("div");
+         container.className = "start-menu-container";
+         container.id = name;
+
+         if (parent === undefined) {
+            getElement("computer").appendChild(container);
+            container.style.bottom = "calc(2rem + 6px)";
+         } else {
+            parent.appendChild(container);
+            container.style.left = "calc(100% + 2px)";
+
+            // Ideally at the top of where the section is.
+            // Must not go below the taskbar.
+            // console.log(parentSection);
+            if (parentSection !== undefined) {
+               const sectionBounds = parentSection.getBoundingClientRect();
+               const parentBounds = parent.getBoundingClientRect();
+               const sectionTop = sectionBounds.y - parentBounds.y - 2;
+               // const sectionBottom = 
+               // console.log(sectionBounds);
+               // console.log(top);
+               container.style.top = sectionTop + "px";
+               // container.style.top = 
+            }
+         }
+      },
+      removePanelContainer: function(name) {
+         getElement(name).remove();
+      },
+      fillPanelContainer: function(panelData, parent) {
+         for (const panelInfo of Object.entries(panelData)) {
+            const panel = panelInfo[1];
+            
             const obj = document.createElement("div");
             obj.classList.add("section");
 
             const name = `<span class="underline">` + panel.name[0] + "</span>" + panel.name.slice(1, panel.name.length);
-            console.log(name);
             obj.innerHTML = `
             <img src="${panel.imgSrc}" />
-            <p>${name}</p>
-            `;
+            <p>${name}</p>`;
 
-            getElement("start-menu").appendChild(obj);
+            parent.appendChild(obj);
 
-            obj.addEventListener("click", () => {
-               const applicationName = panel.tree;
-               const applicationObj = getElement(applicationName);
+            if (typeof panel.tree === "object") {
+               // Create an opening arrow icon
+               const arrow = document.createElement("div");
+               arrow.classList.add("arrow");
+               obj.appendChild(arrow);
 
-               const application = this.applications[applicationName];
-               if (!this.applications.isOpened(applicationName)) {
-                  if (application.hasOwnProperty("open")) {
-                     application.open(applicationName);
+               obj.addEventListener("click", () => {
+                  const containerName = "start-menu-" + panelInfo[0];
+                  if (getElement(containerName) === null) {
+                     this.createPanelContainer(containerName, parent, obj);
+                     this.fillPanelContainer(panel.tree, getElement(containerName));
+
+                     obj.classList.add("opened");
+                  } else {
+                     this.removePanelContainer(containerName);
+                     
+                     obj.classList.remove("opened");
                   }
-                  applicationObj.classList.remove("hidden");
-               } else {
-                  if (application.hasOwnProperty("close")) {
-                     application.close(applicationName);
+               });
+            } else if (typeof panel.tree === "string") {
+               obj.addEventListener("click", () => {
+                  const applicationName = panel.tree;
+                  const applicationObj = getElement(applicationName);
+                  
+                  const application = this.applications[applicationName];
+                  if (!this.applications.isOpened(applicationName)) {
+                     if (application.hasOwnProperty("open")) {
+                        application.open(applicationName);
+                     }
+                     applicationObj.classList.remove("hidden");
+                  } else {
+                     if (application.hasOwnProperty("close")) {
+                        application.close(applicationName);
+                     }
+                     applicationObj.classList.add("hidden");
                   }
-                  applicationObj.classList.add("hidden");
-               }
-            });
+               });
+            }
          }
+
+         const containerBounds = parent.getBoundingClientRect();
+         const remainingSpace = window.innerHeight - containerBounds.bottom;
+         const taskbarHeight = getElement("computer-nav").offsetHeight;
+         if (remainingSpace < taskbarHeight) {
+            parent.style.top = null;
+            parent.style.bottom = "-2px";
+         }
+      },
+      hideMenuOnHoverOut: function() {
+         getElement("start-menu").addEventListener("mouseleave", () => {
+            this.hideStartMenu();
+         });
+      },
+      startMenuIsVisible: function() {
+         if (getElement("start-menu") === null) {
+            return false;
+         }
+         return true;
+      },
+      hideStartMenu: function() {
+         getElement("start-menu").remove();
+      },
+      setup: function() {
+         // Triggered on page load
+         getElement("start-icon").addEventListener("click", () => {
+            if (!this.startMenuIsVisible()) {
+               this.createPanelContainer("start-menu");
+               this.fillPanelContainer(this.panels, getElement("start-menu"));
+               this.hideMenuOnHoverOut();
+            } else {
+               this.hideStartMenu();
+            }
+         });
       }
    }
 };
@@ -1472,7 +1552,6 @@ window.onload = () => {
    LoadData();
 
    setupNavBar();
-   setupComputerBar();
 
    Game.setup.setupLorem();
 
@@ -1537,15 +1616,6 @@ window.onload = () => {
 
    // Gives idle profits from workers
    handleIdleTime();
-}
-
-function setupComputerBar() {
-   getElement('start-icon').addEventListener('click', () => {
-      Game.startMenu.buttonClick();
-      // new Sound({
-      //    path: './audio/windows-xp-startup.mp3'
-      // });
-   });
 }
 
 function changeViewHeights() {
