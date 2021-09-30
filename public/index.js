@@ -6,6 +6,9 @@ const applications = {
       // setup: function() {
       //    getElement("lorem-counter").querySelector(".popup-title .minimize-button")
       // }
+   },
+   "achievement-tracker": {
+      open: false
    }
 };
 
@@ -653,7 +656,7 @@ const Game = {
    updateLorem: (add) => {
       createMiningEntry(add);
       displayPoints(add);
-      applications.eventViewer.createEvent(['Gained ', '#ccc'], [add, '#fff'], [' lorem', '#ccc']);
+      // applications.eventViewer.createEvent(['Gained ', '#ccc'], [add, '#fff'], [' lorem', '#ccc']);
       setCookie("lorem", Game.lorem, 31);
       Game.checkLoremLetters();
 
@@ -867,7 +870,7 @@ const Game = {
                      name: "Achievement Tracker",
                      description: "View your most significant achievements made here at Lorem Corp.",
                      img: "images/win95/win95-save.png",
-                     objID: "",
+                     objID: "achievement-tracker",
                      isDefaultApplication: true
                   },
                   bigLoremCounter: {
@@ -1004,8 +1007,9 @@ const Game = {
                   for (const application of Object.entries(applicationCategory)) {
                      if (applications[application[1].objID] !== undefined) {
                         const obj = getElement(application[1].objID);
-                        obj.querySelector(".popup-title .minimize-button").addEventListener("click", () => {
+                        obj.querySelector(".minimize-button").addEventListener("click", () => {
                            this.closeApplication(application);
+                           updateApplicationPositions();
                         });
                      }
                   }
@@ -1036,7 +1040,15 @@ const Game = {
                      } else {
                         this.openApplication(currentApplication);
                      }
+                     updateApplicationPositions();
                   });
+               }
+
+               // Sets up all drag elements
+               for (const applicationID of Object.keys(applications)) {
+                  const obj = getElement(applicationID);
+                  const titleBar = obj.querySelector(":is(.popup-title, .title-bar)");
+                  dragElement(obj, titleBar);
                }
             }
          },
@@ -1142,7 +1154,6 @@ const Game = {
                      }
                      break;
                   }
-                  console.log(containerObj);
                   // If there are any other panels on the same layer, eat them
                   for (const name of Object.keys(containerObj)) {
                      if (name !== panelInfo[0] && getElement("start-menu-" + name) !== null) {
@@ -1158,6 +1169,11 @@ const Game = {
                      return;
                   }
                   const applicationObj = getElement(applicationName);
+
+                  // Position the application in the center
+                  applicationObj.style.top = "50%";
+                  applicationObj.style.left = "50%";
+                  applicationObj.style.transform = "translate(-50%, -50%)";
                   
                   const application = this.applications[applicationName];
                   if (!this.applications.isOpened(applicationName)) {
@@ -1850,7 +1866,7 @@ window.onload = () => {
    Game.setup.setupBlackMarket();
    displayPoints(0);
 
-   dragElement(getElement("lorem-counter"), getElement("point-counter-title"));
+   // dragElement(getElement("lorem-counter"), getElement("point-counter-title"));
 
    changeViewHeights();
    window.addEventListener('resize', () => changeViewHeights());
@@ -2310,6 +2326,7 @@ function dragElement(elmnt, start) {
    start.onmousedown = dragMouseDown;
 
    function dragMouseDown(e) {
+      console.log(elmnt);
       e = e || window.event;
       e.preventDefault();
       path = e.path || (e.composedPath && e.composedPath());
@@ -2354,8 +2371,9 @@ function dragElement(elmnt, start) {
 
    function closeDragElement() {
       // If the element is an application
-      if (elmnt.classList.contains("popup-container-3")) {
-         // updateApplicationPositions();
+      const applicationIDs = Object.keys(applications);
+      if (applicationIDs.includes(elmnt.id)) {
+         updateApplicationPositions();
       }
       // stop moving when mouse button is released:
       document.onmouseup = null;

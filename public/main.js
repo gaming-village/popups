@@ -192,7 +192,7 @@ const LoadData = () => {
    setMiscCookie();
    setOpenedRewards();
    if (typeof Game !== "undefined") {
-      // setApplicationPositions();
+      setApplicationPositions();
       setOwnedApplications();
    }
 }
@@ -371,57 +371,100 @@ function updateOpenedRewardsCookie() {
 }
 
 function setApplicationPositions() {
-   let cookie = getCookie("applicationPositions");
+   let cookie = getCookie("application-positions");
    if (cookie === "") {
-      for (const application of Object.values(applications)) {
-         cookie += `${application.id}.0x${topHeight()}*1,`;
-      }
-      cookie = cookie.substring(0, cookie.length - 1);
-      setCookie("applicationPositions", cookie, 30);
-   }
-
-   cookie.split(",").forEach(applicationData => {
-      const id = parseInt(applicationData.split(".")[0]);
-      let currentApplication = null;
-      for (const application of Object.values(applications)) {
-         if (application.id === id) {
-            currentApplication = application;
-            break;
+      console.log("default engaged");
+      for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
+         for (const applicationName of Object.keys(applicationCategory)) {
+            const DEFAULT_VISIBLE_APPLICATIONS = ["loremCounter"];
+            const isVisible = DEFAULT_VISIBLE_APPLICATIONS.includes(applicationName) ? "1" : "0";
+            cookie += `0x0x${isVisible},`
          }
       }
+      cookie = cookie.substring(0, cookie.length - 1);
+   }
 
-      const pos = applicationData.split(".")[1].split("x").join("*").split("*");
-      currentApplication.position = {
-         x: pos[0],
-         y: pos[1]
-      };
+   const applicationPositions = cookie.split(",");
+   let i = 0;
+   for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
+      for (const {objID} of Object.values(applicationCategory)) {
+         if (objID === "") return;
 
-      const vis = parseInt(applicationData.split("*")[1]) === 1 ? true : false;
-      if (vis) {
-         currentApplication.open(false);
+         const applicationPosition = applicationPositions[i];
+         i++;
+         console.log(applicationPosition);
+         const parts = applicationPosition.split("x");
+         const obj = getElement(objID);
+         const x = parseFloat(parts[0]),
+         y = parseFloat(parts[1]);
+         obj.style.left = `${x}px`;
+         obj.style.top = `${y}px`;
+         
+         const isVisible = parseInt(parts[2]);
+         if (isVisible) {
+            obj.classList.remove("hidden");
+            applications[objID].open = true;
+         } else {
+            obj.classList.add("hidden");
+            applications[objID].open = false;
+         }
       }
-   });
+   }
 }
 function updateApplicationPositions() {
-   let posStr = "";
-   for (const application of Object.values(applications)) {
-      const id = application.id;
-      const pos = application.position;
-      const x = Math.round(scalePX(pos.x, "vw"));
-      const y = scalePX(pos.y - topHeight(), "vh");
-      const vis = application.opened ? "1" : "0";
+   const previousCookie = getCookie("application-positions");
+   console.log("Previous cookie: " + previousCookie);
+   let newCookie = "";
+   let i = 0;
+   for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
+      for (const application of Object.values(applicationCategory)) {
+         const objID = application.objID;
+         if (objID === "") {
+            newCookie += "0x0x0,";
+            continue;
+         }
 
-      let newStr = `${id}.${x}x${y}*${vis},`;
-      posStr += newStr;
+         const obj = getElement(objID);
+         const bounds = obj.getBoundingClientRect();
+         console.log(bounds);
+
+         const previousCookieSegment = previousCookie.split(",")[i];
+         console.log(previousCookieSegment);
+         
+         if (bounds.y === 0) {
+            // newCookie += "0x0x0,";
+            const x = previousCookieSegment.split("x")[0];
+            const y = previousCookieSegment.split("x")[1];
+            newCookie += `${x}x${y}x0,`;
+            console.log(`${x}x${y}x0,`);
+            continue;
+         }
+         
+         const applicationData = applications[objID];
+         const isVisible = applicationData.open ? "1" : "0";
+         console.log(isVisible);
+         const x = Math.max(bounds.x, 0);
+         const y = Math.max(bounds.y - topHeight(), 0);
+         newCookie += `${x}x${y}x${isVisible},`;
+         i++;
+      }
    }
-   posStr = posStr.substring(0, posStr.length - 1);
-   setCookie("applicationPositions", posStr, 30);
+   console.log(newCookie);
+   newCookie = newCookie.substring(0, newCookie.length - 1);
+   setCookie("application-positions", newCookie);
 }
 
 function setOwnedApplications() {
    let cookie = getCookie("owned-applications");
    if (cookie === "") {
       cookie = 0;
+      let num = 0;
+      for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
+         for (const application of Object.values(applicationCategory)) {
+            if (application.isDefaultApplication) cookie += Math.pow(2, num);
+            num++;
+         }
+      }
    }
 
    let binary = parseInt(cookie).toString(2);
