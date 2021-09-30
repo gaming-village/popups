@@ -838,6 +838,7 @@ const Game = {
                }
             },
             updateBackgroundImage: function() {
+               console.log(this.currentBackgroundImage);
                const bg = Object.entries(this.backgroundImages)[this.currentBackgroundImage];
                const computer = getElement("computer");
                if (bg[1].type === "color") {
@@ -2486,7 +2487,7 @@ function dataSetup() {
       workerCookies = workerCookies.map(cookie => cookie[0]);
 
       // Reset cookies when the reset button is clicked
-      const otherCookies = ['lorem', 'packets', 'openedLetters', 'openedRewards', 'receivedLetters', 'unlockedMalware', 'unlockedShops', 'misc', 'settings'];
+      const otherCookies = ['lorem', 'packets', 'openedLetters', 'openedRewards', 'receivedLetters', 'unlockedMalware', 'unlockedShops', 'misc', 'settings', "application-positions"];
       const allCookies = [...workerCookies, ...otherCookies];
       // Delete cookies
       allCookies.forEach(cookie => document.cookie = cookie +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;');

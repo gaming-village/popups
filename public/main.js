@@ -246,6 +246,7 @@ function updateSettingsCookie() {
 
 
 function setMiscCookie() {
+   console.log("u?");
    if (typeof Game === 'undefined') return;
 
    // Bit 1: Black market (binary) (0/1 unlocked/locked)
@@ -253,9 +254,10 @@ function setMiscCookie() {
    // Bit 4: Job (0 = intern, etc.)
    // Bits 5-6: Background image (generator)
 
-   let miscCookie = getCookie('misc');
+   let miscCookie = getCookie("misc");
+   const MISC_COOKIE_LENGTH = 6;
    if (miscCookie === "") {
-      miscCookie = "0000";
+      miscCookie = "0".repeat(MISC_COOKIE_LENGTH);
       setCookie('misc', miscCookie);
    }
 
@@ -295,6 +297,7 @@ function setMiscCookie() {
             break;
          case 6:
             currentBackgroundImage += bit;
+            console.log(currentBackgroundImage);
             Game.startMenu.applications["menu-preferences"].currentBackgroundImage = parseInt(currentBackgroundImage);
             break;
          default:
@@ -373,7 +376,6 @@ function updateOpenedRewardsCookie() {
 function setApplicationPositions() {
    let cookie = getCookie("application-positions");
    if (cookie === "") {
-      console.log("default engaged");
       for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
          for (const applicationName of Object.keys(applicationCategory)) {
             const DEFAULT_VISIBLE_APPLICATIONS = ["loremCounter"];
@@ -392,7 +394,6 @@ function setApplicationPositions() {
 
          const applicationPosition = applicationPositions[i];
          i++;
-         console.log(applicationPosition);
          const parts = applicationPosition.split("x");
          const obj = getElement(objID);
          const x = parseFloat(parts[0]),
@@ -413,7 +414,6 @@ function setApplicationPositions() {
 }
 function updateApplicationPositions() {
    const previousCookie = getCookie("application-positions");
-   console.log("Previous cookie: " + previousCookie);
    let newCookie = "";
    let i = 0;
    for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
@@ -426,30 +426,24 @@ function updateApplicationPositions() {
 
          const obj = getElement(objID);
          const bounds = obj.getBoundingClientRect();
-         console.log(bounds);
 
          const previousCookieSegment = previousCookie.split(",")[i];
-         console.log(previousCookieSegment);
          
          if (bounds.y === 0) {
-            // newCookie += "0x0x0,";
             const x = previousCookieSegment.split("x")[0];
             const y = previousCookieSegment.split("x")[1];
             newCookie += `${x}x${y}x0,`;
-            console.log(`${x}x${y}x0,`);
             continue;
          }
          
          const applicationData = applications[objID];
          const isVisible = applicationData.open ? "1" : "0";
-         console.log(isVisible);
          const x = Math.max(bounds.x, 0);
          const y = Math.max(bounds.y - topHeight(), 0);
          newCookie += `${x}x${y}x${isVisible},`;
          i++;
       }
    }
-   console.log(newCookie);
    newCookie = newCookie.substring(0, newCookie.length - 1);
    setCookie("application-positions", newCookie);
 }
