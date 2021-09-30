@@ -294,7 +294,7 @@ function setMiscCookie() {
             break;
          case 6:
             currentBackgroundImage += bit;
-            Game.startMenu.applications["start-menu-preferences"].currentBackgroundImage = parseInt(currentBackgroundImage);
+            Game.startMenu.applications["menu-preferences"].currentBackgroundImage = parseInt(currentBackgroundImage);
             break;
          default:
             console.warn('Bit ' + (idx + 1) + ' not accessed in misc cookie!')
@@ -334,7 +334,7 @@ function updateMiscCookie() {
    });
    newCookie += jobIndex;
 
-   let currentBackgroundImage = Game.startMenu.applications["start-menu-preferences"].currentBackgroundImage.toString();
+   let currentBackgroundImage = Game.startMenu.applications["menu-preferences"].currentBackgroundImage.toString();
    if (currentBackgroundImage.length === 1) {
       currentBackgroundImage = "0" + currentBackgroundImage;
    }

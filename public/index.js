@@ -702,10 +702,26 @@ const Game = {
    },
    startMenu: {
       panels: {
+         applications: {
+            name: "Applications",
+            imgSrc: "images/win95/app.png",
+            tree: {
+               shop: {
+                  name: "Shop",
+                  imgSrc: "images/win95/folder-search.png",
+                  tree: "menu-application-shop"
+               },
+               status: {
+                  name: "Status",
+                  imgSrc: "images/win95/info.png",
+                  tree: ""
+               }
+            }
+         },
          preferences: {
             name: "Preferences",
             imgSrc: "images/win95/win95-save.png",
-            tree: "start-menu-preferences"
+            tree: "menu-preferences"
          },
          help: {
             name: "Help",
@@ -713,24 +729,24 @@ const Game = {
             tree: {
                guide: {
                   name: "Guide",
-                  imgSrc: "images/win95/win95-save.png",
+                  imgSrc: "images/win95/books.png",
                   tree: ""
                },
                faq: {
                   name: "FaQ",
-                  imgSrc: "images/win95/win95-save.png",
+                  imgSrc: "images/win95/properties.png",
                   tree: ""
                },
                issues: {
                   name: "Issues",
-                  imgSrc: "images/win95/win95-save.png",
+                  imgSrc: "images/win95/error.png",
                   tree: ""
                }
             }
          }
       },
       applications: {
-         "start-menu-preferences": {
+         "menu-preferences": {
             currentBackgroundImage: null,
             backgroundImages: {
                "#008080": {
@@ -826,8 +842,11 @@ const Game = {
                }
             },
             setup: function() {
-               getElement("start-menu-preferences").querySelector(".title-bar img").addEventListener("click", () => this.close("start-menu-preferences"));
+               getElement("menu-preferences").querySelector(".title-bar img").addEventListener("click", () => this.close("menu-preferences"));
             }
+         },
+         "menu-application-shop": {
+
          },
          isOpened: function(applicationName) {
             const application = getElement(applicationName);
@@ -902,6 +921,11 @@ const Game = {
                obj.appendChild(arrow);
 
                obj.addEventListener("click", () => {
+                  // (css) Unopen all sections
+                  for (const child of parent.children) {
+                     child.classList.remove("opened");
+                  }
+
                   const containerName = "start-menu-" + panelInfo[0];
                   if (getElement(containerName) === null) {
                      this.createPanelContainer(containerName, parent, obj);
@@ -910,8 +934,28 @@ const Game = {
                      obj.classList.add("opened");
                   } else {
                      this.removePanelContainer(containerName);
-                     
-                     obj.classList.remove("opened");
+                  }
+
+                  // Close any existing trees
+                  let containerObj;
+                  const objectsToCheck = [this.panels];
+                  while (true) {
+                     for (const obj of objectsToCheck) {
+                        for (const prop of Object.keys(obj)) {
+                           if (prop === panelInfo[0]) {
+                              containerObj = obj;
+                              break;
+                           }
+                        }
+                     }
+                     break;
+                  }
+                  console.log(containerObj);
+                  // If there are any other panels on the same layer, eat them
+                  for (const name of Object.keys(containerObj)) {
+                     if (name !== panelInfo[0] && getElement("start-menu-" + name) !== null) {
+                        this.removePanelContainer("start-menu-" + name);
+                     }
                   }
                });
             } else if (typeof panel.tree === "string") {
@@ -1623,7 +1667,7 @@ window.onload = () => {
    Game.startMenu.setup();
 
    // Sets the background image of the computer (may have been changed in the preferences)
-   Game.startMenu.applications["start-menu-preferences"].updateBackgroundImage();
+   Game.startMenu.applications["menu-preferences"].updateBackgroundImage();
 
    // Gives idle profits from workers
    handleIdleTime();
