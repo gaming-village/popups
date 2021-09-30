@@ -1,14 +1,21 @@
 const popups = {};
 const semiPopups = {};
-const applications = {};
-
-const setApplicationIDs = () => {
-   let id = 1;
-   for (const application of Object.values(applications)) {
-      application.id = id;
-      id++;
+const applications = {
+   "lorem-counter": {
+      open: true,
+      // setup: function() {
+      //    getElement("lorem-counter").querySelector(".popup-title .minimize-button")
+      // }
    }
 };
+
+// const setApplicationIDs = () => {
+//    let id = 1;
+//    for (const application of Object.values(applications)) {
+//       application.id = id;
+//       id++;
+//    }
+// };
 
 const Game = {
    currentView: "",
@@ -639,7 +646,7 @@ const Game = {
       Game.lorem *= mult;
       Game.stats.totalLoremMined *= mult;
 
-      // Find the difference in points.
+      // Find the difference in lorem.
       const difference = Game.lorem - loremBefore;
       Game.updateLorem(formatFloat(difference));
    },
@@ -853,18 +860,21 @@ const Game = {
                      name: "Lorem Counter",
                      description: "The primary way of viewing your lorem.",
                      img: "images/win95/win95-save.png",
+                     objID: "lorem-counter",
                      isDefaultApplication: true
                   },
                   achievementTracker: {
                      name: "Achievement Tracker",
                      description: "View your most significant achievements made here at Lorem Corp.",
                      img: "images/win95/win95-save.png",
+                     objID: "",
                      isDefaultApplication: true
                   },
                   bigLoremCounter: {
                      name: "Big Lorem Counter",
                      description: "A bigger, better lorem counter.",
                      img: "images/win95/win95-save.png",
+                     objID: "",
                      isDefaultApplication: false,
                      price: 100
                   },
@@ -872,6 +882,7 @@ const Game = {
                      name: "Progress Overview",
                      description: "View your progress in relation to other employees.",
                      img: "images/win95/win95-save.png",
+                     objID: "",
                      isDefaultApplication: false,
                      price: 500
                   }
@@ -881,6 +892,7 @@ const Game = {
                      name: "Antivirus",
                      description: "Tired of unwanted popups appearing? Simply download this application to rid your computer of malware.",
                      img: "images/win95/win95-save.png",
+                     objID: "",
                      isDefaultApplication: false,
                      price: 500 
                   },
@@ -888,6 +900,7 @@ const Game = {
                      name: "Intern Enhancement Program",
                      description: "Optimise your filthy intern's production capabilities, through somewhat unethical means.",
                      img: "images/win95/win95-save.png",
+                     objID: "",
                      isDefaultApplication: false,
                      price: 1000
                   }
@@ -967,8 +980,64 @@ const Game = {
                   }
                }
             },
+            closeApplication: function(application) {
+               const applicationData = applications[application[1].objID];
+               applicationData.open = false;
+               getElement(application[1].objID).classList.add("hidden");
+
+               const taskbarItem = getElement("taskbar-" + application[0]);
+               taskbarItem.classList.remove("open");
+            },
+            openApplication: function(application) {
+               const applicationData = applications[application[1].objID];
+               applicationData.open = true;
+               getElement(application[1].objID).classList.remove("hidden");
+
+               const taskbarItem = getElement("taskbar-" + application[0]);
+               taskbarItem.classList.add("open");
+            },
             setup: function() {
                getElement("menu-application-shop").querySelector(".title-bar img").addEventListener("click", () => this.close("menu-application-shop"));
+
+               // Sets up all minimize buttons
+               for (const applicationCategory of Object.values(this.applications)) {
+                  for (const application of Object.entries(applicationCategory)) {
+                     if (applications[application[1].objID] !== undefined) {
+                        const obj = getElement(application[1].objID);
+                        obj.querySelector(".popup-title .minimize-button").addEventListener("click", () => {
+                           this.closeApplication(application);
+                        });
+                     }
+                  }
+               }
+
+               // Sets up the click events for the taskbar items, and style them as open if their application is open
+               const taskbarItems = document.getElementsByClassName("taskbar-application");
+               for (let i = 0; i < taskbarItems.length; i++) {
+                  const taskbarItem = taskbarItems[i];
+                  const id = taskbarItem.id.substring(8, taskbarItem.id.length);
+
+                  let currentApplication;
+                  for (const applicationCategory of Object.values(this.applications)) {
+                     for (const application of Object.entries(applicationCategory)) {
+                        if (application[0] === id) {
+                           currentApplication = application;
+                           break;
+                        }
+                     }
+                     if (currentApplication !== undefined) break;
+                  }
+                  
+                  const applicationData = applications[currentApplication[1].objID];
+                  if (applicationData !== undefined && applicationData.open) taskbarItem.classList.add("open");
+                  taskbarItem.addEventListener("click", () => {
+                     if (applicationData.open) {
+                        this.closeApplication(currentApplication);
+                     } else {
+                        this.openApplication(currentApplication);
+                     }
+                  });
+               }
             }
          },
          isOpened: function(applicationName) {
@@ -1084,6 +1153,10 @@ const Game = {
             } else if (typeof panel.tree === "string") {
                obj.addEventListener("click", () => {
                   const applicationName = panel.tree;
+                  if (panel.tree === "") {
+                     // TODO: Create an error message
+                     return;
+                  }
                   const applicationObj = getElement(applicationName);
                   
                   const application = this.applications[applicationName];
@@ -1104,7 +1177,7 @@ const Game = {
 
          const containerBounds = parent.getBoundingClientRect();
          const remainingSpace = window.innerHeight - containerBounds.bottom;
-         const taskbarHeight = getElement("computer-nav").offsetHeight;
+         const taskbarHeight = getElement("taskbar").offsetHeight;
          if (remainingSpace < taskbarHeight) {
             parent.style.top = null;
             parent.style.bottom = "-2px";
@@ -1116,7 +1189,7 @@ const Game = {
                if (!application[1].owned) continue;
 
                // Renders the applications on the taskbar.
-               taskbar.createApplication(application[1].name, "images/win95/program2.png");
+               taskbar.createApplication(application[1].name, "images/win95/program2.png", "taskbar-" + application[0]);
 
                // Renders the applications in the file system.
                const name = slugCase(application[0]).replace("-", "_");
@@ -1154,11 +1227,11 @@ const Game = {
             }
          });
 
+         // Renders the applications in the taskbar and file system
+         this.renderApplications();
+
          // Sets up all the start menu applications
          this.applications.setupAll();
-
-         // Renders which applications are owned.
-         this.renderApplications();
       }
    }
 };
@@ -1176,9 +1249,10 @@ const fileSystem = {
 };
 
 const taskbar = {
-   createApplication: function(name, img) {
+   createApplication: function(name, img, id) {
       const application = document.createElement("div");
-      application.className = "taskbar-application"
+      application.className = "taskbar-application";
+      application.id = id;
       getElement("taskbar").appendChild(application);
 
       application.innerHTML = `
@@ -1614,7 +1688,7 @@ function displayPoints(add) {
    const loremCount = formatFloat(Game.lorem);
    
    // Update all listed element's text using their ID's
-   const loremElements = ['total-lorem-mined', 'pointCounter', 'lorem-count', 'black-market-lorem-transfer-amount'];
+   const loremElements = ['total-lorem-mined', 'lorem-count', 'black-market-lorem-transfer-amount'];
    for (const elemID of loremElements) {
       getElement(elemID).innerHTML = loremCount;
    }
@@ -1622,7 +1696,8 @@ function displayPoints(add) {
    getElement('corporate-lorem-count').querySelector('p').innerHTML = loremCount;
    getElement('packet-transfer-amount').innerHTML = formatFloat(Game.lorem * Game.transferRate);
    
-   updateLoremCounter(add);
+   // Big lorem counter
+   // updateLoremCounter(add);
    if (Game.loremQuota.unlocked) Game.loremQuota.updateProgress();
    Game.loremCorp.updatePromotionProgress();
 }
@@ -1775,7 +1850,7 @@ window.onload = () => {
    Game.setup.setupBlackMarket();
    displayPoints(0);
 
-   dragElement(getElement("pointCounterContainer"), getElement("point-counter-title"));
+   dragElement(getElement("lorem-counter"), getElement("point-counter-title"));
 
    changeViewHeights();
    window.addEventListener('resize', () => changeViewHeights());

@@ -406,14 +406,6 @@ span.progress-red {
    pointer-events: none;
 }
 
-#pointCounterContainer {
-   z-index: 2;
-}
-
-#pointCounter {
-   margin: 0;
-}
-
 #pointIncrementTextContainer {
    position: absolute;
    left: 50%;
@@ -613,6 +605,19 @@ div#changelog {
    border-right-color: #444;
    background-color: #b0b0b0;
 }
+.minimize-button {
+   height: calc(100% - 4px);
+   position: absolute;
+   top: 50%;
+   right: 1px;
+   transform: translateY(-50%);
+   cursor: pointer;
+}
+/* .minimize-button {
+   height: 1rem;
+   float: right;
+   cursor: pointer;
+} */
 
 .letter {
    color: rgb(0, 255, 0);
@@ -691,10 +696,16 @@ input[type=checkbox] {
    display: inline-block;
 }
 .ct-95 :is(.popup-container-1, .popup-container-2) .popup-title {
-   font-size: 1rem;
-   background-color: rgb(26, 57, 197);
-   padding: 0.1rem 0.2rem;
+   background-color: rgb(7, 30, 129);
+   padding: 0 0.2rem;
    margin: 0;
+}
+.ct-95 :is(.popup-container-1, .popup-container-2) .popup-title p {
+   line-height: initial;
+   font-size: 1rem;
+   margin: 0;
+   display: inline-block;
+   pointer-events: none;
 }
 .ct-95 :is(.popup-container-1, .popup-container-2) .close-icon {
    position: absolute;
