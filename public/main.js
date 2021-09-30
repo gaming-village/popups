@@ -192,7 +192,8 @@ const LoadData = () => {
    setMiscCookie();
    setOpenedRewards();
    if (typeof Game !== "undefined") {
-      setApplicationPositions();
+      // setApplicationPositions();
+      setOwnedApplications();
    }
 }
 
@@ -372,7 +373,6 @@ function updateOpenedRewardsCookie() {
 function setApplicationPositions() {
    let cookie = getCookie("applicationPositions");
    if (cookie === "") {
-      console.log("SETTING DEFAULT VALUES");
       for (const application of Object.values(applications)) {
          cookie += `${application.id}.0x${topHeight()}*1,`;
       }
@@ -389,11 +389,8 @@ function setApplicationPositions() {
             break;
          }
       }
-      console.log("-==---=--=--=-=-=");
-      console.log(`Name: ${currentApplication.name}`);
 
       const pos = applicationData.split(".")[1].split("x").join("*").split("*");
-      console.log(`Position: ${pos[0]}x ${pos[1]}y`);
       currentApplication.position = {
          x: pos[0],
          y: pos[1]
@@ -406,13 +403,10 @@ function setApplicationPositions() {
    });
 }
 function updateApplicationPositions() {
-   console.log("updating positions");
    let posStr = "";
    for (const application of Object.values(applications)) {
-      console.log(`Name: ${application.name}`);
       const id = application.id;
       const pos = application.position;
-      console.log(`pos: ${pos.x}x ${pos.y}y`);
       const x = Math.round(scalePX(pos.x, "vw"));
       const y = scalePX(pos.y - topHeight(), "vh");
       const vis = application.opened ? "1" : "0";
@@ -422,6 +416,45 @@ function updateApplicationPositions() {
    }
    posStr = posStr.substring(0, posStr.length - 1);
    setCookie("applicationPositions", posStr, 30);
+}
+
+function setOwnedApplications() {
+   let cookie = getCookie("owned-applications");
+   if (cookie === "") {
+      cookie = 0;
+   }
+
+   let binary = parseInt(cookie).toString(2);
+   
+   let applicationCount = 0;
+   for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
+      Object.values(applicationCategory).forEach(() => applicationCount++);
+   }
+   while (binary.length < applicationCount) {
+      binary = "0" + binary;
+   }
+
+   let num = 0;
+   for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications).reverse()) {
+      for (const application of Object.values(applicationCategory).reverse()) {
+         if (binary[num++] === "1") {
+            application.owned = true;
+         } else {
+            application.owned = false;
+         }
+      }
+   }
+}
+function updateOwnedApplications() {
+   let decimal = 0;
+   let num = 0;
+   for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
+      for (const application of Object.values(applicationCategory)) {
+         if (application.owned) decimal += Math.pow(2, num);
+         num++;
+      }
+   }
+   setCookie("owned-applications", decimal);
 }
 
 function setCookie(cname, cvalue, exdays) {

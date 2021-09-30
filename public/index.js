@@ -716,6 +716,7 @@ const Game = {
                   imgSrc: "images/win95/info.png",
                   tree: ""
                }
+               // Manager/Management?
             }
          },
          preferences: {
@@ -846,7 +847,129 @@ const Game = {
             }
          },
          "menu-application-shop": {
+            applications: {
+               lifestyle: {
+                  loremCounter: {
+                     name: "Lorem Counter",
+                     description: "The primary way of viewing your lorem.",
+                     img: "images/win95/win95-save.png",
+                     isDefaultApplication: true
+                  },
+                  achievementTracker: {
+                     name: "Achievement Tracker",
+                     description: "View your most significant achievements made here at Lorem Corp.",
+                     img: "images/win95/win95-save.png",
+                     isDefaultApplication: true
+                  },
+                  bigLoremCounter: {
+                     name: "Big Lorem Counter",
+                     description: "A bigger, better lorem counter.",
+                     img: "images/win95/win95-save.png",
+                     isDefaultApplication: false,
+                     price: 100
+                  },
+                  progressOverview: {
+                     name: "Progress Overview",
+                     description: "View your progress in relation to other employees.",
+                     img: "images/win95/win95-save.png",
+                     isDefaultApplication: false,
+                     price: 500
+                  }
+               },
+               utility: {
+                  antivirus: {
+                     name: "Antivirus",
+                     description: "Tired of unwanted popups appearing? Simply download this application to rid your computer of malware.",
+                     img: "images/win95/win95-save.png",
+                     isDefaultApplication: false,
+                     price: 500 
+                  },
+                  internEnhancementProgram: {
+                     name: "Intern Enhancement Program",
+                     description: "Optimise your filthy intern's production capabilities, through somewhat unethical means.",
+                     img: "images/win95/win95-save.png",
+                     isDefaultApplication: false,
+                     price: 1000
+                  }
+               }
+            },
+            canAffordApplication(application) {
+               const cost = application.price;
+               if (Game.lorem >= cost) 
+               {
+                  return true;
+               }
+               return false;
+            },
+            buyApplication(applicationName, application) {
+               if (application.owned || !this.canAffordApplication(application)) return;
 
+               Game.addLorem(-application.price);
+               application.owned = true;
+               this.updateAvailableApplications(applicationName);
+               updateOwnedApplications();
+            },
+            updateAvailableApplications: function(applicationName) {
+               for (const applicationCategory of Object.entries(this.applications)) {
+                  for (const application of Object.entries(applicationCategory[1])) {
+                     const obj = getElement(applicationName).querySelector("." + applicationCategory[0] + "-applications-container ." + application[0]);
+                     const btn = obj.querySelector("button");
+
+                     if (application[1].isDefaultApplication || application[1].owned) {
+                        btn.innerHTML = "Owned";
+                        btn.classList.add("dark");
+                        obj.classList.add("owned");
+                        obj.classList.remove("affordable");
+                     } else {
+                        btn.innerHTML = application[1].price;
+                        if (this.canAffordApplication(application[1])) {
+                           obj.classList.add("affordable");
+                        } else {
+                           obj.classList.remove("affordable");
+                        }
+                     }
+                  }
+               }
+            },
+            open: function(applicationName) {
+               for (const applicationCategory of Object.entries(this.applications)) {
+                  const container = getElement(applicationName).querySelector("." + applicationCategory[0] + "-applications-container");
+                  for (const application of Object.entries(applicationCategory[1])) {
+                     const obj = document.createElement("div");
+                     obj.className = "application-preview " + application[0];
+                     container.appendChild(obj);
+
+                     obj.innerHTML = `
+                     <div class="icon">
+                        <img src=${application[1].img} />   
+                     </div>
+                     <div class="details">
+                        <h3 class="name">${application[1].name}</h3>
+                        <p class="description">${application[1].description}</p>
+                     </div>
+                     <button class="button"></button>`;
+
+                     const btn = obj.querySelector("button");
+                     btn.addEventListener("click", () => this.buyApplication(applicationName, application[1]));
+                  }
+               }
+
+               this.updateAvailableApplications(applicationName);
+            },
+            close: function(applicationName) {
+               const application = getElement(applicationName);
+               application.classList.add("hidden");
+
+               for (const applicationCategory of Object.keys(this.applications)) {
+                  const container = getElement(applicationName).querySelector("." + applicationCategory + "-applications-container");
+                  while (container.children[0]) {
+                     container.children[0].remove();
+                  }
+               }
+            },
+            setup: function() {
+               getElement("menu-application-shop").querySelector(".title-bar img").addEventListener("click", () => this.close("menu-application-shop"));
+            }
          },
          isOpened: function(applicationName) {
             const application = getElement(applicationName);
@@ -987,6 +1110,24 @@ const Game = {
             parent.style.bottom = "-2px";
          }
       },
+      renderApplications: function() {
+         for (const applicationCategory of Object.values(this.applications["menu-application-shop"].applications)) {
+            for (const application of Object.entries(applicationCategory)) {
+               if (!application[1].owned) continue;
+
+               // Renders the applications on the taskbar.
+               taskbar.createApplication(application[1].name, "images/win95/program2.png");
+
+               // Renders the applications in the file system.
+               const name = slugCase(application[0]).replace("-", "_");
+               fileSystem.createFile({
+                  name: name,
+                  extension: "exe"
+               });
+            }
+         }
+
+      },
       hideMenuOnHoverOut: function() {
          getElement("start-menu").addEventListener("mouseleave", () => {
             this.hideStartMenu();
@@ -1015,27 +1156,37 @@ const Game = {
 
          // Sets up all the start menu applications
          this.applications.setupAll();
+
+         // Renders which applications are owned.
+         this.renderApplications();
       }
    }
 };
 
 const fileSystem = {
    files: [],
-   addApplication: function(application) {
-      const newFile = getElement('file-template').cloneNode(true);
-      newFile.id = "";
-      newFile.classList.remove('hidden');
-      newFile.querySelector('span').innerHTML = `${application.name}.app`;
-
-      getElement('file-system').appendChild(newFile);
-      console.log(application);
-   },
-   startApplications: function() {
-      for (const application of Object.values(applications)) {
-         this.addApplication(application);
-      }
+   createFile: function({name, extension, img = "images/win95/program.png"}) {
+      const file = getElement("file-template").cloneNode(true);
+      file.id = "";
+      file.classList.remove("hidden");
+      getElement("file-system").appendChild(file);
+      file.querySelector("img").src = img;
+      file.querySelector("p").innerHTML = `${name}.${extension}`;
    }
-}
+};
+
+const taskbar = {
+   createApplication: function(name, img) {
+      const application = document.createElement("div");
+      application.className = "taskbar-application"
+      getElement("taskbar").appendChild(application);
+
+      application.innerHTML = `
+      <img src="${img}"/>
+      <p>${name}</p>`;
+      return application;
+   }
+};
 
 const terminal = {
    displayed: false,
@@ -1046,7 +1197,7 @@ const terminal = {
             Object.entries(terminal.commands).forEach(command => {
                if (command[0] === 'help') return;
                terminal.writeLine(['- ', '#777'], [command[0], '#999']);
-            })
+            });
          }
       },
       hello: {
@@ -1455,8 +1606,8 @@ function instantiateClasses() {
    generateClasses("popups", popupNames);
    const semiPopupNames = ["chunkyMessage", "plagueOfChunky", "scourgeOfChunky", "wrathOfChunky", "hexOfChunky", "ad1", "ad2", "ad3", "ad4", "ad5", "loremWarning"];
    generateClasses("semiPopups", semiPopupNames);
-   const applicationNames = ["loremController", "loremCounter", 'eventViewer'];
-   generateClasses("applications", applicationNames);
+   // const applicationNames = ["loremController", "loremCounter", 'eventViewer'];
+   // generateClasses("applications", applicationNames);
 }
 
 function displayPoints(add) {
@@ -1603,7 +1754,7 @@ window.onload = () => {
 
    instantiateClasses();
 
-   setApplicationIDs();
+   // setApplicationIDs();
    LoadData();
 
    setupNavBar();
@@ -1649,10 +1800,6 @@ window.onload = () => {
          terminal.enterCommand(command);
       }
    });
-
-   // fileSystem.startApplications();
-
-   document.body.classList.add('ct-95');
 
    welcomeScreen.load();
    const received = getCookie('receivedLetters').split('')[0];
@@ -2133,7 +2280,7 @@ function dragElement(elmnt, start) {
    function closeDragElement() {
       // If the element is an application
       if (elmnt.classList.contains("popup-container-3")) {
-         updateApplicationPositions();
+         // updateApplicationPositions();
       }
       // stop moving when mouse button is released:
       document.onmouseup = null;

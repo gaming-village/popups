@@ -1,5 +1,5 @@
 @import url(./css/computer.css);
-@import url(./css/computer-nav-bar.css);
+@import url(./css/taskbar.css);
 @import url(./css/about.css);
 @import url(./css/black-market.css);
 @import url(./css/popups.css);
@@ -1128,4 +1128,51 @@ button.close-button {
    transform: translate(-50%, -50%);
    display: inline-block;
    white-space: nowrap;
+}
+
+#menu-application-shop .application-preview {
+   width: calc(100% - 1rem - 4px);
+   border-top-color: #ddd;
+   border-left-color: #ddd;
+   background-color: #b5b5b5;
+   border: 2px solid;
+   border-top-color: #fff;
+   border-right-color: #000;
+   border-bottom-color: #000;
+   border-left-color: #fff;
+   margin: 0 0 0.5rem 0.5rem;
+   display: flex;
+   position: relative;
+   align-items: center;
+}
+#menu-application-shop .application-preview.affordable {
+   background-color: #d5d5d5;
+}
+#menu-application-shop .application-preview.owned {
+   background-color: #dadada;
+   box-shadow: 4px 4px 0 0 #888;
+}
+#menu-application-shop .application-preview.owned button {
+   font-style: italic;
+}
+#menu-application-shop .application-preview *:not(button) {
+   margin: 0 5px;
+}
+#menu-application-shop .application-preview .icon img {
+   width: 32px;
+   margin: 0;
+}
+#menu-application-shop .application-preview:not(.owned):not(.affordable) .icon img {
+   opacity: 0.6;
+}
+#menu-application-shop .application-preview :is(.name, .description) {
+   margin: 0;
+}
+#menu-application-shop .application-preview button {
+   min-width: initial;
+   margin: 0;
+   padding: 0 0.5rem;
+   position: absolute;
+   right: 5px;
+   top: 5px;
 }
