@@ -918,12 +918,22 @@ const Game = {
                return false;
             },
             buyApplication(applicationName, application) {
-               if (application.owned || !this.canAffordApplication(application)) return;
+               if (application[1].owned || !this.canAffordApplication(application[1])) return;
 
-               Game.addLorem(-application.price);
-               application.owned = true;
+               Game.addLorem(-application[1].price);
+               application[1].owned = true;
                this.updateAvailableApplications(applicationName);
                updateOwnedApplications();
+
+               // Renders the application on the taskbar.
+               taskbar.createApplication(application[1].name, "images/win95/program2.png", "taskbar-" + application[0]);
+
+               // Renders the applications in the file system.
+               const name = slugCase(application[0]).replace("-", "_");
+               fileSystem.createFile({
+                  name: name,
+                  extension: "exe"
+               });
             },
             updateAvailableApplications: function(applicationName) {
                for (const applicationCategory of Object.entries(this.applications)) {
@@ -966,7 +976,7 @@ const Game = {
                      <button class="button"></button>`;
 
                      const btn = obj.querySelector("button");
-                     btn.addEventListener("click", () => this.buyApplication(applicationName, application[1]));
+                     btn.addEventListener("click", () => this.buyApplication(applicationName, application));
                   }
                }
 
