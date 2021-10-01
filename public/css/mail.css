@@ -293,7 +293,8 @@
 }
 
 #letter {
-   width: clamp(10%, 15rem, 50%);
+   min-width: 15rem;
+   max-width: 30%;
    max-height: 70%;
    font-size: 0.95rem;
    background-color: #bbb;
