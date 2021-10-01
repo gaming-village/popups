@@ -1,4 +1,4 @@
-#nav-about.new-mail {
+#nav-mail.new-mail {
    animation: redFlash 2s infinite;
 }
 @keyframes redFlash {
@@ -19,7 +19,7 @@
       box-shadow: none;
    }
 }
-#nav-about.new-mail::before {
+#nav-mail.new-mail::before {
    --size: 20px;
    content: "";
    width: var(--size);
@@ -30,19 +30,19 @@
    position: absolute;
 }
 
-#about {
+#mail {
    overflow: hidden;
    pointer-events: none;
 }
-.ct-95 #about {
+.ct-95 #mail {
    background-image: url(../images/backgrounds/windows-95-bg-3.jpeg);
    background-size: cover;
 }
-.ct-xp #about {
+.ct-xp #mail {
    background-color: #eee;
    box-shadow: 0 0 30px 10px #888 inset;
 }
-#about * {
+#mail * {
    pointer-events: all;
 }
 
@@ -292,7 +292,9 @@
    opacity: 0.85;
 }
 
-#mail {
+#letter {
+   width: clamp(10%, 15rem, 50%);
+   max-height: 70%;
    font-size: 0.95rem;
    background-color: #bbb;
    padding: 0.4rem;
@@ -303,25 +305,26 @@
    border-right-color: #111;
    position: absolute;
    top: 50%;
-   left: 75%;
+   right: 25%;
    z-index: 5;
-   transform: translate(-50%, -50%);
+   transform: translate(50%, -50%);
    pointer-events: all;
+   overflow: scroll;
 }
-.ct-95 #mail {
+.ct-95 #letter {
    font-family: "MS Sans Serif";
 }
-.ct-xp #mail {
+.ct-xp #letter {
    font-family: "Windows";
 }
-#mail .header {
+#letter .header {
    color: #fff;
    font-weight: bold;
    width: calc(100% - 0.6rem);
    background-color: rgb(7, 30, 129);
    padding: 0 0.3rem;
 }
-#mail .text-box {
+#letter .text-box {
    width: 100%;
    background-color: #fff;
    padding: 0 0.2rem;
@@ -331,7 +334,7 @@
    border-bottom-color: #ddd;
    border-right-color: #ddd;
 }
-#mail .rewards {
+#letter .rewards {
    width: calc(100% - 4px);
    margin-top: 0.5rem;
    border: 2px solid;
@@ -340,16 +343,16 @@
    border-bottom-color: #ddd;
    border-right-color: #ddd;
 }
-#mail .rewards h2 {
+#letter .rewards h2 {
    font-size: 1rem;
    margin: 0 0 0.5rem 0.2rem;
 }
-#mail .rewards button {
+#letter .rewards button {
    margin-top: 0;
    margin-left: 50%;
    transform: translateX(-50%);
 }
-#mail .rewards span {
+#letter .rewards span {
    margin: 0.2rem;
 }
 

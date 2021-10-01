@@ -172,6 +172,36 @@ const Game = {
          }
       }
    },
+   achievements: {
+      list: {
+         challenge: {
+
+         },
+         tiered: {
+            soItBegins: {
+               name: "So it begins...",
+               description: "Earn your first lorem.",
+               requirements: {
+                  lorem: 1
+               }
+            },
+            gettingSomewhere: {
+               name: "Getting somewhere",
+               description: "Earn 100 lorem.",
+               requirements: {
+                  lorem: 100
+               }
+            },
+            multiLevelMarketing: {
+               name: "Multi Level Marketing",
+               description: "Hire your first employee.",
+               requirements: {
+                  workers: 1
+               }
+            }
+         }
+      }
+   },
    loremQuota: {
       quota: 0,
       quotaIdx: -1,
@@ -474,7 +504,6 @@ const Game = {
          const cost = this.getWorkerCost(name, currentWorkerCount);
 
          if (Game.lorem >= cost) {
-            console.log(name);
             this.workers[name] += 1;
             Game.addLorem(-cost);
 
@@ -551,7 +580,6 @@ const Game = {
       set job(newJob) {
          this.job_internal = newJob;
          const jobData = loremCorpData.jobs[newJob];
-         console.log(jobData);
 
          getElement('welcome').innerHTML = jobData.welcomeText;
 
@@ -923,7 +951,6 @@ const Game = {
                }
             },
             updateBackgroundImage: function() {
-               console.log(this.currentBackgroundImage);
                const bg = Object.entries(this.backgroundImages)[this.currentBackgroundImage];
                const computer = getElement("computer");
                if (bg[1].type === "color") {
@@ -1583,7 +1610,7 @@ const terminal = {
       this.writeLine([`'${args[0]}'`, 'italic', '#aaa'], [' is not a command.', '#888']);
    },
    getPath: function(commandName) {
-      
+      // TODO: Get the path of a command (e.g. unlock [all]/name)
    },
    enterCommand: function(command) {
       getElement('pointer-content').innerHTML = '';
@@ -1715,7 +1742,7 @@ const welcomeScreen = {
    currentView: 'main',
    viewContent: {
       main: `<p>Welcome intern.</p>
-      <p>Congratulations on your entry into Lorem Corp. You have been supplied with a virtual Windows 95 machine on which to conduct your mining. Go to the About page for further information.</p>
+      <p>Congratulations on your entry into Lorem Corp. You have been supplied with a virtual Windows 95 machine on which to conduct your mining. Go to the Mail page for further information.</p>
       <p>You are dispensable and will be removed if you step out of line.</p>
       <p>- Lorem Corp.</p>`,
       about: `<p>Lorem Corp. is the leading corporation in the field of Lorem production.</p>
@@ -1843,11 +1870,11 @@ function updateLoremCounter(add) {
    }, 30);
 }
 
-const views = ['computer', 'about', 'black-market', 'corporate-overview', 'settings'];
+const views = ['computer', "mail", 'black-market', 'corporate-overview', 'settings'];
 const viewEvents = {
-   about: {
+   mail: {
       open: function() {
-         getElement('nav-about').classList.remove('new-mail');
+         getElement('nav-mail').classList.remove('new-mail');
 
          for (const alert of document.querySelectorAll('.letter-alert')) {
             alert.remove();
@@ -1942,7 +1969,6 @@ window.onload = () => {
 
    instantiateClasses();
 
-   // setApplicationIDs();
    LoadData();
 
    setupNavBar();
@@ -1954,7 +1980,6 @@ window.onload = () => {
       const idx = Object.keys(letters).indexOf('motivationalLetter');
       const opened = getCookie('openedRewards').split('')[idx];
       if (opened === "1") {
-         // Game.unlockLoremQuota();
          Game.loremQuota.unlock();
       }
    }
@@ -1972,7 +1997,7 @@ window.onload = () => {
 
    setupMailbox();
 
-   if (getCookie('misc').split("")[0] === '1') letters.invitation.rewards.reward();
+   if (getCookie('misc').split("")[0] === "1") letters.invitation.rewards.reward();
 
    // Terminal setup
    getElement('pointer-content').addEventListener('keydown', function(event) {
@@ -2219,7 +2244,7 @@ function setupMailbox() {
    hideLetter();
 
    getElement("mask").addEventListener("click", () => {
-      if (getElement("about").classList.contains("hidden")) return;
+      if (getElement("letter").classList.contains("hidden")) return;
       hideMailbox();
    });
 }
@@ -2247,13 +2272,13 @@ function openReward(letter) {
 
    letter.rewards.reward();
 
-   const claimAllButton = getElement("mail").querySelector('.paper-button');
+   const claimAllButton = getElement("letter").querySelector('.paper-button');
    claimAllButton.classList.add("opened");
 }
 function showLetter(letterObj) {
    const letter = letterObj[1];
 
-   const container = getElement("mail");
+   const container = getElement("letter");
    container.classList.remove('hidden');
 
    const letterEntry = getElement(`inbox-entry-${letterObj[0]}`);
@@ -2315,10 +2340,10 @@ function showLetter(letterObj) {
    }
 }
 function hideLetter() {
-   getElement("mail").classList.add('hidden');
+   getElement("letter").classList.add('hidden');
 }
 function switchLetterVisibility(letterObj, forceShow = false) {
-   if (getElement("mail").classList.contains("hidden") || forceShow) {
+   if (getElement("letter").classList.contains("hidden") || forceShow) {
       // Show the letter and update the letter text.
       showLetter(letterObj);
    } else {
@@ -2346,7 +2371,7 @@ function receiveLetter(letterName) {
    // applications.eventViewer.createEvent(['Received letter ', '#ccc'], [letterName, '#fff']);
 }
 function newLetterAlert(letter) {
-   getElement('nav-about').classList.add('new-mail');
+   getElement('nav-mail').classList.add('new-mail');
    const alertBox = new AlertBox({
       title: 'New letter received!',
       body: letter.title
@@ -2357,7 +2382,7 @@ function newLetterAlert(letter) {
    letterAlert.classList.add('letter-alert');
 
    letterAlert.addEventListener('click', () => {
-      switchView('about');
+      switchView("mail");
       showInbox();
    });
 }
@@ -2421,7 +2446,6 @@ function dragElement(elmnt, start) {
    start.onmousedown = dragMouseDown;
 
    function dragMouseDown(e) {
-      console.log(elmnt);
       e = e || window.event;
       e.preventDefault();
       path = e.path || (e.composedPath && e.composedPath());

@@ -26,11 +26,16 @@
    box-shadow: 10px 10px 0 0 rgba(0, 0, 0, 0.2);
 }
 .ct-95 #settings h1 {
+   color: #fff;
    font-size: 1.7rem;
    text-align: center;
+   background-color: rgb(7, 30, 129);
 }
 .ct-95 #settings h2 {
    font-size: 1.3rem;
+}
+#settings .main > div:not(:last-child) {
+   margin-bottom: 2rem;
 }
 #settings :is(h1, h2) {
    margin: 0.3rem 0;
