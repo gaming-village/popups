@@ -2259,7 +2259,7 @@ function receiveLetter(letterName) {
       });
    }
 
-   applications.eventViewer.createEvent(['Received letter ', '#ccc'], [letterName, '#fff']);
+   // applications.eventViewer.createEvent(['Received letter ', '#ccc'], [letterName, '#fff']);
 }
 function newLetterAlert(letter) {
    getElement('nav-about').classList.add('new-mail');
@@ -2487,7 +2487,7 @@ function dataSetup() {
       workerCookies = workerCookies.map(cookie => cookie[0]);
 
       // Reset cookies when the reset button is clicked
-      const otherCookies = ['lorem', 'packets', 'openedLetters', 'openedRewards', 'receivedLetters', 'unlockedMalware', 'unlockedShops', 'misc', 'settings', "application-positions"];
+      const otherCookies = ['lorem', 'packets', 'openedLetters', 'openedRewards', 'receivedLetters', 'unlockedMalware', 'unlockedShops', 'misc', 'settings', "application-positions", "owned-applications"];
       const allCookies = [...workerCookies, ...otherCookies];
       // Delete cookies
       allCookies.forEach(cookie => document.cookie = cookie +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;');

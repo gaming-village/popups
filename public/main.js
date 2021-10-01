@@ -413,7 +413,17 @@ function setApplicationPositions() {
    }
 }
 function updateApplicationPositions() {
-   const previousCookie = getCookie("application-positions");
+   let previousCookie = getCookie("application-positions");
+   if (previousCookie === "") {
+      let applicationCount = 0;
+      for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
+         Object.keys(applicationCategory).forEach(() => applicationCount++);
+      }
+      console.log(applicationCount);
+      previousCookie = "0x0x0,".repeat(applicationCount);
+      previousCookie = previousCookie.substring(0, previousCookie.length - 1);
+   }
+
    let newCookie = "";
    let i = 0;
    for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
