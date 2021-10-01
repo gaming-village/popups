@@ -3,22 +3,11 @@ const semiPopups = {};
 const applications = {
    "lorem-counter": {
       open: true,
-      // setup: function() {
-      //    getElement("lorem-counter").querySelector(".popup-title .minimize-button")
-      // }
    },
    "achievement-tracker": {
       open: false
    }
 };
-
-// const setApplicationIDs = () => {
-//    let id = 1;
-//    for (const application of Object.values(applications)) {
-//       application.id = id;
-//       id++;
-//    }
-// };
 
 const Game = {
    currentView: "",
@@ -165,11 +154,6 @@ const Game = {
                      updateSettingsCookie();
                   });
                } else if (setting.type === "select") {
-                  // console.log(setting.value);
-                  // if (setting.value === null) {
-                  //    console.log(setting);
-                  //    settingsContainer.querySelector("select").selectedIndex = setting.value;
-                  // }
                   settingsContainer.querySelector("select").selectedIndex = setting.value;
 
                   const input = settingsContainer.querySelector("select");
@@ -186,16 +170,6 @@ const Game = {
                }
             }
          }
-         
-         // for (const settingsType of Object.values(Game.settings.list)) {
-         //    for (const setting of Object.values(settingsType)) {
-         //       if (typeof setting === "string") continue;
-      
-         //       setting.value = dictionary[setting.id];
-         //    }
-         // }
-
-         // Game.settings.updateSettingsValue(container, setting, value)
       }
    },
    loremQuota: {
@@ -750,7 +724,8 @@ const Game = {
 
       Game.lorem += add;
       Game.stats.totalLoremMined += add;
-      Game.updateLorem(formatFloat(add));
+      // Game.updateLorem(formatFloat(add));
+      Game.updateLorem(formatNum(add));
    },
    multLorem: (mult, force = false) => {
       if (semiPopups.scourgeOfChunky.activated && !force) return;
@@ -761,7 +736,7 @@ const Game = {
 
       // Find the difference in lorem.
       const difference = Game.lorem - loremBefore;
-      Game.updateLorem(formatFloat(difference));
+      Game.updateLorem(formatNum(difference));
    },
    updateLorem: (add) => {
       createMiningEntry(add);
@@ -1822,7 +1797,8 @@ function instantiateClasses() {
 }
 
 function displayPoints(add) {
-   const loremCount = formatFloat(Game.lorem);
+   // const loremCount = formatFloat(Game.lorem);
+   const loremCount = formatNum(Game.lorem);
    
    // Update all listed element's text using their ID's
    const loremElements = ['total-lorem-mined', 'lorem-count', 'black-market-lorem-transfer-amount'];
@@ -1986,8 +1962,6 @@ window.onload = () => {
    Game.setup.setupPackets();
    Game.setup.setupBlackMarket();
    displayPoints(0);
-
-   // dragElement(getElement("lorem-counter"), getElement("point-counter-title"));
 
    changeViewHeights();
    window.addEventListener('resize', () => changeViewHeights());

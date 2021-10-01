@@ -107,8 +107,18 @@ function randomiseArray(arr) {
 function timer(ms) {
    return new Promise(res => setTimeout(res, ms));
 }
-const numToWords = num => {
+const numToWords = (num, dpp) => {
    if (num === 0) return "zero";
+
+   // If the number is a float
+   let decimalPlaces = null;
+   if (num % 1 !== 0) {
+      const parts = num.toString().split(".");
+      num = Number(parts[0]);
+      const exp = Math.pow(10, dpp);
+      decimalPlaces = Math.round((Number("0." + parts[1]) + Number.EPSILON) * exp) / exp;
+      decimalPlaces = decimalPlaces.toString().substring(2, decimalPlaces.toString().length);
+   }
 
    function convertToSections(num) {
       let wordSections = [];
@@ -125,7 +135,7 @@ const numToWords = num => {
    const wordSections = convertToSections(num);
 
    const bigSuffixes = ["thousand", "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion", "nonillion", "decillion"];
-   const ones = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+   const units = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
    const teens = ["eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
    const tens = ["ten", "twenty", "thirty", "fourty", "fifty", "sixty", "seventy", "eighty", "ninety"];
 
@@ -137,7 +147,7 @@ const numToWords = num => {
 
       let newSection = "";
       if (parts[0] !== "0") {
-         newSection += ones[parseInt(parts[0]) - 1] + " hundred ";
+         newSection += units[parseInt(parts[0]) - 1] + " hundred ";
          if (parts[1] !== "0" && parts[2] !== "0") newSection += "and ";
       }
       if (parseInt(parts[1]) === 1 && parseInt(parts[2]) > 0) {
@@ -147,7 +157,7 @@ const numToWords = num => {
             newSection += tens[parseInt(parts[1]) - 1] + " ";
          }
          if (parts[2] !== "0") {
-            newSection += ones[parseInt(parts[2]) - 1] + " ";
+            newSection += units[parseInt(parts[2]) - 1] + " ";
          }
       }
 
@@ -159,37 +169,53 @@ const numToWords = num => {
       result += newSection;
       i++;
    }
+
+   if (decimalPlaces !== null && decimalPlaces !== 0) {
+      result += "point ";
+      for (const decimal of decimalPlaces.toString().split("")) {
+         console.log(decimal);
+         if (Number(decimal) === 0) {
+            result += "zero ";
+         } else { 
+            result += units[Number(decimal) - 1] + " ";
+         }
+      }
+   }
+
    return result;
 };
-const numToSuffix = num => {
+const numToSuffix = (num, dpp) => {
    const bigSuffixes = ["million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion", "nonillion", "decillion"];
 
-   const n = Math.floor((num.toString().length - 1) / 3);
+   const n = Math.floor((Math.floor(num).toString().length - 1) / 3);
    if (n >= 2) {
       const suffix = bigSuffixes[n - 2];
       const newNum = num / Math.pow(1000, n);
-      const roundedNum = Math.round((newNum + Number.EPSILON) * 100) / 100;
+      const exp = Math.pow(10, dpp);
+      const roundedNum = Math.round((newNum + Number.EPSILON) * exp) / exp;
       return `${roundedNum} ${suffix}`;
    } else {
       return num.toLocaleString();
    }
 };
-const numToLetter = num => {
-   const letters = ["k", "m", "b", "t", "q", "Q", "s", "S", "o", "n", "d"];
+const numToLetter = (num, dpp) => {
+   const letters = ["m", "b", "t", "q", "Q", "s", "S", "o", "n", "d"];
 
-   const n = Math.floor((num.toString().length - 1) / 3);
+   const n = Math.floor((Math.floor(num).toString().length - 1) / 3);
    if (n >= 2) {
       const suffix = letters[n - 2];
       const newNum = num / Math.pow(1000, n);
-      const roundedNum = Math.round((newNum + Number.EPSILON) * 100) / 100;
+      const exp = Math.pow(10, dpp);
+      const roundedNum = Math.round((newNum + Number.EPSILON) * exp) / exp;
       return roundedNum + suffix;
    } else {
       return num.toLocaleString();
    }
 };
 function formatNum(num) {
-   const dpp = 2;
-   const displayType = 2;
+   const dpp = Number(Game.settings.list.numerals.decimalPointPrecision.value);
+   const displayType = Number(Game.settings.list.numerals.displayType.value) + 1;
+
    /*
     * (1) Standard: 1.23 million
     * (2) Letter: 1.23m
@@ -197,19 +223,20 @@ function formatNum(num) {
     * (4) Decimal: 1,230,000
     * (5) Words: One million, two hundred and thirty thousand
    */
+
   switch (displayType) {
       case 1:
-         return numToSuffix(num);
+         return numToSuffix(num, dpp);
       case 2:
-         return numToLetter(num);
+         return numToLetter(num, dpp);
       case 3:
          return num.toExponential(dpp);
       case 4:
          return num.toLocaleString();
       case 5:
-         return numToWords(num);
+         return numToWords(num, dpp);
       default:
-         console.warn(`Unknown format type: "${num}".`);
+         console.warn(`Unknown display type: "${displayType}".`);
          return null;
   }
 }
