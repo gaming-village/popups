@@ -28,64 +28,174 @@ const Game = {
       progressType: 2,
       animatedBGs: false,
       rainLetters: true,
+      list: {
+         audio: {
+            name: "Audio",
+            masterVolume: {
+               name: "Master Volume",
+               id: "mv",
+               value: null,
+               type: "range",
+               min: 0,
+               max: 100,
+               defaultValue: 100,
+               additionalText: "[VALUE]%"
+            }
+         },
+         numerals: {
+            name: "Numerals",
+            displayType: {
+               name: "Display Type",
+               id: "dt",
+               value: null,
+               type: "select",
+               options: ["Standard", "Letter", "Scientific Notation", "Decimal", "Words"],
+               defaultValue: "Standard"
+            },
+            decimalPointPrecision: {
+               name: "Decimal Point Precision",
+               id: "dpp",
+               value: null,
+               type: "range",
+               min: 0,
+               max: 9,
+               defaultValue: 2
+            },
+            progressDisplay: {
+               name: "Progress Display",
+               id: "pd",
+               value: null,
+               type: "select",
+               options: ["Percentage", "Current/Total", "Current/Total (Percentage)"],
+               defaultValue: "Percentage"
+            }
+         },
+         graphics: {
+            name: "Graphics",
+            animatedBackgrounds: {
+               name: "Animated Backgrounds",
+               id: "ab",
+               value: null,
+               type: "checkbox",
+               defaultValue: false
+            }
+         }
+      },
       getContainerElems: function(containerID) {
          return [
             getElement(containerID),
             getElement(containerID).querySelector(".selected-val")
          ];
       },
+      updateSettingsValue: function(container, setting, newValue) {
+         setting.value = newValue;
+         container.querySelector(".selected-val").innerHTML = this.getSelectedValue(setting, newValue);
+      },
+      getSelectedValue: function(setting, value) {
+         let newSelectedValue = "";
+
+         if (setting.type === "range") {
+            newSelectedValue = value;
+         } else if (setting.type === "select") {
+            newSelectedValue = setting.options[value];
+         } else if (setting.type === "checkbox") {
+            newSelectedValue = value ? "On" : "Off";
+         } 
+
+         if (setting.hasOwnProperty("additionalText")) {
+            newSelectedValue = setting.additionalText.replace("[VALUE]", newSelectedValue)
+         }
+
+         return newSelectedValue;
+      },
+      getSelectIndex: function(setting) {
+         let value = setting.value;
+         if (value === null) value = setting.defaultValue;
+         return setting.options.indexOf(value);
+      },
       setup: function() {
-         {
-            const [ container, selectedVal ] = this.getContainerElems('settings-dpp');
-            const dppSlider = container.querySelector('input');
-            dppSlider.addEventListener('input', () => {
-               this.dpp = parseInt(dppSlider.value);
-               selectedVal.innerHTML = dppSlider.value;
-               updateSettingsCookie();
-            });
-            dppSlider.value = this.dpp;
-            selectedVal.innerHTML = this.dpp;
-         }
-         {
-            const [ container, selectedVal ] = this.getContainerElems('settings-progress-type');
-            const progressTypeBox = container.querySelector('select');
-            const progressTypes = ['Percentage', 'Current/Total', 'Current/Total (Percentage)'];
-            progressTypeBox.addEventListener('input', () => {
-               this.progressType = progressTypes.indexOf(progressTypeBox.value) + 1;
-               selectedVal.innerHTML = progressTypeBox.value;
-               updateSettingsCookie();
-            });
-            progressTypeBox.value = progressTypes[this.progressType - 1];
-            selectedVal.innerHTML = progressTypes[this.progressType - 1];
-         }
-         {
-            const [ container, selectedVal ] = this.getContainerElems('settings-animated-bgs');
-            const animatedBGBox = container.querySelector('input');
-            animatedBGBox.addEventListener('click', () => {
-               this.animatedBGs = animatedBGBox.checked;
-               selectedVal.innerHTML = animatedBGBox.checked ? 'On' : 'Off';
-               if (animatedBGBox.checked) {
-                  getElement('black-market-stars').classList.remove('hidden');
-               } else {
-                  getElement('black-market-stars').classList.add('hidden');
+         const settings = getElement("settings").querySelector(".main");
+         for (const settingsType of Object.values(this.list)) {
+            const typeContainer = document.createElement("div");
+            settings.appendChild(typeContainer);
+            
+            const header = document.createElement("h2");
+            header.innerHTML = settingsType.name;
+            typeContainer.appendChild(header);
+
+            for (const setting of Object.values(settingsType)) {
+               if (typeof setting === "string") continue;
+
+               let value = setting.value;
+               if (value === null) {
+                  value = setting.options[setting.defaultValue];
                }
-               updateSettingsCookie();
-            });
-            animatedBGBox.checked = this.animatedBGs;
-            selectedVal.innerHTML = this.animatedBGs ? 'On' : 'Off';
-            if (!this.animatedBGs) getElement('black-market-stars').classList.add('hidden');
+
+               let inputType;
+               if (setting.type === "checkbox") {
+                  inputType = `
+                  <input type="checkbox" ${value ? "checked" : ""} />`;
+               } else if (setting.type === "select") {
+                  inputType = `<select>`;
+                  for (const option of setting.options) {
+                     inputType += `<option>${option}</option>`;
+                  }
+                  inputType += `</select>`;
+               } else if (setting.type === "range") {
+                  inputType = `
+                  <input type="range" min="${setting.min}" max="${setting.max}" value="${value}" />`;
+               }
+
+               selectedVal = this.getSelectedValue(setting, value);
+               
+               const settingsContainer = document.createElement("div");
+               settingsContainer.className = "section";
+               settingsContainer.innerHTML = `
+               <div class="cf">
+                  <p class="label">${setting.name}</p>
+                  <p class="selected-val">${selectedVal}</p>
+               </div>
+               ${inputType}`;
+               typeContainer.appendChild(settingsContainer);
+
+               if (setting.type === "checkbox") {
+                  const input = settingsContainer.querySelector("input");
+                  input.addEventListener("click", () => {
+                     this.updateSettingsValue(settingsContainer, setting, input.checked);
+                     updateSettingsCookie();
+                  });
+               } else if (setting.type === "select") {
+                  // console.log(setting.value);
+                  // if (setting.value === null) {
+                  //    console.log(setting);
+                  //    settingsContainer.querySelector("select").selectedIndex = setting.value;
+                  // }
+                  settingsContainer.querySelector("select").selectedIndex = setting.value;
+
+                  const input = settingsContainer.querySelector("select");
+                  input.addEventListener("change", () => {
+                     this.updateSettingsValue(settingsContainer, setting, setting.options.indexOf(input.value));
+                     updateSettingsCookie();
+                  });
+               } else if (setting.type === "range") {
+                  const input = settingsContainer.querySelector("input");
+                  input.addEventListener("input", () => {
+                     this.updateSettingsValue(settingsContainer, setting, Number(input.value));
+                     updateSettingsCookie();
+                  });
+               }
+            }
          }
-         {
-            const [ container, selectedVal ] = this.getContainerElems('settings-rain-letters');
-            const rainLettersBox = container.querySelector('input');
-            rainLettersBox.addEventListener('click', () => {
-               this.rainLetters = rainLettersBox.checked;
-               selectedVal.innerHTML = rainLettersBox.checked ? 'On' : 'Off';
-               updateSettingsCookie();
-            });
-            rainLettersBox.checked = this.rainLetters;
-            selectedVal.innerHTML = this.rainLetters ? 'On' : 'Off';
-         }
+         
+         // for (const settingsType of Object.values(Game.settings.list)) {
+         //    for (const setting of Object.values(settingsType)) {
+         //       if (typeof setting === "string") continue;
+      
+         //       setting.value = dictionary[setting.id];
+         //    }
+         // }
+
+         // Game.settings.updateSettingsValue(container, setting, value)
       }
    },
    loremQuota: {
@@ -2471,8 +2581,7 @@ function summonPopupSetup() {
 
    // Add the summon all button functionality.
    const summonAllButton = getElement("summon-popup-all");
-   summonAllButton.addEventListener("click", () => { 
-      console.log('hiding');
+   summonAllButton.addEventListener("click", () => {
       Object.values(popups).forEach(popup => popup.show(false, true));
    });
 }
@@ -2487,7 +2596,7 @@ function dataSetup() {
       workerCookies = workerCookies.map(cookie => cookie[0]);
 
       // Reset cookies when the reset button is clicked
-      const otherCookies = ['lorem', 'packets', 'openedLetters', 'openedRewards', 'receivedLetters', 'unlockedMalware', 'unlockedShops', 'misc', 'settings', "application-positions", "owned-applications"];
+      const otherCookies = ['lorem', 'packets', 'openedLetters', 'openedRewards', 'receivedLetters', 'unlockedMalware', 'unlockedShops', 'misc', 'settings', "applicationPositions", "ownedApplications"];
       const allCookies = [...workerCookies, ...otherCookies];
       // Delete cookies
       allCookies.forEach(cookie => document.cookie = cookie +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;');

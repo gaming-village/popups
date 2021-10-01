@@ -57,11 +57,11 @@
    transform: translateX(-50%);
    box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.2);
 }
-#settings .main .section .label {
+#settings .section .label {
    float: left;
    margin: 0;
 }
-#settings .main .section .selected-val {
+#settings .section .selected-val {
    float: right;
    margin: 0;
 }

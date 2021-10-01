@@ -1,18 +1,29 @@
-/*
-GENERAL HELPER FUNCTIONS
-*/
-function getElement(elementName) {
-   const element = document.querySelector(`#${elementName}`);
+/**
+ * Gets an HTML element using an ID.
+ * @param {string} id The ID of the element.
+ * @returns {HTMLElement} The element with the ID.
+ */
+function getElement(id) {
+   const element = document.querySelector(`#${id}`);
    return element;
 }
-function formatFloat(float, dp = Game.settings.dpp) {
-   const mult = Math.pow(10, dp);
-   const formattedFloat = Math.round((float + Number.EPSILON) * mult) / mult;
+
+/**
+ * Formats a number to a given number of decimal point places.
+ * @param {Number} float The number to be formatted.
+ * @param {Number} dpp The decimal point places for the formatted number to contain.
+ * @returns {Number} The number rounded to the supplied number of decimal point places.
+ */
+function formatFloat(float, dpp = Game.settings.dpp) {
+   const significantFigures = Math.pow(10, dpp);
+   const formattedFloat = Math.round((float + Number.EPSILON) * significantFigures) / significantFigures;
    return formattedFloat;
 }
-function formatProg(current, goal, preventOverflow = false) {
+
+
+function formatProg(current, target, preventOverflow = false) {
    const progressType = Game.settings.progressType;
-   let progress = current / goal * 100;
+   let progress = current / target * 100;
    if (preventOverflow) progress = Math.min(progress, 100);
 
    let type;
@@ -28,11 +39,11 @@ function formatProg(current, goal, preventOverflow = false) {
       case 1:
          return type + formatFloat(progress) + "%</span>";
       case 2:
-         return type + formatFloat(current) + "</span>/" + formatFloat(goal);
+         return type + formatFloat(current) + "</span>/" + formatFloat(target);
       case 3:
-         return formatFloat(current) + "/" + formatFloat(goal) + type + " (" + formatFloat(progress) + "%)</span>";
+         return formatFloat(current) + "/" + formatFloat(target) + type + " (" + formatFloat(progress) + "%)</span>";
       default:
-         console.warn(`WARNING! Progress type ${progressType} not found.`);
+         console.warn(`WARNING! Progress type "${progressType}"" not found.`);
    }
 }
 function randomInt(min, max, inclusive = false) {
@@ -96,10 +107,116 @@ function randomiseArray(arr) {
 function timer(ms) {
    return new Promise(res => setTimeout(res, ms));
 }
+const numToWords = num => {
+   if (num === 0) return "zero";
+
+   function convertToSections(num) {
+      let wordSections = [];
+      num.toString().split("").reverse().forEach((letter, idx) => {
+         if (idx % 3 === 0) {
+            wordSections.unshift(letter);
+         } else {
+            wordSections[0] = letter + wordSections[0];
+         }
+      });
+      return wordSections;
+   }
+
+   const wordSections = convertToSections(num);
+
+   const bigSuffixes = ["thousand", "million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion", "nonillion", "decillion"];
+   const ones = ["one", "two", "three", "four", "five", "six", "seven", "eight", "nine"];
+   const teens = ["eleven", "twelve", "thirteen", "fourteen", "fifteen", "sixteen", "seventeen", "eighteen", "nineteen"];
+   const tens = ["ten", "twenty", "thirty", "fourty", "fifty", "sixty", "seventy", "eighty", "ninety"];
+
+   let result = "";
+   let i = 0;
+   for (let section of wordSections) {
+      while (section.length < 3) section = "0" + section;
+      const parts = section.split("");
+
+      let newSection = "";
+      if (parts[0] !== "0") {
+         newSection += ones[parseInt(parts[0]) - 1] + " hundred ";
+         if (parts[1] !== "0" && parts[2] !== "0") newSection += "and ";
+      }
+      if (parseInt(parts[1]) === 1 && parseInt(parts[2]) > 0) {
+         newSection += teens[parseInt(parts[2]) - 1] + " ";
+      } else {
+         if (parts[1] !== "0") {
+            newSection += tens[parseInt(parts[1]) - 1] + " ";
+         }
+         if (parts[2] !== "0") {
+            newSection += ones[parseInt(parts[2]) - 1] + " ";
+         }
+      }
+
+      const n = wordSections.length - i - 2;
+      if (n >= 0) {
+         newSection += bigSuffixes[n] + ", ";
+      }
+
+      result += newSection;
+      i++;
+   }
+   return result;
+};
+const numToSuffix = num => {
+   const bigSuffixes = ["million", "billion", "trillion", "quadrillion", "quintillion", "sextillion", "septillion", "octillion", "nonillion", "decillion"];
+
+   const n = Math.floor((num.toString().length - 1) / 3);
+   if (n >= 2) {
+      const suffix = bigSuffixes[n - 2];
+      const newNum = num / Math.pow(1000, n);
+      const roundedNum = Math.round((newNum + Number.EPSILON) * 100) / 100;
+      return `${roundedNum} ${suffix}`;
+   } else {
+      return num.toLocaleString();
+   }
+};
+const numToLetter = num => {
+   const letters = ["k", "m", "b", "t", "q", "Q", "s", "S", "o", "n", "d"];
+
+   const n = Math.floor((num.toString().length - 1) / 3);
+   if (n >= 2) {
+      const suffix = letters[n - 2];
+      const newNum = num / Math.pow(1000, n);
+      const roundedNum = Math.round((newNum + Number.EPSILON) * 100) / 100;
+      return roundedNum + suffix;
+   } else {
+      return num.toLocaleString();
+   }
+};
+function formatNum(num) {
+   const dpp = 2;
+   const displayType = 2;
+   /*
+    * (1) Standard: 1.23 million
+    * (2) Letter: 1.23m
+    * (3) Scientific Notation: 1.23e6
+    * (4) Decimal: 1,230,000
+    * (5) Words: One million, two hundred and thirty thousand
+   */
+  switch (displayType) {
+      case 1:
+         return numToSuffix(num);
+      case 2:
+         return numToLetter(num);
+      case 3:
+         return num.toExponential(dpp);
+      case 4:
+         return num.toLocaleString();
+      case 5:
+         return numToWords(num);
+      default:
+         console.warn(`Unknown format type: "${num}".`);
+         return null;
+  }
+}
 
 
 
-/***** SOUNDS  *****/
+/*****  SOUNDS  *****/
 class Sound {
    constructor({ path, volume = 1 }) {
       this.audio = new Audio(path);
@@ -197,56 +314,76 @@ const LoadData = () => {
    }
 }
 
-const getSettingsCookie = () => {
-   const dpp = Game.settings.dpp.toString();
-   const progressType = Game.settings.progressType.toString();
-   const animatedBGs = Game.settings.animatedBGs ? '1' : '0';
-   const rainLetters = Game.settings.rainLetters ? '1' : '0';
-   return dpp + progressType + animatedBGs + rainLetters;
-}
 function setSettingsCookie() {
-   if (typeof Game === 'undefined') return;
+   let cookie = getCookie("settings");
+   console.log(cookie);
+   if (cookie === "") {
+      for (const settingsType of Object.values(Game.settings.list)) {
+         for (const setting of Object.values(settingsType)) {
+            if (typeof setting === "string") continue;
 
-   // Char 1: DPP (0-9) decimal
-   // Char 2: Progress type (1-3)
-   // Char 3: Animated BGs (0/1)
-   // Char 4: Rain letters (0/1)
-
-   let settingsCookie = getCookie('settings');
-   if (settingsCookie === "") {
-      settingsCookie = getSettingsCookie();
-      setCookie('settings', settingsCookie);
-      return;
+            let segment = `${setting.id}:`;
+            if (setting.type === "range") {
+               segment += setting.defaultValue;
+            } else if (setting.type === "select") {
+               segment += setting.defaultValue;
+               // segment += Game.settings.getSelectIndex(setting);
+            } else if (setting.type === "checkbox") {
+               segment += setting.defaultValue ? "1" : "0";
+            }
+            cookie += segment + ",";
+         }
+      }
+      cookie = cookie.substring(0, cookie.length - 1);
    }
 
-   settingsCookie.split('').forEach((char, idx) => {
-      switch (idx + 1) {
-         case 1:
-            Game.settings.dpp = parseInt(char);
-            break;
-         case 2:
-            Game.settings.progressType = parseInt(char);
-            break;
-         case 3:
-            const animatedBGs = char === '1' ? true : false;
-            Game.settings.animatedBGs = animatedBGs;
-            break;
-         case 4:
-            const rainLetters = char === '1' ? true : false;
-            Game.settings.rainLetters = rainLetters;
-            break;
-         default:
-            console.warn(`WARNING! Char ${idx + 1} not found in the settings cookie.`);
+   // Convert the cookie to a dictionary
+   // e.g. ["mv:100", "dt:0", "dpp:2"] => {mv: "100", dt: "0", dpp: "2"}
+   // This makes it far easier and quicker to get the values from the cookie
+   const dictionary = cookie.split(",").reduce((previousValue, currentValue) => {
+      const parts = currentValue.split(":");
+      return {...previousValue, [parts[0]]: parts[1]};
+   }, {})
+   
+   for (const settingsType of Object.values(Game.settings.list)) {
+      for (const setting of Object.values(settingsType)) {
+         if (typeof setting === "string") continue;
+
+         if (setting.type === "select") {
+            // setting.value = setting.options[dictionary[setting.id]];
+            setting.value = dictionary[setting.id];
+         } else if (setting.type === "range") {
+            setting.value = dictionary[setting.id];
+         } else if (setting.type === "checkbox") {
+            setting.value = dictionary[setting.id] === 1 ? true : false;
+         }
       }
-   });
+   }
 }
 function updateSettingsCookie() {
-   setCookie('settings', getSettingsCookie());
+   let newCookie = ""
+   for (const settingsType of Object.values(Game.settings.list)) {
+      for (const setting of Object.values(settingsType)) {
+         if (typeof setting === "string") continue;
+
+         newCookie += setting.id + ":";
+         if (setting.type === "checkbox") {
+            newCookie += setting.value ? "1" : "0";
+         } else if (setting.type === "select") {
+            newCookie += setting.value
+            // newCookie += Game.settings.getSelectIndex(setting);
+         } else if (setting.type === "range") {
+            newCookie += setting.value;
+         }
+         newCookie += ",";
+      }
+   }
+   newCookie = newCookie.substring(0, newCookie.length - 1);
+   setCookie("settings", newCookie);
 }
 
 
 function setMiscCookie() {
-   console.log("u?");
    if (typeof Game === 'undefined') return;
 
    // Bit 1: Black market (binary) (0/1 unlocked/locked)
@@ -374,7 +511,7 @@ function updateOpenedRewardsCookie() {
 }
 
 function setApplicationPositions() {
-   let cookie = getCookie("application-positions");
+   let cookie = getCookie("applicationPositions");
    if (cookie === "") {
       for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
          for (const applicationName of Object.keys(applicationCategory)) {
@@ -413,13 +550,12 @@ function setApplicationPositions() {
    }
 }
 function updateApplicationPositions() {
-   let previousCookie = getCookie("application-positions");
+   let previousCookie = getCookie("applicationPositions");
    if (previousCookie === "") {
       let applicationCount = 0;
       for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
          Object.keys(applicationCategory).forEach(() => applicationCount++);
       }
-      console.log(applicationCount);
       previousCookie = "0x0x0,".repeat(applicationCount);
       previousCookie = previousCookie.substring(0, previousCookie.length - 1);
    }
@@ -455,11 +591,11 @@ function updateApplicationPositions() {
       }
    }
    newCookie = newCookie.substring(0, newCookie.length - 1);
-   setCookie("application-positions", newCookie);
+   setCookie("applicationPositions", newCookie);
 }
 
 function setOwnedApplications() {
-   let cookie = getCookie("owned-applications");
+   let cookie = getCookie("ownedApplications");
    if (cookie === "") {
       cookie = 0;
       let num = 0;
@@ -501,7 +637,7 @@ function updateOwnedApplications() {
          num++;
       }
    }
-   setCookie("owned-applications", decimal);
+   setCookie("ownedApplications", decimal);
 }
 
 function setCookie(cname, cvalue, exdays) {
