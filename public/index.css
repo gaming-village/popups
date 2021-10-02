@@ -8,7 +8,8 @@
 @import url(./css/settings.css);
 
 @import url(./fonts/windows-font.css);
-@import url(./fonts/ms-sans-serif-font.css);
+/* @import url(./fonts/ms-sans-serif/ms-sans-serif.css); */
+@import url(./fonts/ms-sans-serif/ms-sans-serif.css);
 
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700;900&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap');
@@ -975,6 +976,9 @@ button.close-button {
 .xp-font {
    font-family: "Windows";
 }
+.ct-95 .xp-font {
+   font-family: "MS Sans Serif";
+}
 
 .rainbow {
    padding: 0.5rem;
@@ -1076,6 +1080,7 @@ button.close-button {
 .windows-application .title-bar {
    color: #fff;
    background-color: rgb(7, 30, 129);
+   padding: 0.2rem 0;
    font-weight: bold;
    text-align: center;
    position: relative;
@@ -1092,8 +1097,21 @@ button.close-button {
    font-size: 1.2rem;
    margin: 1rem 2px 0.5rem;
 }
+.windows-application h2 {
+   font-size: 1.4rem;
+   margin: 1rem 0 0.5rem;
+}
+.windows-application h3 {
+   text-align: center;
+   margin: 0.5rem 0 0.1rem;
+}
 .windows-application p {
    margin: 1rem 2px;
+}
+.windows-application .caption {
+   color: #222;
+   font-style: italic;
+   margin: 0 0 0.3rem;
 }
 
 #menu-preferences .bg-image-container {

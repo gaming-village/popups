@@ -1,7 +1,7 @@
 @import url(./general.css);
 
 @import url('https://fonts.googleapis.com/css2?family=Abril+Fatface&display=swap');
-@import url(../fonts/ms-sans-serif-font.css);
+@import url(../fonts/ms-sans-serif/ms-sans-serif.css);
 
 body {
    background-color: #333;

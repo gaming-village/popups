@@ -79,8 +79,8 @@ function randElem(arr) {
    return elem;
 }
 function capitalize(str) {
-   const first = str.split('')[0].toUpperCase();
-   const rest = str.substring(1, str.split('').length);
+   const first = str.split("")[0].toUpperCase();
+   const rest = str.substring(1, str.length);
    return first + rest;
 }
 function plural(str) {
@@ -173,7 +173,6 @@ const numToWords = (num, dpp) => {
    if (decimalPlaces !== null && decimalPlaces !== 0) {
       result += "point ";
       for (const decimal of decimalPlaces.toString().split("")) {
-         console.log(decimal);
          if (Number(decimal) === 0) {
             result += "zero ";
          } else { 
@@ -553,7 +552,7 @@ function setApplicationPositions() {
    const applicationPositions = cookie.split(",");
    let i = 0;
    for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
-      for (const {objID} of Object.values(applicationCategory)) {
+      for (const { objID } of Object.values(applicationCategory)) {
          if (objID === "") return;
 
          const applicationPosition = applicationPositions[i];
@@ -566,13 +565,7 @@ function setApplicationPositions() {
          obj.style.top = `${y}px`;
          
          const isVisible = parseInt(parts[2]);
-         if (isVisible) {
-            obj.classList.remove("hidden");
-            applications[objID].open = true;
-         } else {
-            obj.classList.add("hidden");
-            applications[objID].open = false;
-         }
+         applications[objID].isOpened = isVisible;
       }
    }
 }
@@ -610,7 +603,7 @@ function updateApplicationPositions() {
          }
          
          const applicationData = applications[objID];
-         const isVisible = applicationData.open ? "1" : "0";
+         const isVisible = applicationData.isOpened ? "1" : "0";
          const x = Math.max(bounds.x, 0);
          const y = Math.max(bounds.y - topHeight(), 0);
          newCookie += `${x}x${y}x${isVisible},`;

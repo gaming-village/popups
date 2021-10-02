@@ -1,3 +1,23 @@
+@import url(../fonts/chomsky/chomsky.css);
+
+#news-thumbnail {
+   text-align: center;
+   background-image: url(../images/newspaper-thumbnail.jpeg);
+   background-size: cover;
+   margin-left: 50%;
+   display: inline-block;
+   transform: translateX(-50%);
+}
+#news-thumbnail h1 {
+   font-family: "Chomsky";
+   font-size: 3rem;
+   margin: 0;
+}
+#news-thumbnail .edition {
+   font-family: "Times New Roman", Times, serif;
+   margin: 0;
+}
+
 #nav-mail.new-mail {
    animation: redFlash 2s infinite;
 }
@@ -47,7 +67,7 @@
 }
 
 
-#news {
+/* #news {
    min-width: 60%;
    font-family: 'Times New Roman', Times, serif;
    background-color: #fff;
@@ -81,7 +101,6 @@
    margin: 0.7rem 0;
 }
 
-/* Text content */
 #news-content {
    --padding: 0.5rem;
    width: 100%;
@@ -112,7 +131,7 @@
 }
 .right-segment {
    float: right;
-}
+} */
 
 
 

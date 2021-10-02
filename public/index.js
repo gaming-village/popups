@@ -2,10 +2,84 @@ const popups = {};
 const semiPopups = {};
 const applications = {
    "lorem-counter": {
-      open: true,
+      isOpened: true,
+      id: "loremCounter"
    },
    "achievement-tracker": {
-      open: false
+      isOpened: false,
+      id: "achievementTracker",
+      setup: function() {
+         // Creates the achievement objects and puts them into the Achievement Tracker
+         this.createAchievements();
+      },
+      open: function() {
+         // Sets up the view types.
+         this.createViewTypes();
+      },
+      currentViewType: "strips",
+      viewTypes: ["grid", "strips"],
+      selectViewType: function(newViewType) {
+         const achievementTracker = getElement("achievement-tracker");
+
+         // Update the achievement object's css to match the new view type.
+         const achievementContainer = achievementTracker.querySelector(".achievement-container");
+         for (const viewType of this.viewTypes) {
+            achievementContainer.classList.remove(viewType);
+         }
+         achievementContainer.classList.add(newViewType);
+
+         // Update the view type buttons' css
+         const viewTypeButtons = getElement("achievement-tracker").getElementsByClassName("view-type");
+         for (const viewTypeButton of viewTypeButtons) {
+            viewTypeButton.classList.remove("selected");
+         }
+         getElement("achievement-tracker").querySelector("." + newViewType).classList.add("selected");
+      },
+      createViewTypes: function() {
+         const container = getElement("achievement-tracker").querySelector(".view-type-container");
+         for (const viewType of this.viewTypes) {
+            const obj = document.createElement("div");
+            obj.className = `view-type ${viewType}`;
+            container.appendChild(obj);
+            
+            obj.innerHTML = `
+            <div class="name">${capitalize(viewType)}</div>
+            <img src="images/win95/thumbnail-${viewType}.png" draggable="false" />`;
+
+            obj.addEventListener("click", () => {
+               this.selectViewType(viewType);
+            });
+         }
+
+         // Update the selected view type to its defalt value
+         this.selectViewType(this.currentViewType);
+      },
+      createAchievements: function() {
+         const container = getElement("achievement-tracker").querySelector(".achievement-container");
+         const allAchievements = Game.achievements.getAllAchievements();
+         for (const achievement of allAchievements) {
+            const obj = document.createElement("div");
+            obj.className = "achievement";
+            container.appendChild(obj);
+
+            const name = achievement.unlocked ? achievement.name : "???";
+            const description = achievement.unlocked ? achievement.description : "???";
+            const imgSrc = achievement.unlocked ? achievement.img : "./images/achievements/unknown.png";
+
+            obj.innerHTML = `
+            <img src="${imgSrc}" />
+            <div>
+               <p class="name">${name}</p>
+               <p class="description">${description}</p>
+            </div>`;
+
+            if (achievement.unlocked) {
+               obj.classList.add("unlocked");
+            } else {
+               obj.innerHTML += `<div class="bg"></div>`;
+            }
+         }
+      }
    }
 };
 
@@ -174,32 +248,56 @@ const Game = {
    },
    achievements: {
       list: {
-         challenge: {
-
-         },
+         /* TODO:
+          * Achievements for buying applications
+          * Achievements for closing popups
+         */
          tiered: {
             soItBegins: {
                name: "So it begins...",
                description: "Earn your first lorem.",
+               img: "images/achievements/tiered/soItBegins2.png",
                requirements: {
                   lorem: 1
-               }
+               },
+               unlocked: true
             },
             gettingSomewhere: {
                name: "Getting somewhere",
                description: "Earn 100 lorem.",
                requirements: {
                   lorem: 100
-               }
+               },
+               unlocked: false
             },
             multiLevelMarketing: {
                name: "Multi Level Marketing",
                description: "Hire your first employee.",
                requirements: {
                   workers: 1
-               }
+               },
+               unlocked: false
+            },
+         },
+         challenge: {
+            theDarkSide: {
+               name: "The dark side",
+               description: "Convert some lorem to packets.",
+               requirements: {
+
+               },
+               unlocked: false
             }
          }
+      },
+      getAllAchievements: function() {
+         const achievements = [];
+         for (const achievementCategory of Object.values(this.list)) {
+            for (const achievement of Object.values(achievementCategory)) {
+               achievements.push(achievement);
+            }
+         }
+         return achievements;
       }
    },
    loremQuota: {
@@ -1108,7 +1206,7 @@ const Game = {
             },
             closeApplication: function(application) {
                const applicationData = applications[application[1].objID];
-               applicationData.open = false;
+               applicationData.isOpened = false;
                getElement(application[1].objID).classList.add("hidden");
 
                const taskbarItem = getElement("taskbar-" + application[0]);
@@ -1116,8 +1214,14 @@ const Game = {
             },
             openApplication: function(application) {
                const applicationData = applications[application[1].objID];
-               applicationData.open = true;
+               applicationData.isOpened = true;
                getElement(application[1].objID).classList.remove("hidden");
+
+               console.log("wajlskdj");
+               if (applicationData.hasOwnProperty("open")) {
+                  console.log(applicationData);
+                  applicationData.open();
+               }
 
                const taskbarItem = getElement("taskbar-" + application[0]);
                taskbarItem.classList.add("open");
@@ -1156,9 +1260,9 @@ const Game = {
                   }
                   
                   const applicationData = applications[currentApplication[1].objID];
-                  if (applicationData !== undefined && applicationData.open) taskbarItem.classList.add("open");
+                  if (applicationData !== undefined && applicationData.isOpened) taskbarItem.classList.add("open");
                   taskbarItem.addEventListener("click", () => {
-                     if (applicationData.open) {
+                     if (applicationData.isOpened) {
                         this.closeApplication(currentApplication);
                      } else {
                         this.openApplication(currentApplication);
@@ -1172,6 +1276,28 @@ const Game = {
                   const obj = getElement(applicationID);
                   const titleBar = obj.querySelector(":is(.popup-title, .title-bar)");
                   dragElement(obj, titleBar);
+               }
+
+               // Run all application's setup functions
+               for (const application of Object.values(applications)) {
+                  if (application.hasOwnProperty("setup")) {
+                     application.setup();
+                  }
+               }
+
+               // Open applications which were already previously opened
+               for (const application of Object.values(applications)) {
+                  if (application.isOpened) {
+                     let applicationReference;
+                     for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
+                        if (applicationCategory.hasOwnProperty(application.id)) {
+                           applicationReference = applicationCategory[application.id];
+                        }
+                     }
+                     // console.log([application.id, applicationReference]);
+
+                     this.openApplication([application.id, applicationReference]);
+                  }
                }
             }
          },
@@ -1505,7 +1631,7 @@ const terminal = {
          }
       },
       js: {
-         anyStr: (arr) => {
+         anyStr: arr => {
             const js = arr.join(' ');
             try {
                eval(js);
@@ -2024,7 +2150,7 @@ window.onload = () => {
    Game.blackMarket.minigames.setup();
    Game.startMenu.setup();
 
-   // Sets the background image of the computer (may have been changed in the preferences)
+   // Sets the background image of the computer/generator
    Game.startMenu.applications["menu-preferences"].updateBackgroundImage();
 
    // Gives idle profits from workers
@@ -2123,7 +2249,7 @@ function writeLorem(loremN = 1, giveLorem = true, pressedKey = null) {
 }
 function keyPress(key) {
    // Stop if the lurem impsir popup is blocking production.
-   if (!popups.luremImpsir.canLorem) return;
+   if (popups.luremImpsir !== undefined && !popups.luremImpsir.canLorem) return;
    if (Game.currentView !== "computer") return;
 
    writeLorem(1, true, key);
