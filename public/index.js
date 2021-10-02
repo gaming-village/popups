@@ -16,6 +16,10 @@ const applications = {
          // Sets up the view types.
          this.createViewTypes();
       },
+      close: function() {
+         // Removes the view types.
+         this.removeViewTypes();
+      },
       currentViewType: "strips",
       viewTypes: ["grid", "strips"],
       selectViewType: function(newViewType) {
@@ -53,6 +57,12 @@ const applications = {
 
          // Update the selected view type to its defalt value
          this.selectViewType(this.currentViewType);
+      },
+      removeViewTypes: function() {
+         const viewTypesContainer = getElement("achievement-tracker").querySelector(".view-type-container");
+         while (viewTypesContainer.children[0]) {
+            viewTypesContainer.children[0].remove();
+         }
       },
       createAchievements: function() {
          const container = getElement("achievement-tracker").querySelector(".achievement-container");
@@ -1209,6 +1219,10 @@ const Game = {
                applicationData.isOpened = false;
                getElement(application[1].objID).classList.add("hidden");
 
+               if (applicationData.hasOwnProperty("close")) {
+                  applicationData.close();
+               }
+
                const taskbarItem = getElement("taskbar-" + application[0]);
                taskbarItem.classList.remove("open");
             },
@@ -1217,9 +1231,7 @@ const Game = {
                applicationData.isOpened = true;
                getElement(application[1].objID).classList.remove("hidden");
 
-               console.log("wajlskdj");
                if (applicationData.hasOwnProperty("open")) {
-                  console.log(applicationData);
                   applicationData.open();
                }
 
