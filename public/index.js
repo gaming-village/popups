@@ -10,6 +10,8 @@ const applications = {
       id: "achievementTracker",
       unlockedAchievements: null,
       setup: function() {
+         Game.achievements.setup();
+
          // Creates the achievement objects and puts them into the Achievement Tracker
          this.createAchievementsWithoutFilter();
 
@@ -286,7 +288,7 @@ const Game = {
                value: null,
                type: "select",
                options: ["Standard", "Letter", "Scientific Notation", "Decimal", "Words"],
-               defaultValue: "Standard"
+               defaultValue: 0
             },
             decimalPointPrecision: {
                name: "Decimal Point Precision",
@@ -303,7 +305,7 @@ const Game = {
                value: null,
                type: "select",
                options: ["Percentage", "Current/Total", "Current/Total (Percentage)"],
-               defaultValue: "Percentage"
+               defaultValue: 0
             }
          },
          graphics: {
@@ -428,16 +430,18 @@ const Game = {
          soItBegins: {
             name: "So it begins...",
             description: "Earn your first lorem.",
+            id: 1,
             category: "tiered",
             img: "images/achievements/tiered/soItBegins2.png",
             requirements: {
                lorem: 1
             },
-            unlocked: true
+            unlocked: false
          },
          gettingSomewhere: {
             name: "Getting somewhere",
             description: "Earn 100 lorem.",
+            id: 2,
             category: "tiered",
             requirements: {
                lorem: 100
@@ -447,15 +451,37 @@ const Game = {
          madeOfMoney: {
             name: "Made of money",
             description: "Earn 10000 lorem.",
+            id: 3,
             category: "tiered",
             requirements: {
                lorem: 10000
             },
             unlocked: false
          },
+         corporateEntity: {
+            name: "Corporate Entity",
+            description: "Earn 1000000 lorem.",
+            id: 4,
+            category: "tiered",
+            requirements: {
+               lorem: 1000000
+            },
+            unlocked: false
+         },
+         // corporateEntity: {
+         //    name: "Corporate entity",
+         //    description: "Earn 100000000 lorem.",
+         //    id: 5,
+         //    category: "tiered",
+         //    requirements: {
+         //       lorem: 100000000
+         //    },
+         //    unlocked: false
+         // },
          multiLevelMarketing: {
-            name: "Multi Level Marketing",
+            name: "Multi level marketing",
             description: "Hire your first employee.",
+            id: 6,
             category: "tiered",
             requirements: {
                workers: 1
@@ -465,6 +491,28 @@ const Game = {
          theDarkSide: {
             name: "The dark side",
             description: "Convert some lorem to packets.",
+            id: 7,
+            category: "challenge",
+            requirements: {
+
+            },
+            unlocked: false
+         },
+         allThatGlittersIsNotGold: {
+            name: "All that glitters is not gold",
+            description: "Sell 10 employees.",
+            id: 8,
+            category: "challenge",
+            requirements: {
+
+            },
+            unlocked: false
+         },
+         // atAllCosts:
+         foolsGold: {
+            name: "Fool's Gold",
+            description: "do something",
+            id: 9,
             category: "challenge",
             requirements: {
 
@@ -475,21 +523,20 @@ const Game = {
       getAchievements: function() {
          return Object.entries(this.list);
       },
-      // updateAchievements: function(name) {
-      //    if (applications["achievement-tracker"].isOpened) {
-      //       // const achievementTracker = getElement("achievement-tracker");
-      //       // achievementTracker.querySelector("achievement-count")
-      //       applications["achievement-tracker"].updateAchievement(this.list[name]);
-      //    }
-      // },
       unlockAchievement: function(name) {
-         if (this.list[name].unlocked) return;
+         const achievement = this.list[name];
+         if (achievement.unlocked) return;
+         achievement.unlocked = true;
 
          applications["achievement-tracker"].unlockedAchievements++;
 
-         // this.updateAchievement(name);
-         applications["achievement-tracker"].unlockAchievement(name, this.list[name]);
-         // this.updateAchievements();
+         applications["achievement-tracker"].unlockAchievement(name, achievement);
+
+         console.log("gamer?");
+         updateUnlockedAchievements();
+      },
+      setup: function() {
+         this.loremAchievements = this.getAchievements().filter(achievement => Object.keys(achievement[1].requirements).includes("lorem"));
       }
    },
    loremQuota: {
@@ -1033,24 +1080,30 @@ const Game = {
       }
    },
    lorem: 0,
-   addLorem: (add, force = false) => {
-      if (semiPopups.scourgeOfChunky.activated && add > 0 && !force) return;
+   gainLorem: (amount, force = false) => {
+      if (semiPopups.scourgeOfChunky.activated && amount > 0 && !force) return;
 
-      if (popups.visitor.tripleLorem) {
-         add *= 3;
+      for (const achievement of Game.achievements.loremAchievements) {
+         if (Game.lorem >= achievement[1].requirements.lorem) {
+            Game.achievements.unlockAchievement(achievement[0]);
+         }
       }
 
-      Game.lorem += add;
-      Game.stats.totalLoremMined += add;
-      // Game.updateLorem(formatFloat(add));
-      Game.updateLorem(formatNum(add));
+      if (popups.visitor.tripleLorem) amount *= 3;
+
+      Game.lorem += amount;
+      // Game.stats.totalLoremMined += amount;
+      // Game.stats.loremEarned += amount;
+      // Game.updateLorem(formatFloat(amount));
+      Game.updateLorem(formatNum(amount));
    },
    multLorem: (mult, force = false) => {
       if (semiPopups.scourgeOfChunky.activated && !force) return;
 
       const loremBefore = Game.lorem;
       Game.lorem *= mult;
-      Game.stats.totalLoremMined *= mult;
+      // Game.stats.totalLoremMined *= mult;
+      // Game.stats.loremEarned *= mult;
 
       // Find the difference in lorem.
       const difference = Game.lorem - loremBefore;
@@ -2413,7 +2466,7 @@ function writeLorem(loremN = 1, giveLorem = true, pressedKey = null) {
    // Triple lorem gain if typed correct letter
    if (pressedKey !== null && (pressedKey.toLowerCase() === nextLetter.toLowerCase())) loremPerWrite *= 3;
 
-   if (!(iterationCount % 5) && giveLorem) Game.addLorem(loremPerWrite);
+   if (!(iterationCount % 5) && giveLorem) Game.gainLorem(loremPerWrite);
 
    const loremContainer = getElement("loremContainer");
 
@@ -2914,7 +2967,7 @@ function dataSetup() {
       workerCookies = workerCookies.map(cookie => cookie[0]);
 
       // Reset cookies when the reset button is clicked
-      const otherCookies = ['lorem', 'packets', 'openedLetters', 'openedRewards', 'receivedLetters', 'unlockedMalware', 'unlockedShops', 'misc', 'settings', "applicationPositions", "ownedApplications"];
+      const otherCookies = ['lorem', 'packets', 'openedLetters', 'openedRewards', 'receivedLetters', 'unlockedMalware', "unlockedShops", "misc", "settings", "applicationPositions", "ownedApplications", "unlockedAchievements"];
       const allCookies = [...workerCookies, ...otherCookies];
       // Delete cookies
       allCookies.forEach(cookie => document.cookie = cookie +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;');

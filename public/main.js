@@ -337,6 +337,7 @@ const LoadData = () => {
    if (typeof Game !== "undefined") {
       setApplicationPositions();
       setOwnedApplications();
+      setUnlockedAchievements();
    }
 }
 
@@ -376,7 +377,6 @@ function setSettingsCookie() {
          if (typeof setting === "string") continue;
 
          if (setting.type === "select") {
-            // setting.value = setting.options[dictionary[setting.id]];
             setting.value = dictionary[setting.id];
          } else if (setting.type === "range") {
             setting.value = dictionary[setting.id];
@@ -460,7 +460,6 @@ function setMiscCookie() {
             break;
          case 6:
             currentBackgroundImage += bit;
-            console.log(currentBackgroundImage);
             Game.startMenu.applications["menu-preferences"].currentBackgroundImage = parseInt(currentBackgroundImage);
             break;
          default:
@@ -658,6 +657,42 @@ function updateOwnedApplications() {
       }
    }
    setCookie("ownedApplications", decimal);
+}
+
+function setUnlockedAchievements() {
+   let cookie = getCookie("unlockedAchievements");
+   if (cookie === "") {
+      cookie = "0";
+   }
+
+   // FIXME: This "binary to decimal to binary" system could potentially result in veeery large decimal numbers if there are enough achievements
+
+   const parts = parseInt(cookie).toString(2).split("").reverse();
+   console.log(parts);
+   const dictionary = parts.reduce((previousValue, currentValue, i) => {
+      return { ...previousValue, [i + 1]: parseInt(currentValue)};
+   }, {});
+   console.log(dictionary);
+
+   const achievements = Game.achievements.getAchievements();
+   for (const achievement of achievements) {
+      const id = achievement[1].id;
+      if (dictionary.hasOwnProperty(id) && dictionary[id]) {
+         achievement[1].unlocked = true;
+      }
+   }
+}
+function updateUnlockedAchievements() {
+   let result = 0
+   const achievements = Game.achievements.getAchievements();
+   
+   for (const achievement of achievements) {
+      if (achievement[1].unlocked) {
+         result += Math.pow(2, achievement[1].id - 1);
+      }
+   }
+   
+   setCookie("unlockedAchievements", result);
 }
 
 function setCookie(cname, cvalue, exdays) {
