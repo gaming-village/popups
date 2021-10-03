@@ -1112,6 +1112,16 @@ button.close-button {
    font-style: italic;
    margin: 0 0 0.3rem;
 }
+.windows-application input[type=text] {
+   width: 100%;
+   font-family: "MS Sans Serif";
+   background-color: #fff;
+   border: 2px solid;
+   border-top-color: #000;
+   border-left-color: #000;
+   border-bottom-color: #ddd;
+   border-right-color: #ddd;
+}
 
 #menu-preferences .bg-image-container {
    display: flex;
