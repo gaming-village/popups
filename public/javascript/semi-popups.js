@@ -202,7 +202,7 @@ class Ad extends SemiPopup {
    }
    hide() {
       super.hide();
-      Game.addLorem(1.5);
+      Game.gainLorem(1.5);
    }
 }
 class Ad1 extends Ad {}

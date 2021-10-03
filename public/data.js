@@ -363,7 +363,7 @@ const letters = {
          img: "images/coin-icon.png",
          opened: false,
          reward: () => {
-            Game.addLorem(10);
+            Game.gainLorem(10);
          }
       },
       received: false
@@ -381,7 +381,7 @@ const letters = {
          img: "images/coin-icon.png",
          opened: false,
          reward: () => {
-            Game.addLorem(1);
+            Game.gainLorem(1);
          }
       },
       received: false
@@ -399,7 +399,7 @@ const letters = {
          img: "images/coin-icon.png",
          opened: false,
          reward: () => {
-            Game.addLorem(1);
+            Game.gainLorem(1);
          }
       },
       received: false
@@ -417,7 +417,7 @@ const letters = {
          img: "images/coin-icon.png",
          opened: false,
          reward: () => {
-            Game.addLorem(1);
+            Game.gainLorem(1);
          }
       },
       received: false
@@ -435,7 +435,7 @@ const letters = {
          img: "images/coin-icon.png",
          opened: false,
          reward: () => {
-            Game.addLorem(1);
+            Game.gainLorem(1);
          }
       },
       received: false
@@ -453,7 +453,7 @@ const letters = {
          img: "images/coin-icon.png",
          opened: false,
          reward: () => {
-            Game.addLorem(1);
+            Game.gainLorem(1);
          }
       },
       received: false

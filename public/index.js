@@ -645,7 +645,7 @@ const Game = {
                loremGain += worker[1].stats.loremProduction * workerCount / (1000 / ms);
             }
             if (loremGain === 0) return;
-            Game.addLorem(loremGain);
+            Game.gainLorem(loremGain);
          }, ms);
       },
       corporateOverview: {
@@ -682,7 +682,7 @@ const Game = {
             updateMiscCookie();
             this.updatePromotionProgress();
 
-            Game.addLorem(-Game.lorem);
+            Game.gainLorem(-Game.lorem);
 
             // Receive the promotion letter
             const letterName = nextJob[1].letterName;
@@ -842,7 +842,7 @@ const Game = {
 
          if (Game.lorem >= cost) {
             this.workers[name] += 1;
-            Game.addLorem(-cost);
+            Game.gainLorem(-cost);
 
             new Sound({
                path: './audio/click.mp3',
@@ -860,7 +860,7 @@ const Game = {
 
             if (Game.lorem >= cost) {
                this.workers[name] += 1;
-               Game.addLorem(-cost);
+               Game.gainLorem(-cost);
             } else {
                break;
             }
@@ -1044,7 +1044,7 @@ const Game = {
             }, 5000);
             
             Game.addPackets(Game.lorem);
-            Game.addLorem(-Game.lorem);
+            Game.gainLorem(-Game.lorem);
          });
          
          const packetCookie = getCookie("packets");
@@ -1376,7 +1376,7 @@ const Game = {
             buyApplication(applicationName, application) {
                if (application[1].owned || !this.canAffordApplication(application[1])) return;
 
-               Game.addLorem(-application[1].price);
+               Game.gainLorem(-application[1].price);
                application[1].owned = true;
                this.updateAvailableApplications(applicationName);
                updateOwnedApplications();
@@ -1793,7 +1793,7 @@ const terminal = {
          lorem: {
             anyNum: (num) => {
                terminal.writeLine(['Gave ', '#888'], [num, '#bbb'], [' lorem', '#888']);
-               Game.addLorem(num);
+               Game.gainLorem(num);
             }
          },
          packets: {
@@ -2321,7 +2321,7 @@ const handleIdleTime = () => {
    const totalGain = workerGain;
    if (totalGain === 0) return;
 
-   Game.addLorem(totalGain);
+   Game.gainLorem(totalGain);
    const alertBox = new AlertBox({
       title: 'New idle profits.',
       body: `Your workers generated ${formatFloat(totalGain)} lorem.`
@@ -2549,7 +2549,7 @@ function loremAdClick(ad) {
    if (!popups.luremImpsir.canLorem) return;
 
    ad.remove();
-   Game.addLorem(0.3);
+   Game.gainLorem(0.3);
 }
 
 
@@ -2978,7 +2978,7 @@ function dataSetup() {
    // Add lorem functionality
    getElement('add-lorem-button').addEventListener('click', () => {
       const addAmount = parseFloat(getElement('add-lorem-amount').value);
-      Game.addLorem(addAmount);
+      Game.gainLorem(addAmount);
    });
 }
 function appendToDevtools(element) {

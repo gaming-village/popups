@@ -89,7 +89,7 @@ class Popup extends BaseStructure {
 
       const points = popupData[this.popupDataName].stats.points;
       if (typeof points !== "object" && givePoints && points !== undefined) {
-         Game.addLorem(points);
+         Game.gainLorem(points);
          writeLorem(Math.floor(points / Game.loremPerWrite), false);
       }
 
@@ -254,7 +254,7 @@ class Rain extends Popup {
             new RainText();
          }
 
-         Game.addLorem(-sapAmount);
+         Game.gainLorem(-sapAmount);
          this.totalSapAmount += sapAmount;
       }, 500);
 
@@ -269,7 +269,7 @@ class Rain extends Popup {
       clearInterval(this.createLetterInterval);
       this.createLetterInterval = null;
 
-      Game.addLorem(this.totalSapAmount * 1.5);
+      Game.gainLorem(this.totalSapAmount * 1.5);
    }
 }
 class RainText {
@@ -363,7 +363,7 @@ class Visitor extends Popup {
       const openButton = getElement("visitor-open-button");
 
       if (typeof this.currentReward == "number") {
-         Game.addLorem(this.currentReward);
+         Game.gainLorem(this.currentReward);
 
          const s = Math.abs(this.currentReward) === 1 ? "" : "s";
          if (this.currentReward > 0) {
@@ -690,7 +690,7 @@ class AnnualSurvey extends Popup {
 
       copy.querySelector(".close-icon").addEventListener("click", () => {
          copy.remove();
-         Game.addLorem(1);
+         Game.gainLorem(1);
       });
    }
 }
@@ -733,7 +733,7 @@ class ChunkyVirus extends Popup {
    }
    duplicatePopup() {
       this.baseTime = 10;
-      Game.addLorem(-3);
+      Game.gainLorem(-3);
 
       // Create a copy.
       const newPopup = new ChunkyVirusCopy();
@@ -893,7 +893,7 @@ class ChunkyPlantationBanana {
 
       clearInterval(this.rotateBananaInterval)
 
-      Game.addLorem(1);
+      Game.gainLorem(1);
       this.displayObj.remove();
 
       for (let i = 0; i < randomFloat(10, 15); i++) {
