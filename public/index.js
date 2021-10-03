@@ -8,11 +8,18 @@ const applications = {
    "achievement-tracker": {
       isOpened: false,
       id: "achievementTracker",
+      unlockedAchievements: null,
       setup: function() {
          // Creates the achievement objects and puts them into the Achievement Tracker
          this.createAchievements();
+
+         // Creates the filters for the achievements.
+         this.createFilters();
       },
       open: function() {
+         // Updates the achievements
+         this.updateAchievements();
+
          // Sets up the view types.
          this.createViewTypes();
       },
@@ -66,28 +73,78 @@ const applications = {
       },
       createAchievements: function() {
          const container = getElement("achievement-tracker").querySelector(".achievement-container");
-         const allAchievements = Game.achievements.getAllAchievements();
+         const allAchievements = Game.achievements.getAchievements();
          for (const achievement of allAchievements) {
             const obj = document.createElement("div");
-            obj.className = "achievement";
+            obj.className = "achievement " + achievement[0];
             container.appendChild(obj);
 
-            const name = achievement.unlocked ? achievement.name : "???";
-            const description = achievement.unlocked ? achievement.description : "???";
-            const imgSrc = achievement.unlocked ? achievement.img : "./images/achievements/unknown.png";
-
             obj.innerHTML = `
-            <img src="${imgSrc}" />
+            <img src="./images/achievements/unknown.png" />
             <div>
-               <p class="name">${name}</p>
-               <p class="description">${description}</p>
-            </div>`;
-
-            if (achievement.unlocked) {
-               obj.classList.add("unlocked");
-            } else {
-               obj.innerHTML += `<div class="bg"></div>`;
+               <p class="name">???</p>
+               <p class="description">???</p>
+            </div>
+            <div class="bg"></div>`;
+         }
+      },
+      unlockAchievement: function(name, achievement) {
+         const container = getElement("achievement-tracker").querySelector(".achievement-container");
+         const obj = container.querySelector("." + name);
+         if (obj.classList.contains("unlocked")) return;
+         
+         obj.classList.add("unlocked");
+         obj.querySelector(".bg").remove();
+         obj.querySelector("img").src = achievement.img;
+         obj.querySelector(".name").innerHTML = achievement.name;
+         obj.querySelector(".description").innerHTML = achievement.description;
+      },
+      updateAchievements: function() {
+         for (const achievement of Object.entries(Game.achievements.list)) {
+            if (achievement[1].unlocked) {
+               this.unlockAchievement(achievement[0], achievement[1]);
             }
+         }
+      },
+      filterAchievements: function() {
+
+      },
+      filters: ["category", "search", "unlocked"],
+      selectedFilter: "",
+      unselectFilter: function() {
+         this.selectedFilter = "";
+
+         getElement("achievement-tracker").querySelector("li.selected").classList.remove("selected");
+      },
+      selectFilter: function(newFilter) {
+         if (newFilter === this.selectedFilter) {
+            this.unselectFilter();
+            return;
+         };
+
+         this.selectedFilter = newFilter;
+
+         // Update the css of the items
+         const container = getElement("achievement-tracker");
+         const filterItems = container.getElementsByTagName("li");
+         for (const item of filterItems) {
+            item.classList.remove("selected");
+         }
+         container.querySelector("." + newFilter).classList.add("selected");
+      },
+      createFilters: function() {
+         const filters = ["category", "search", "unlocked"];
+
+         const list = getElement("achievement-tracker").querySelector(".filter-list");
+         for (const filter of filters) {
+            const item = document.createElement("li");
+            item.className = filter;
+            item.innerHTML = capitalize(filter);
+            list.appendChild(item);
+
+            item.addEventListener("click", () => {
+               this.selectFilter(filter);
+            });
          }
       }
    }
@@ -262,52 +319,71 @@ const Game = {
           * Achievements for buying applications
           * Achievements for closing popups
          */
-         tiered: {
-            soItBegins: {
-               name: "So it begins...",
-               description: "Earn your first lorem.",
-               img: "images/achievements/tiered/soItBegins2.png",
-               requirements: {
-                  lorem: 1
-               },
-               unlocked: true
+         soItBegins: {
+            name: "So it begins...",
+            description: "Earn your first lorem.",
+            type: "tiered",
+            img: "images/achievements/tiered/soItBegins2.png",
+            requirements: {
+               lorem: 1
             },
-            gettingSomewhere: {
-               name: "Getting somewhere",
-               description: "Earn 100 lorem.",
-               requirements: {
-                  lorem: 100
-               },
-               unlocked: false
-            },
-            multiLevelMarketing: {
-               name: "Multi Level Marketing",
-               description: "Hire your first employee.",
-               requirements: {
-                  workers: 1
-               },
-               unlocked: false
-            },
+            unlocked: true
          },
-         challenge: {
-            theDarkSide: {
-               name: "The dark side",
-               description: "Convert some lorem to packets.",
-               requirements: {
+         gettingSomewhere: {
+            name: "Getting somewhere",
+            description: "Earn 100 lorem.",
+            type: "tiered",
+            requirements: {
+               lorem: 100
+            },
+            unlocked: false
+         },
+         madeOfMoney: {
+            name: "Made of money",
+            description: "Earn 10000 lorem.",
+            type: "tiered",
+            requirements: {
+               lorem: 10000
+            },
+            unlocked: false
+         },
+         multiLevelMarketing: {
+            name: "Multi Level Marketing",
+            description: "Hire your first employee.",
+            type: "tiered",
+            requirements: {
+               workers: 1
+            },
+            unlocked: false
+         },
+         theDarkSide: {
+            name: "The dark side",
+            description: "Convert some lorem to packets.",
+            type: "challenge",
+            requirements: {
 
-               },
-               unlocked: false
-            }
+            },
+            unlocked: false
          }
       },
-      getAllAchievements: function() {
-         const achievements = [];
-         for (const achievementCategory of Object.values(this.list)) {
-            for (const achievement of Object.values(achievementCategory)) {
-               achievements.push(achievement);
-            }
-         }
-         return achievements;
+      getAchievements: function() {
+         return Object.entries(this.list);
+      },
+      // updateAchievements: function(name) {
+      //    if (applications["achievement-tracker"].isOpened) {
+      //       // const achievementTracker = getElement("achievement-tracker");
+      //       // achievementTracker.querySelector("achievement-count")
+      //       applications["achievement-tracker"].updateAchievement(this.list[name]);
+      //    }
+      // },
+      unlockAchievement: function(name) {
+         if (this.list[name].unlocked) return;
+
+         applications["achievement-tracker"].unlockedAchievements++;
+
+         // this.updateAchievement(name);
+         applications["achievement-tracker"].unlockAchievement(name, this.list[name]);
+         // this.updateAchievements();
       }
    },
    loremQuota: {

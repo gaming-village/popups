@@ -118,6 +118,29 @@
 #achievement-tracker {
    min-width: 30rem;
 }
+@media screen and (min-width: 100rem) {
+   #achievement-tracker {
+      min-width: 60rem;
+   }
+   #achievement-tracker .formatter {
+      display: flex;
+   }
+   #achievement-tracker .seperator {
+      width: 2px;
+      background-color: #fff;
+      margin: 10px;
+      box-shadow: -2px 0 0 0 #000;
+   }
+   #achievement-tracker .left-column {
+      width: 100%;
+      max-width: 30%;
+      margin: 0 10px 10px;
+   }
+   #achievement-tracker .right-column {
+      width: 100%;
+      margin: 0 10px 10px;
+   }
+}
 #achievement-tracker .view-type-container {
    margin-top: 1.3rem;
    display: flex;
@@ -182,6 +205,69 @@
 }
 #achievement-tracker .view-type.selected img {
    opacity: 1;
+}
+
+
+
+#achievement-tracker .filter-list {
+   padding: 0;
+   list-style-type: none;
+}
+#achievement-tracker .filter-list li {
+   height: 2rem;
+   line-height: 2rem;
+   font-size: 1rem;
+   margin: 3px 0;
+   padding-left: 5px;
+   cursor: pointer;
+   user-select: none;
+}
+#achievement-tracker .filter-list li:hover {
+   background-color: #dadada;
+   animation: growFilter 0.1s linear forwards;
+}
+#achievement-tracker .filter-list li:not(:hover) {
+   animation: shrinkFilter 0.1s linear forwards;
+}
+#achievement-tracker .filter-list li:active {
+   background-color: #c5c5c5;
+}
+#achievement-tracker .filter-list li.selected {
+   height: calc(2rem - 4px);
+   line-height: calc(2rem - 4px);
+   font-size: 1.1rem;
+   font-weight: bold;
+   background-color: #ddd;
+   border: 2px solid;
+   border-top-color: #fff;
+   border-right-color: #000;
+   border-bottom-color: #000;
+   border-left-color: #fff;
+   animation: none;
+   cursor: default;
+}
+#achievement-tracker .filter-list li.selected::before {
+   content: "> ";
+}
+@keyframes growFilter {
+   from {
+      font-size: 1rem;
+      margin-left: 5px;
+   }
+   to {
+      font-size: 1.1rem;
+      margin-left: 10px;
+   }
+}
+@keyframes shrinkFilter {
+   from {
+      font-size: 1.1rem;
+      margin-left: 10px;
+   }
+   to {
+      font-size: 1rem;
+      margin-left: 5px;
+   }
 }
 
 
