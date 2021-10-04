@@ -668,11 +668,9 @@ function setUnlockedAchievements() {
    // FIXME: This "binary to decimal to binary" system could potentially result in veeery large decimal numbers if there are enough achievements
 
    const parts = parseInt(cookie).toString(2).split("").reverse();
-   console.log(parts);
    const dictionary = parts.reduce((previousValue, currentValue, i) => {
       return { ...previousValue, [i + 1]: parseInt(currentValue)};
    }, {});
-   console.log(dictionary);
 
    const achievements = Game.achievements.getAchievements();
    for (const achievement of achievements) {

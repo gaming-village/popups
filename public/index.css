@@ -357,7 +357,7 @@ span.progress-red {
 }
 .alert-box {
    white-space: nowrap;
-   padding: 0.4rem 3rem 0.4rem 0.6rem;
+   padding: 0.2rem;
    margin-left: 50%;
    margin-top: 0.4rem;
    display: table;
@@ -372,22 +372,56 @@ span.progress-red {
    box-shadow: 0 0 1px 1px rgb(255, 255, 230);
 }
 .ct-95 .alert-box {
-   font: normal 1rem 'MS Sans Serif';
-   background-color: #eee;
-   border-radius: 3px;
-   border: 2px solid rgb(26, 57, 197);
-   box-shadow: 0 0 3px 1px #fff;
+   font: normal 1rem "MS Sans Serif";
+   background-color: #ddd;
+   border: 2px solid;
+   border-top-color: #fff;
+   border-right-color: #000;
+   border-bottom-color: #000;
+   border-left-color: #fff;
+   box-shadow: 4px 4px 0 0 rgba(0, 0, 0, 0.4);
 }
-.alert-box h3 {
-   color: #666;
+.ct-95 .alert-box.clickable:hover {
+   background-color: #e5e5e5;
+   cursor: pointer;
+}
+.alert-box .top {
+   height: 2rem;
+   margin-bottom: 0.4rem;
+   display: flex;
+}
+.alert-box img {
+   width: 32px;
+   height: 32px;
+}
+.alert-box .title {
+   line-height: 2rem;
+   font-size: 0.95rem;
+   font-weight: bold;
+   margin: 0 1.8rem 0 0.2rem;
+}
+.alert-box .description {
+   color: #333;
    font-size: 0.9rem;
-   font-weight: normal;
-   margin: 0 0 0 0.3rem;
-}
-.alert-box h2 {
-   font-size: 1rem;
-   font-weight: normal;
+   font-style: italic;
    margin: 0;
+}
+.alert-box .seperator {
+   width: 100%;
+   height: 2px;
+   background-color: #000;
+   margin: 0.5rem 0 0.2rem;
+   box-shadow: 0 2px 0 0 #fff;
+}
+.alert-box .caption {
+   text-align: center;
+   color: #888;
+   font-weight: bold;
+   font-size: 0.9rem;
+   margin: 0;
+}
+.ct-95 .alert-box.clickable:hover .caption {
+   color: #000;
 }
 .alert-box .close-icon {
    position: absolute;
@@ -956,10 +990,10 @@ button.close-button {
    margin-right: -0.2rem;
 }
 .ct-95 .close-icon {
-   --size: 20px;
+   --size: 24px;
    width: var(--size);
    height: var(--size);
-   background-image: url(./images/win95/win95-close-button.png);
+   background-image: url(./images/win95/close-button.png);
    background-size: var(--size) var(--size);
 }
 

@@ -532,7 +532,7 @@ const Game = {
 
          applications["achievement-tracker"].unlockAchievement(name, achievement);
 
-         console.log("gamer?");
+         console.log("gamer? "+ name);
          updateUnlockedAchievements();
       },
       setup: function() {
@@ -2035,6 +2035,32 @@ class blackMarketShop {
    }
 }
 
+const alerts = {
+   createAlert: function({ title, iconSrc, description, caption, clickEvent }) {
+      // Create the alert box
+      const alertBox = document.createElement("div");
+      alertBox.className = "alert-box";
+      getElement("alert-container").appendChild(alertBox);
+
+      alertBox.innerHTML = `
+      <div class="close-icon"></div>
+      <div class="top">
+         <img src="${iconSrc}" />
+         <p class="title">${title}</p>
+      </div>
+      <p class="description">${description}</p>`;
+      if (caption) {
+         alertBox.innerHTML += `
+         <div class="seperator"></div>
+         <p class="caption">${caption}</p>`;
+      }
+
+      if (clickEvent) {
+         alertBox.classList.add("clickable");
+         alertBox.addEventListener("click", () => clickEvent());
+      }
+   }
+}
 class AlertBox {
    constructor({ title, body }) {
       // Create the alert box
@@ -2745,19 +2771,30 @@ function receiveLetter(letterName) {
 }
 function newLetterAlert(letter) {
    getElement('nav-mail').classList.add('new-mail');
-   const alertBox = new AlertBox({
-      title: 'New letter received!',
-      body: letter.title
-   });
-
-   const letterAlert = alertBox.displayObj;
-   letterAlert.querySelector('.close-icon').remove();
-   letterAlert.classList.add('letter-alert');
-
-   letterAlert.addEventListener('click', () => {
+   // const alertBox = new AlertBox({
+   //    title: 'New letter received!',
+   //    body: letter.title
+   // });
+   const alertClickEvent = () => {
       switchView("mail");
       showInbox();
+   };
+   alerts.createAlert({
+      title: letter.title,
+      iconSrc: "images/scroll.png",
+      description: "You've got mail!",
+      caption: "Click to open",
+      clickEvent: alertClickEvent
    });
+
+   // const letterAlert = alertBox.displayObj;
+   // letterAlert.querySelector('.close-icon').remove();
+   // letterAlert.classList.add('letter-alert');
+
+   // letterAlert.addEventListener('click', () => {
+   //    switchView("mail");
+   //    showInbox();
+   // });
 }
 
 
