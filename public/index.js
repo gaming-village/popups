@@ -2055,28 +2055,17 @@ const alerts = {
          <p class="caption">${caption}</p>`;
       }
 
-      if (clickEvent) {
-         alertBox.classList.add("clickable");
-         alertBox.addEventListener("click", () => clickEvent());
-      }
-   }
-}
-class AlertBox {
-   constructor({ title, body }) {
-      // Create the alert box
-      const alertBox = getElement("alert-box-template").cloneNode(true);
-      getElement("alert-container").appendChild(alertBox);
-      alertBox.classList.remove("hidden");
-      alertBox.id = "";
-      this.displayObj = alertBox;
-
-      alertBox.querySelector("h3").innerHTML = title;
-      alertBox.querySelector("h2").innerHTML = body;
-
       alertBox.querySelector(".close-icon").addEventListener("click", () => {
          alertBox.remove();
-         delete this;
       });
+
+      if (clickEvent) {
+         alertBox.classList.add("clickable");
+         alertBox.addEventListener("click", () => {
+            clickEvent();
+            alertBox.remove();
+         });
+      }
    }
 }
 
@@ -2130,9 +2119,16 @@ class LoremQuota {
       }, 300);
 
       this.setupQuota();
-      const alertBox = new AlertBox({
-         title: 'Quota reached!',
-         body: 'Go to the Corporate Overview to claim your reward!'
+
+      const alertClickEvent = () => {
+         console.log("NOTE TO FUTURE ME: MAKE THIS DO SOMETHING!!!");
+      }
+      alerts.createAlert({
+         title: "Lorem Quota reached!",
+         iconSrc: "images/scroll.png",
+         description: "Go to the Corporate Overview to claim your reward.",
+         caption: "Go to Quota Menu",
+         clickEvent: alertClickEvent
       });
    }
 }
@@ -2348,9 +2344,16 @@ const handleIdleTime = () => {
    if (totalGain === 0) return;
 
    Game.gainLorem(totalGain);
-   const alertBox = new AlertBox({
-      title: 'New idle profits.',
-      body: `Your workers generated ${formatFloat(totalGain)} lorem.`
+
+   const alertClickEvent = () => {
+      console.log("NOTE TO FUTURE ME: MAKE THIS DO SOMETHING!!!");
+   }
+   alerts.createAlert({
+      title: "New idle profits",
+      iconSrc: "images/scroll.png",
+      description: `While you were away, your hard-working employees created ${formatNum(totalGain)} lorem.`,
+      caption: "Go to Quota Menu",
+      clickEvent: alertClickEvent
    });
 }
 
@@ -2771,10 +2774,7 @@ function receiveLetter(letterName) {
 }
 function newLetterAlert(letter) {
    getElement('nav-mail').classList.add('new-mail');
-   // const alertBox = new AlertBox({
-   //    title: 'New letter received!',
-   //    body: letter.title
-   // });
+   
    const alertClickEvent = () => {
       switchView("mail");
       showInbox();
@@ -2783,18 +2783,9 @@ function newLetterAlert(letter) {
       title: letter.title,
       iconSrc: "images/scroll.png",
       description: "You've got mail!",
-      caption: "Click to open",
+      caption: "Click here to open",
       clickEvent: alertClickEvent
    });
-
-   // const letterAlert = alertBox.displayObj;
-   // letterAlert.querySelector('.close-icon').remove();
-   // letterAlert.classList.add('letter-alert');
-
-   // letterAlert.addEventListener('click', () => {
-   //    switchView("mail");
-   //    showInbox();
-   // });
 }
 
 
