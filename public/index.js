@@ -1132,7 +1132,7 @@ const Game = {
       const packets = add * (directAdd ? 1 : Game.transferRate);
       Game.packetCount += packets;
       Game.updatePackets();
-      applications.eventViewer.createEvent(['Gained ', '#ccc'], [add, '#fff'], [' packets', '#ccc']);
+      // applications.eventViewer.createEvent(['Gained ', '#ccc'], [add, '#fff'], [' packets', '#ccc']);
    },
    updatePackets: () => {
       getElement("packet-count").innerHTML = formatFloat(Game.packetCount);
