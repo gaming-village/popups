@@ -532,6 +532,17 @@ const Game = {
 
          applications["achievement-tracker"].unlockAchievement(name, achievement);
 
+
+      // const alertClickEvent = () => {
+      //    console.log("NOTE TO FUTURE ME: MAKE THIS DO SOMETHING!!!");
+      // }
+         alerts.createAlert({
+            title: achievement.name,
+            iconSrc: "images/scroll.png",
+            description: achievement.description,
+            caption: "New achievement!"
+         });
+
          console.log("gamer? "+ name);
          updateUnlockedAchievements();
       },
