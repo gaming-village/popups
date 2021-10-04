@@ -63,6 +63,11 @@ const applications = {
 
             obj.addEventListener("click", () => {
                this.selectViewType(viewType);
+
+               new Sound({
+                  path: "audio/select.mp3",
+                  volume: 0.5
+               });
             });
          }
 
