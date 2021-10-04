@@ -2036,13 +2036,18 @@ class blackMarketShop {
 }
 
 const alerts = {
-   removeAlert: function(alertBox) {
-      const REMOVE_ANIMATION_DURATION_MS = 500;
+   closeAlert: function(alertBox) {
+      const REMOVE_ANIMATION_DURATION_MS = 400;
 
       alertBox.classList.add("hiding");
       setTimeout(() => {
          alertBox.remove();
       }, REMOVE_ANIMATION_DURATION_MS);
+
+      new Sound({
+         path: "audio/close-alert.mp3",
+         volume: 1
+      });
    },
    createAlert: function({ title, iconSrc, description, caption, clickEvent }) {
       // Create the alert box
@@ -2064,14 +2069,14 @@ const alerts = {
       }
 
       alertBox.querySelector(".close-icon").addEventListener("click", () => {
-         this.removeAlert(alertBox);
+         this.closeAlert(alertBox);
       });
 
       if (clickEvent) {
          alertBox.classList.add("clickable");
          alertBox.querySelector(".caption").addEventListener("click", () => {
             clickEvent();
-            this.removeAlert(alertBox);
+            this.closeAlert(alertBox);
          });
       }
    }

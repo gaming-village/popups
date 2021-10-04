@@ -436,7 +436,7 @@ span.progress-red {
    right: 3px;
 }
 .alert-box.hiding {
-   animation: hideAlertBox 0.5s cubic-bezier(0, 0.4, 0.4, 1) forwards;
+   animation: hideAlertBox 0.4s cubic-bezier(0, 0.45, 0.45, 1) forwards;
    pointer-events: none;
 }
 @keyframes hideAlertBox {
