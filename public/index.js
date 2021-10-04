@@ -2061,7 +2061,7 @@ const alerts = {
 
       if (clickEvent) {
          alertBox.classList.add("clickable");
-         alertBox.addEventListener("click", () => {
+         alertBox.querySelector(".caption").addEventListener("click", () => {
             clickEvent();
             alertBox.remove();
          });
