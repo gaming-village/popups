@@ -2052,7 +2052,7 @@ const alerts = {
 
       new Sound({
          path: "audio/close-alert.mp3",
-         volume: 1
+         volume: 0.5
       });
    },
    createAlert: function({ title, iconSrc, description, caption, clickEvent }) {
