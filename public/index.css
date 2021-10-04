@@ -435,8 +435,19 @@ span.progress-red {
    top: 3px;
    right: 3px;
 }
-.letter-alert {
-   cursor: pointer;
+.alert-box.hiding {
+   animation: hideAlertBox 0.5s cubic-bezier(0, 0.4, 0.4, 1) forwards;
+   pointer-events: none;
+}
+@keyframes hideAlertBox {
+   from {
+      margin-left: 50%;
+      opacity: 1;
+   }
+   to {
+      margin-left: calc(55% + 5vw);
+      opacity: 0;
+   }
 }
 
 .popup-icon {
