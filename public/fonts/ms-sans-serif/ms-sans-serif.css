@@ -3,22 +3,20 @@
 
 
 @font-face {
-    font-family: "MS Sans Serif";
-    src: url('ms_sans_serif_8pt-webfont.woff2') format('woff2'),
-         url('ms_sans_serif_8pt-webfont.woff') format('woff');
-    font-weight: normal;
-    font-style: normal;
-
+   font-family: "MS Sans Serif";
+   src: url("https://gaming-village.github.io/popups/public/fonts/ms-sans-serif/ms_sans_serif_8pt-webfont.woff2") format('woff2'),
+      url("https://gaming-village.github.io/popups/public/fonts/ms-sans-serif/ms_sans_serif_8pt-webfont.woff") format('woff');
+   font-weight: normal;
+   font-style: normal;
 }
 
 
 
 
 @font-face {
-    font-family: 'MS Sans Serif';
-    src: url('ms_sans_serif_8pt_bold-webfont.woff2') format('woff2'),
-         url('ms_sans_serif_8pt_bold-webfont.woff') format('woff');
-    font-weight: bold;
-    font-style: normal;
-
+   font-family: "MS Sans Serif";
+   src: url('https://gaming-village.github.io/popups/public/fonts/ms-sans-serif/ms_sans_serif_8pt_bold-webfont.woff2') format('woff2'),
+      url('https://gaming-village.github.io/popups/public/fonts/ms-sans-serif/ms_sans_serif_8pt_bold-webfont.woff') format('woff');
+   font-weight: bold;
+   font-style: normal;
 }

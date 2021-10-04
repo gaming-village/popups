@@ -117,7 +117,6 @@
 
 #achievement-tracker {
    min-width: 30rem;
-   -webkit-text-fill-color: red;
 }
 @media screen and (min-width: 100rem) {
    #achievement-tracker {
