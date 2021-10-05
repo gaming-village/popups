@@ -561,7 +561,7 @@ const Game = {
          updateUnlockedAchievements();
       },
       setup: function() {
-         this.loremAchievements = this.getAchievements().filter(achievement => Object.keys(achievement[1].requirements).includes("lorem"));
+         this.loremAchievements = this.getAchievements().filter(achievement => achievement.hasOwnProperty("requirements") && Object.keys(achievement[1].requirements).includes("lorem"));
       }
    },
    loremQuota: {
