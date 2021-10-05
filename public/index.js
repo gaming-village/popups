@@ -1799,6 +1799,78 @@ const taskbar = {
    }
 };
 
+const dailyIndoctrination = {
+   layouts: [
+      `
+      <div class="headline"></div>
+         <div class="container">
+            <div class="column">
+               <div class="breaking-news"></div>
+               <div class="story"></div>
+               <div class="story"></div>
+               <div class="story"></div>
+            </div>
+            <div class="seperator"></div>
+            <div class="column">
+               <div class="story"></div>
+               <div class="story"></div>
+               <div class="story"></div>
+               <div class="story"></div>
+            </div>
+         </div>
+      `
+   ],
+   generateEdition: function(edition = 1) {
+      const page = getElement("news-main");
+      const layout = randElem(this.layouts);
+      page.innerHTML += layout;
+
+      const editionData = dailyIndoctrinationEditions[edition];
+      const breakingNews = randElem(Object.values(editionData.breakingNews));
+
+      page.querySelector(".headline").innerHTML = breakingNews.headline;
+      page.querySelector(".breaking-news").innerHTML = breakingNews.story;
+
+      const stories = editionData.stories;
+      const storySections = page.getElementsByClassName("story");
+      for (const story of storySections) {
+         const storyIdx = randomInt(0, stories.length);
+         const currentStory = stories[storyIdx];
+         stories.splice(storyIdx, 1);
+         story.innerHTML = currentStory;
+      }
+   },
+   show: function() {
+      this.clear();
+      this.generateEdition();
+
+      getElement("news-main").classList.remove("hidden");
+
+      Game.inFocus = true;
+
+      const mask = getElement("mask");
+      mask.classList.remove("hidden");
+      mask.addEventListener("click", this.hide);
+   },
+   hide: function() {
+      Game.inFocus = false;
+
+      getElement("news-main").classList.add("hidden");
+
+      const mask = getElement("mask");
+      mask.classList.add("hidden");
+      mask.removeEventListener("click", this.hide);
+   },
+   clear: function() {
+      getElement("news-main").innerHTML = `<h1>The Daily Indoctrination</h1>`;
+   },
+   setup: function() {
+      getElement("news-thumbnail").addEventListener("click", () => {
+         this.show();
+      });
+   }
+};
+
 const terminal = {
    displayed: false,
    commands: {
@@ -2469,6 +2541,8 @@ window.onload = () => {
 
    // Gives idle profits from workers
    handleIdleTime();
+
+   dailyIndoctrination.setup();
 }
 
 function changeViewHeights() {

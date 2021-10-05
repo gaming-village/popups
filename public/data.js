@@ -685,21 +685,59 @@ const minigames = {
    }
 };
 
-const dailyIndoctrinationEditions = {
-   // HOW IT WORKS:
-   // As much of the most current stage of text is generated, and then the remaining space is distributed to the other stages.
+// const dailyIndoctrinationEditions = {
+//    // HOW IT WORKS:
+//    // As much of the most current stage of text is generated, and then the remaining space is distributed to the other stages.
 
-   // Default
-   1: [
-      `We would have liked to welcome today's 3782 new employees, however after further investigation it has been found that they are all far too useless to be worth mentioning.`
-   ],
-   // After purchasing your first popup
-   2: [
-      `The Lorem Corp. Department of Forensics has found that claims of "malware-infected computers" are false and evil in nature. Disregard further claims.`,
-      `Breaking news - revolutionary new mining technique claims to increase lorem mining speed by up to 0.01%! The scientists involved have been appropriately awarded with several Nobel Peace prizes each.`,
-      `Criminal found hoarding lorem from the Corporation for supposed "alernative currencies". The Department of Advanced Rehabilitation has issued him with the death penalty before any further damage could be caused. An investigation has been launched, and is going to find him guilty after 2 weeks.`
-   ]
-};
+//    // Default
+//    1: [
+//       `We would have liked to welcome today's 3782 new employees, however after further investigation it has been found that they are all far too useless to be worth mentioning.`
+//    ],
+//    // After purchasing your first popup
+//    2: [
+//       `The Lorem Corp. Department of Forensics has found that claims of "malware-infected computers" are false and evil in nature. Disregard further claims.`,
+//       `Breaking news - revolutionary new mining technique claims to increase lorem mining speed by up to 0.01%! The scientists involved have been appropriately awarded with several Nobel Peace prizes each.`,
+//       `Criminal found hoarding lorem from the Corporation for supposed "alernative currencies". The Department of Advanced Rehabilitation has issued him with the death penalty before any further damage could be caused. An investigation has been launched, and is going to find him guilty after 2 weeks.`
+//    ]
+// };
+const dailyIndoctrinationEditions = {
+   1: {
+      headlines: [],
+      breakingNews: [
+         {
+            headline: "CORRUPTION IN THE COURT",
+            story:`BREAKING: Lorem Corp unjustly accused of Slavery. Executives protest, stating that stopping the use of slavery would significantly reduce profit margins.`
+         },
+         {
+            headline: "WAGES: MYTH OR REALITY?",
+            story: `BREAKING: Small group of interns protest their lack of a wage - met with violence and batons on behalf of local heros, says police commander. An investigation has been launched into the threat of further protests.`,
+         }
+      ],
+      stories: [
+         `A team of scientists has found that happiness may impede productivity by "up to 1%". Research into a happiness-neutralising pill is now underway.`,
+         `Board of executives too busy playing golf in face of climate crisis to actually do something. A unanimous decision to invest into fossil fuels arises amongst the discussion - "You can't go wrong with ol' faithful", states one executive.`,
+         `Lorem Corp. Fianancial Department decides to increase price of employee food by 80% each year, citing inflation.`,
+         `In an attempt to cut costs, most of Lorem Corp's chefs have been fired, and are now being replaced by several large blenders. Experts warn that this may reduce nutrition by upwards of 50%.`,
+         `Lorem Corp has started work on a technology to reduce complex thoughts and social connections, stating exemplary performance in interns having undergone the procedure: "Family, religion, friendship. These are the three demons you must slay if you wish to succeed in business."`,
+         `Development has begun for the new "Wage Cage 9000". To suppress immoral and rebellious thoughts of annual pay, the new design will include a Corporate Propaganda Screen, a reinforced cage frame and razor wire wrapping. Tests have shown that it may also increase lorem production by nearly 30%, prompting discussions about whether cages should be mandatory.`,
+         `We would have liked to welcome today's 3782 new employees, however after further investigation it has been found that they are all far too useless to be worth mentioning.`,
+         `Radioactive waste-products kill local wildlife, CEO declares new corporation-wide 'mystery meat monday' to now be in effect.`,
+         `Mystery Meat Mondays a hit amongst employees: "The best and only food we've had in weeks!", says one willing and not brainwashed employee.`,
+         `Military suggests that "guns which shoot guns" could revolutionize modern warfare.`,
+         `In an company-wide survey, 100% of interns were found to enjoy not being paid, and a further 100% say that they are happy with their position. Names will not be given.`,
+         `Mysterious lights spotted in the sky. Experts suggest that it may be the Arora Borealis; "It was the aliens!", says local crackhead.`,
+         `World renowned scientist concludes that 100% of crimes involve people who breathe air. A potential solution has been proposed, involving stopping people from breathing air to minimize crime.`,
+         `Lorem Corp found guilty of corporate espionage, continues to deny claims despite overwhelming evidence and unanimous decision, citing "There would be a different result if this case was heard in a Lorem™ approved court"`,
+         `Are beavers real? A recent study suggests that beavers may not actually exist, and you may simply be imagining them. Idea is backed by local addict.`,
+         `Toothfairy declares bankrupcy after candy prices surge upwards.`,
+         `Crackhead learns how to eat bread, the town's resident pidgeons are in shambles.`,
+         `Border police have arrested a suspicious looking man attempting to cross the border. When asked for a statement, one officer stated "He was wearing a trench coat, and when we went to inquire about his awful fashion sense he actually thought it was fashionable. It's lunatics like these that keep me on the force"`,
+         `A plague of locusts have descended upon the city centre. Not a single bread crumb remains, sparking outrage amongst the pigdeon community. "This is unacceptable, we demand military intervention immediately", says one pidgeon.`,
+         `Swarm of pidgeons raid local drug factory. Resulting crack-fueled pidgeon tornado causes disarray in the community.`
+      ],
+      images: []
+   }
+}
 
 const loremQuotaData = {
    0: {
