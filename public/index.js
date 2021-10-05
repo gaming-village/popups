@@ -523,6 +523,20 @@ const Game = {
 
             },
             unlocked: false
+         },
+         shadySales: {
+            name: "Shady Sales",
+            description: "Unlock the black market",
+            id: 10,
+            category: "challenge",
+            unlocked: false
+         },
+         brainwashed: {
+            name: "Brainwashed",
+            description: "Read 5 editions of the Daily Indoctrination",
+            id: 11,
+            category: "challenge",
+            unlocked: false
          }
       },
       getAchievements: function() {
