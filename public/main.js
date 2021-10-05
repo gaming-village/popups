@@ -343,7 +343,6 @@ const LoadData = () => {
 
 function setSettingsCookie() {
    let cookie = getCookie("settings");
-   console.log(cookie);
    if (cookie === "") {
       for (const settingsType of Object.values(Game.settings.list)) {
          for (const setting of Object.values(settingsType)) {

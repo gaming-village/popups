@@ -2684,7 +2684,7 @@ function setupMailbox() {
    hideLetter();
 
    getElement("mask").addEventListener("click", () => {
-      if (getElement("letter").classList.contains("hidden")) return;
+      if (getElement("mail-inbox").classList.contains("hidden")) return;
       hideMailbox();
    });
 }
