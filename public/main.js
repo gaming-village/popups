@@ -246,7 +246,10 @@ function formatNum(num) {
 class Sound {
    constructor({ path, volume = 1 }) {
       this.audio = new Audio(path);
-      this.audio.volume = volume;
+
+      const masterVolume = parseFloat(Game.settings.list.audio.masterVolume.value / 100);
+      this.audio.volume = volume * masterVolume;
+
       this.audio.play();
    }
 }

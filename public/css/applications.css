@@ -307,6 +307,10 @@
 .achievement-container.strips p {
    text-shadow: 0 0 1px #000, 0 0 2px #000, 0 0 3px #000, 0 0 4px #000;
 }
+.achievement-container.strips p.message {
+   font-style: italic;
+   text-shadow: none;
+}
 .achievement-container.strips .name {
    font-weight: bold;
 }

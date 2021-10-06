@@ -98,13 +98,18 @@ const applications = {
          // Remove existing achievements to prevent duplicates
          this.removeAchievements();
 
+         console.log(objects);
+
          const container = getElement("achievement-tracker").querySelector(".achievement-container");
          for (const object of objects) {
-            if (typeof object === "string") {
-               const header = document.createElement("h3");
-               header.innerHTML = object;
+            if (typeof object[1] === "string") {
+               const header = document.createElement(object[1]);
+               header.innerHTML = object[0];
+               if (object[1] === "p") {
+                  header.className = "message";
+               }
                container.appendChild(header);
-            } else if (typeof object === "object") {
+            } else if (typeof object[1] === "object") {
                const obj = document.createElement("div");
                obj.className = "achievement " + object[0];
                container.appendChild(obj);
@@ -134,11 +139,18 @@ const applications = {
          obj.querySelector(".description").innerHTML = achievement.description;
       },
       updateAchievements: function() {
+         let unlockedAchievements = 0;
+         let totalAchievements = 0;
          for (const achievement of Object.entries(Game.achievements.list)) {
             if (achievement[1].unlocked) {
                this.unlockAchievement(achievement[0], achievement[1]);
+               unlockedAchievements++;
             }
+            totalAchievements++;
          }
+
+         const progress = unlockedAchievements / totalAchievements * 100;
+         getElement("achievement-tracker").querySelector(".achievement-count").innerHTML = `Achievements: ${unlockedAchievements}/${totalAchievements} <i>(${progress}%)</i>`;
       },
       filters: ["category", "search", "unlocked"],
       selectedFilter: "",
@@ -221,7 +233,7 @@ const applications = {
 
                const objects = [];
                for (const category of Object.entries(dictionary)) {
-                  objects.push(capitalize(category[0]));
+                  objects.push([capitalize(category[0]), "h3"]);
                   for (const achievement of category[1]) {
                      objects.push(achievement);
                   }
@@ -238,7 +250,7 @@ const applications = {
             case "unlocked": {
                const dictionary = {
                   unlocked: [],
-                  locked:[]
+                  locked: []
                };
                for (const achievement of achievements) {
                   if (achievement[1].unlocked) {
@@ -250,7 +262,14 @@ const applications = {
 
                const objects = [];
                for (const category of Object.entries(dictionary)) {
-                  objects.push(capitalize(category[0]));
+                  objects.push([capitalize(category[0]), "h3"]);
+
+                  if (dictionary.unlocked.length === 0 && category[0] === "unlocked") {
+                     objects.push(["You haven't unlocked any achievements yet!", "p"]);
+                  } else if (dictionary.locked.length === 0 && category[0] === "locked") {
+                     objects.push(["There are no achievements left to unlock. I think it's time to take a break...", "p"]);
+                  }
+
                   for (const achievement of category[1]) {
                      objects.push(achievement);
                   }
@@ -559,6 +578,11 @@ const Game = {
          });
 
          updateUnlockedAchievements();
+      },
+      unlockAllAchievements: function() {
+         for (const achievementName of Object.keys(this.list)) {
+            this.unlockAchievement(achievementName);
+         }
       },
       setup: function() {
          this.loremAchievements = this.getAchievements().filter(achievement => achievement.hasOwnProperty("requirements") && Object.keys(achievement[1].requirements).includes("lorem"));
