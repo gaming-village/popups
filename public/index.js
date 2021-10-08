@@ -12,7 +12,7 @@ const applications = {
       setup: function() {
          Game.achievements.setup();
 
-         // Creates the achievement objects and puts them into the Achievement Tracker
+         // Creates the achievement objects and puts them into the Achievement Tracker 
          this.createAchievementsWithoutFilter();
 
          // Creates the filters for the achievements.
@@ -97,8 +97,6 @@ const applications = {
       drawAchievements: function(objects) {
          // Remove existing achievements to prevent duplicates
          this.removeAchievements();
-
-         console.log(objects);
 
          const container = getElement("achievement-tracker").querySelector(".achievement-container");
          for (const object of objects) {
@@ -285,62 +283,127 @@ const applications = {
 const Game = {
    currentView: "",
    inFocus: false,
+   tps: 10,
+   lorem: 0,
+   ticks: 0,
+   tick: function() {
+      this.ticks++;
+
+      if (this.previousLorem === undefined) this.previousLorem = this.lorem;
+      if (this.previousLorem !== this.lorem) {
+         const amount = this.lorem - this.previousLorem;
+         
+         for (const achievement of Game.achievements.loremAchievements) {
+            if (Game.lorem >= achievement[1].requirements.lorem) {
+               Game.achievements.unlockAchievement(achievement[0]);
+            }
+         }
+
+         Game.updateLorem(formatNum(amount));
+      }
+      this.previousLorem = this.lorem;
+
+      if (this.previousPackets === undefined) this.previousPackets = this.packets;
+      if (this.previousLorem !== this.lorem) {
+         // const amount = this.packets - this.previousPackets;
+
+         Game.updatePackets();
+      }
+
+      const SECONDS_BETWEEN_SAVES = 1;
+      if (this.ticks % (this.tps * SECONDS_BETWEEN_SAVES) === 0) {
+         updateSave();
+      }
+   },
+   gainLorem: function(amount, force = false) {
+      if (popups.visitor.tripleLorem) amount *= 3;
+      Game.lorem += amount;
+      Game.stats.loremEarned += amount;
+   },
+   loseLorem: function(amount, force = false) {
+      Game.lorem -= amount;
+   },
+   multLorem: (amount, force = false) => {
+      if (amount > 1) {
+         Game.stats.loremEarned += Game.lorem * (amount - 1);
+      }
+      Game.lorem *= amount;
+   },
+   updateLorem: (add) => {
+      createMiningEntry(add);
+      displayPoints(add);
+      setCookie("lorem", Game.lorem, 31);
+      Game.checkLoremLetters();
+
+      new PointIncrementText(add);
+   },
+   stats: {
+      loremEarned: 0
+   },
    settings: {
       dpp: 2,
       progressType: 2,
       animatedBGs: false,
       rainLetters: true,
+      categories: [{
+         type: "audio",
+         display: "Audio"
+      },
+      {
+         type: "numerals",
+         display: "Numerals"
+      },
+      {
+         type: "graphics",
+         display: "Graphics"
+      }],
       list: {
-         audio: {
-            name: "Audio",
-            masterVolume: {
-               name: "Master Volume",
-               id: "mv",
-               value: null,
-               type: "range",
-               min: 0,
-               max: 100,
-               defaultValue: 100,
-               additionalText: "[VALUE]%"
-            }
+         masterVolume: {
+            name: "Master Volume",
+            category: "audio",
+            id: "mv",
+            value: null,
+            type: "range",
+            min: 0,
+            max: 100,
+            defaultValue: 100,
+            additionalText: "[VALUE]%"
          },
-         numerals: {
-            name: "Numerals",
-            displayType: {
-               name: "Display Type",
-               id: "dt",
-               value: null,
-               type: "select",
-               options: ["Standard", "Letter", "Scientific Notation", "Decimal", "Words"],
-               defaultValue: 0
-            },
-            decimalPointPrecision: {
-               name: "Decimal Point Precision",
-               id: "dpp",
-               value: null,
-               type: "range",
-               min: 0,
-               max: 9,
-               defaultValue: 2
-            },
-            progressDisplay: {
-               name: "Progress Display",
-               id: "pd",
-               value: null,
-               type: "select",
-               options: ["Percentage", "Current/Total", "Current/Total (Percentage)"],
-               defaultValue: 0
-            }
+         displayType: {
+            name: "Display Type",
+            category: "numerals",
+            id: "dt",
+            value: null,
+            type: "select",
+            options: ["Standard", "Letter", "Scientific Notation", "Decimal", "Words"],
+            defaultValue: 0
          },
-         graphics: {
-            name: "Graphics",
-            animatedBackgrounds: {
-               name: "Animated Backgrounds",
-               id: "ab",
-               value: null,
-               type: "checkbox",
-               defaultValue: false
-            }
+         decimalPointPrecision: {
+            name: "Decimal Point Precision",
+            category: "numerals",
+            id: "dpp",
+            value: null,
+            type: "range",
+            min: 0,
+            max: 9,
+            defaultValue: 2
+         },
+         progressDisplay: {
+            name: "Progress Display",
+            category: "numerals",
+            id: "pd",
+            value: null,
+            type: "select",
+            options: ["Percentage", "Current/Total", "Current/Total (Percentage)"],
+            defaultValue: 0
+         },
+         animatedBackgrounds: {
+            name: "Animated Backgrounds",
+            category: "graphics",
+            id: "ab",
+            value: null,
+            type: "checkbox",
+            defaultValue: false
          }
       },
       getContainerElems: function(containerID) {
@@ -376,18 +439,27 @@ const Game = {
          return setting.options.indexOf(value);
       },
       setup: function() {
+         const dictionary = this.categories.reduce((previousValue, currentValue) => {
+            return { ...previousValue, [currentValue.type]: {
+               display: currentValue.display,
+               settings: []
+            }};
+         }, {});
+
+         for (const setting of Object.values(this.list)) {
+            dictionary[setting.category].settings.push(setting);
+         }
+
          const settings = getElement("settings").querySelector(".main");
-         for (const settingsType of Object.values(this.list)) {
-            const typeContainer = document.createElement("div");
-            settings.appendChild(typeContainer);
+         for (const category of Object.values(dictionary)) {
+            const categoryContainer = document.createElement("div");
+            settings.appendChild(categoryContainer);
             
             const header = document.createElement("h2");
-            header.innerHTML = settingsType.name;
-            typeContainer.appendChild(header);
+            header.innerHTML = category.display;
+            categoryContainer.appendChild(header);
 
-            for (const setting of Object.values(settingsType)) {
-               if (typeof setting === "string") continue;
-
+            for (const setting of category.settings) {
                let value = setting.value;
                if (value === null) {
                   value = setting.options[setting.defaultValue];
@@ -418,13 +490,12 @@ const Game = {
                   <p class="selected-val">${selectedVal}</p>
                </div>
                ${inputType}`;
-               typeContainer.appendChild(settingsContainer);
+               categoryContainer.appendChild(settingsContainer);
 
                if (setting.type === "checkbox") {
                   const input = settingsContainer.querySelector("input");
                   input.addEventListener("click", () => {
                      this.updateSettingsValue(settingsContainer, setting, input.checked);
-                     updateSettingsCookie();
                   });
                } else if (setting.type === "select") {
                   settingsContainer.querySelector("select").selectedIndex = setting.value;
@@ -432,13 +503,11 @@ const Game = {
                   const input = settingsContainer.querySelector("select");
                   input.addEventListener("change", () => {
                      this.updateSettingsValue(settingsContainer, setting, setting.options.indexOf(input.value));
-                     updateSettingsCookie();
                   });
                } else if (setting.type === "range") {
                   const input = settingsContainer.querySelector("input");
                   input.addEventListener("input", () => {
                      this.updateSettingsValue(settingsContainer, setting, Number(input.value));
-                     updateSettingsCookie();
                   });
                }
             }
@@ -492,16 +561,6 @@ const Game = {
             },
             unlocked: false
          },
-         // corporateEntity: {
-         //    name: "Corporate entity",
-         //    description: "Earn 100000000 lorem.",
-         //    id: 5,
-         //    category: "tiered",
-         //    requirements: {
-         //       lorem: 100000000
-         //    },
-         //    unlocked: false
-         // },
          multiLevelMarketing: {
             name: "Multi level marketing",
             description: "Hire your first employee.",
@@ -517,9 +576,6 @@ const Game = {
             description: "Convert some lorem to packets.",
             id: 7,
             category: "challenge",
-            requirements: {
-
-            },
             unlocked: false
          },
          allThatGlittersIsNotGold: {
@@ -576,8 +632,6 @@ const Game = {
             description: achievement.description,
             caption: "New achievement!"
          });
-
-         updateUnlockedAchievements();
       },
       unlockAllAchievements: function() {
          for (const achievementName of Object.keys(this.list)) {
@@ -585,7 +639,7 @@ const Game = {
          }
       },
       setup: function() {
-         this.loremAchievements = this.getAchievements().filter(achievement => achievement.hasOwnProperty("requirements") && Object.keys(achievement[1].requirements).includes("lorem"));
+         this.loremAchievements = this.getAchievements().filter(achievement => achievement[1].hasOwnProperty("requirements") && Object.keys(achievement[1].requirements).includes("lorem"));
       }
    },
    loremQuota: {
@@ -1004,41 +1058,85 @@ const Game = {
    },
 
    blackMarket: {
-      unlocked: false,
-      unlockBlackMarket: () => {
-         getElement("nav-black-market").classList.remove("hidden");
-         Game.blackMarket.unlocked = true;
+      isUnlocked: false,
+      transfer: function() {
+         Game.addPackets(Game.lorem);
+         Game.loseLorem(Game.lorem);
       },
-      unlockShopAttempt: (shop) => {
-         if (!shop.unlocked && Game.packetCount >= shop.cost) {
+      setup: function() {
+         getElement("transfer-rate").innerHTML = Game.transferRate;
+         
+         const transferButton = getElement("transfer-button");
+         transferButton.addEventListener("click", this.transfer);
+
+         // Updates the packet counts.
+         Game.updatePackets();
+
+         // Creates the unlockable shops seen at the bottom of the Black Market.
+         this.shops.createShops();
+      },
+      unlockBlackMarket: function() {
+         getElement("nav-black-market").classList.remove("hidden");
+         this.isUnlocked = true;
+      },
+      shops: {
+         buyShop: function(shop, shopObject) {
             Game.addPackets(-shop.cost, true);
 
-            Game.blackMarket.unlockShop(shop);
-         }
-      },
-      unlockShop: (shop) => {
-         getElement(`${shop.name}-segment`).classList.remove("locked");
+            this.unlockShop(shop, shopObject);
+         },
+         unlockShop: function(shop, shopObject) {
+            shopObject.classList.remove("locked");
+   
+            shop.isUnlocked = true;
+            cookies.unlockedShops.update();
+   
+            // const shopObject = getElement(`${shop.name}-segment`);
+            shopObject.querySelector("h2").innerHTML = shop.display.title;
+            shopObject.querySelector("p").innerHTML = shop.display.description;
+            shopObject.querySelector("button").innerHTML = "GO";
+         },
+         lockShop: function(shop, shopObject) {
+            shopObject.classList.add("locked");
 
-         shop.unlocked = true;
-         cookies.unlockedShops.update();
+            // Update the shop text to show it as locked.
+            shopObject.querySelector("h2").innerHTML = "LOCKED";
+   
+            const suffix = shop.cost === 1 ? "" : "s";
+            shopObject.querySelector("p").innerHTML = `You require <b>${shop.cost} packet${suffix}</b> to unlock this shop.`;
+   
+            shopObject.querySelector("button").innerHTML = "BUY";
+         },
+         canAffordShop: function(shop) {
+            return Game.packets >= shop.cost;
+         },
+         createShop: function(shop) {
+            const shopObject = document.createElement("div");
+            shopObject.className = "segment";
+            getElement("black-market-bottom").appendChild(shopObject);
 
-         const shopObject = getElement(`${shop.name}-segment`);
-         shopObject.querySelector("h2").innerHTML = shop.display.title;
-         shopObject.querySelector("p").innerHTML = shop.display.description;
-         shopObject.querySelector("button").innerHTML = "GO";
-      },
-      lockShop: (shop) => {
-         // Update the shop text to show it as locked.
-         const shopObject = getElement(`${shop.name}-segment`);
-         shopObject.querySelector("h2").innerHTML = "LOCKED";
+            shopObject.innerHTML = `
+            <h2></h2>
+            <p></p>
+            <button class="red-button shop-button"></button>`;
 
-         const suffix = shop.cost == 1 ? "" : "s";
-         shopObject.querySelector("p").innerHTML = `You require <b>${shop.cost} packet${suffix}</b> to unlock this shop.`;
+            if (shop.isUnlocked) {
+               this.unlockShop(shop, shopObject);
+            } else {
+               this.lockShop(shop, shopObject);
+            }
 
-         shopObject.querySelector("button").innerHTML = "BUY";
-      },
-      clickShop: (shop) => {
-         shop.clickEvent();
+            shopObject.querySelector("button").addEventListener("click", () => {
+               if (shop.isUnlocked) {
+                  shop.clickEvent();
+               } else if (this.canAffordShop(shop)) this.buyShop(shop, shopObject);
+            });
+         },
+         createShops: function() {
+            for (const shop of Object.values(blackMarketShops)) {
+               this.createShop(shop);
+            }
+         },
       },
       minigames: {
          open: () => {
@@ -1071,115 +1169,17 @@ const Game = {
          }
       }
    },
-   setup: {
-      setupLorem: () => {
-         const loremCookie = getCookie("lorem");
-         if (loremCookie == "") {
-            setCookie("lorem", 0, 31);
-         } else {
-            Game.lorem = parseFloat(loremCookie);
-         }
-      }, 
-      setupPackets: () => {
-         getElement("transfer-rate").innerHTML = Game.transferRate;
-         
-         const transferButton = getElement("transfer-button");
-         transferButton.addEventListener("click", () => {
-            if (transferButton.classList.contains("blocked")) return;
-            
-            transferButton.classList.add("blocked");
-            setTimeout(() => {
-               transferButton.classList.remove("blocked");
-            }, 5000);
-            
-            Game.addPackets(Game.lorem);
-            Game.gainLorem(-Game.lorem);
-         });
-         
-         const packetCookie = getCookie("packets");
-         if (packetCookie == "") {
-            setCookie("packets", 0, 31);
-         } else {
-            Game.packetCount = parseFloat(packetCookie);
-         }
-
-         Game.updatePackets();
-      },
-      setupBlackMarket: () => {
-         // Setup each black market shop.
-         Object.values(blackMarketShops).forEach(shop => {
-            new blackMarketShop(shop);
-
-            const shopObject = getElement(`${shop.name}-segment`);
-            // Initialise all shops.
-            if (shop.unlocked) {
-               Game.blackMarket.unlockShop(shop);
-            } else {
-               Game.blackMarket.lockShop(shop);
-            }
-
-            shopObject.querySelector("button").addEventListener("click", () => {
-               if (!shop.unlocked) {
-                  Game.blackMarket.unlockShopAttempt(shop);
-                  return;
-               }
-               Game.blackMarket.clickShop(shop);
-            });
-         });
-      }
-   },
-   lorem: 0,
-   gainLorem: (amount, force = false) => {
-      if (semiPopups.scourgeOfChunky.activated && amount > 0 && !force) return;
-
-      for (const achievement of Game.achievements.loremAchievements) {
-         if (Game.lorem >= achievement[1].requirements.lorem) {
-            Game.achievements.unlockAchievement(achievement[0]);
-         }
-      }
-
-      if (popups.visitor.tripleLorem) amount *= 3;
-
-      Game.lorem += amount;
-      // Game.stats.totalLoremMined += amount;
-      // Game.stats.loremEarned += amount;
-      // Game.updateLorem(formatFloat(amount));
-      Game.updateLorem(formatNum(amount));
-   },
-   multLorem: (mult, force = false) => {
-      if (semiPopups.scourgeOfChunky.activated && !force) return;
-
-      const loremBefore = Game.lorem;
-      Game.lorem *= mult;
-      // Game.stats.totalLoremMined *= mult;
-      // Game.stats.loremEarned *= mult;
-
-      // Find the difference in lorem.
-      const difference = Game.lorem - loremBefore;
-      Game.updateLorem(formatNum(difference));
-   },
-   updateLorem: (add) => {
-      createMiningEntry(add);
-      displayPoints(add);
-      // applications.eventViewer.createEvent(['Gained ', '#ccc'], [add, '#fff'], [' lorem', '#ccc']);
-      setCookie("lorem", Game.lorem, 31);
-      Game.checkLoremLetters();
-
-      new PointIncrementText(add);
-   },
 
    transferRate: 0.1,
 
-   packetCount: 0,
+   packets: 0,
    addPackets: (add, directAdd = false) => {
       const packets = add * (directAdd ? 1 : Game.transferRate);
-      Game.packetCount += packets;
+      Game.packets += packets;
       Game.updatePackets();
-      // applications.eventViewer.createEvent(['Gained ', '#ccc'], [add, '#fff'], [' packets', '#ccc']);
    },
-   updatePackets: () => {
-      getElement("packet-count").innerHTML = formatFloat(Game.packetCount);
-      setCookie("packets", Game.packetCount, 31);
+   updatePackets: function() {
+      getElement("packet-count").innerHTML = formatFloat(Game.packets);
    },
 
    checkLoremLetters: () => {
@@ -1211,9 +1211,6 @@ const Game = {
          if (popup.displayed) visiblePopups.push(popup);
       });
       return visiblePopups;
-   },
-   stats: {
-      totalLoremMined: 0
    },
    startMenu: {
       panels: {
@@ -1362,65 +1359,64 @@ const Game = {
             }
          },
          "menu-application-shop": {
+            categories: ["lifestyle", "utility"],
             applications: {
-               lifestyle: {
-                  loremCounter: {
-                     name: "Lorem Counter",
-                     description: "The primary way of viewing your lorem.",
-                     img: "images/win95/win95-save.png",
-                     objID: "lorem-counter",
-                     isDefaultApplication: true
-                  },
-                  achievementTracker: {
-                     name: "Achievement Tracker",
-                     description: "View your most significant achievements made here at Lorem Corp.",
-                     img: "images/win95/win95-save.png",
-                     objID: "achievement-tracker",
-                     isDefaultApplication: true
-                  },
-                  bigLoremCounter: {
-                     name: "Big Lorem Counter",
-                     description: "A bigger, better lorem counter.",
-                     img: "images/win95/win95-save.png",
-                     objID: "",
-                     isDefaultApplication: false,
-                     price: 100
-                  },
-                  progressOverview: {
-                     name: "Progress Overview",
-                     description: "View your progress in relation to other employees.",
-                     img: "images/win95/win95-save.png",
-                     objID: "",
-                     isDefaultApplication: false,
-                     price: 500
-                  }
+               loremCounter: {
+                  name: "Lorem Counter",
+                  category: "lifestyle",
+                  description: "The primary way of viewing your lorem.",
+                  img: "images/win95/win95-save.png",
+                  objID: "lorem-counter",
+                  isDefaultApplication: true
                },
-               utility: {
-                  antivirus: {
-                     name: "Antivirus",
-                     description: "Tired of unwanted popups appearing? Simply download this application to rid your computer of malware.",
-                     img: "images/win95/win95-save.png",
-                     objID: "",
-                     isDefaultApplication: false,
-                     price: 500 
-                  },
-                  internEnhancementProgram: {
-                     name: "Intern Enhancement Program",
-                     description: "Optimise your filthy intern's production capabilities, through somewhat unethical means.",
-                     img: "images/win95/win95-save.png",
-                     objID: "",
-                     isDefaultApplication: false,
-                     price: 1000
-                  }
+               achievementTracker: {
+                  name: "Achievement Tracker",
+                  category: "lifestyle",
+                  description: "View your most significant achievements made here at Lorem Corp.",
+                  img: "images/win95/win95-save.png",
+                  objID: "achievement-tracker",
+                  isDefaultApplication: true
+               },
+               bigLoremCounter: {
+                  name: "Big Lorem Counter",
+                  category: "lifestyle",
+                  description: "A bigger, better lorem counter.",
+                  img: "images/win95/win95-save.png",
+                  objID: "",
+                  isDefaultApplication: false,
+                  price: 100
+               },
+               progressOverview: {
+                  name: "Progress Overview",
+                  category: "lifestyle",
+                  description: "View your progress in relation to other employees.",
+                  img: "images/win95/win95-save.png",
+                  objID: "",
+                  isDefaultApplication: false,
+                  price: 500
+               },
+               antivirus: {
+                  name: "Antivirus",
+                  category: "utility",
+                  description: "Tired of unwanted popups appearing? Simply download this application to rid your computer of malware.",
+                  img: "images/win95/win95-save.png",
+                  objID: "",
+                  isDefaultApplication: false,
+                  price: 500 
+               },
+               internEnhancementProgram: {
+                  name: "Intern Enhancement Program",
+                  category: "utility",
+                  description: "Optimise your filthy intern's production capabilities, through somewhat unethical means.",
+                  img: "images/win95/win95-save.png",
+                  objID: "",
+                  isDefaultApplication: false,
+                  price: 1000
                }
             },
             canAffordApplication(application) {
                const cost = application.price;
-               if (Game.lorem >= cost) 
-               {
-                  return true;
-               }
-               return false;
+               return Game.lorem >= cost;
             },
             buyApplication(applicationName, application) {
                if (application[1].owned || !this.canAffordApplication(application[1])) return;
@@ -1428,7 +1424,6 @@ const Game = {
                Game.gainLorem(-application[1].price);
                application[1].owned = true;
                this.updateAvailableApplications(applicationName);
-               updateOwnedApplications();
 
                // Renders the application on the taskbar.
                taskbar.createApplication(application[1].name, "images/win95/program2.png", "taskbar-" + application[0]);
@@ -1441,48 +1436,44 @@ const Game = {
                });
             },
             updateAvailableApplications: function(applicationName) {
-               for (const applicationCategory of Object.entries(this.applications)) {
-                  for (const application of Object.entries(applicationCategory[1])) {
-                     const obj = getElement(applicationName).querySelector("." + applicationCategory[0] + "-applications-container ." + application[0]);
-                     const btn = obj.querySelector("button");
+               for (const application of Object.entries(this.applications)) {
+                  const obj = getElement(applicationName).querySelector("." + application[1].category + "-applications-container ." + application[0]);
+                  const btn = obj.querySelector("button");
 
-                     if (application[1].isDefaultApplication || application[1].owned) {
-                        btn.innerHTML = "Owned";
-                        btn.classList.add("dark");
-                        obj.classList.add("owned");
-                        obj.classList.remove("affordable");
+                  if (application[1].isDefaultApplication || application[1].owned) {
+                     btn.innerHTML = "Owned";
+                     btn.classList.add("dark");
+                     obj.classList.add("owned");
+                     obj.classList.remove("affordable");
+                  } else {
+                     btn.innerHTML = application[1].price;
+                     if (this.canAffordApplication(application[1])) {
+                        obj.classList.add("affordable");
                      } else {
-                        btn.innerHTML = application[1].price;
-                        if (this.canAffordApplication(application[1])) {
-                           obj.classList.add("affordable");
-                        } else {
-                           obj.classList.remove("affordable");
-                        }
+                        obj.classList.remove("affordable");
                      }
                   }
                }
             },
             open: function(applicationName) {
-               for (const applicationCategory of Object.entries(this.applications)) {
-                  const container = getElement(applicationName).querySelector("." + applicationCategory[0] + "-applications-container");
-                  for (const application of Object.entries(applicationCategory[1])) {
-                     const obj = document.createElement("div");
-                     obj.className = "application-preview " + application[0];
-                     container.appendChild(obj);
+               for (const application of Object.entries(this.applications)) {
+                  const obj = document.createElement("div");
+                  obj.className = "application-preview " + application[0];
+                  const container = getElement(applicationName).querySelector("." + application[1].category + "-applications-container");
+                  container.appendChild(obj);
 
-                     obj.innerHTML = `
-                     <div class="icon">
-                        <img src=${application[1].img} />   
-                     </div>
-                     <div class="details">
-                        <h3 class="name">${application[1].name}</h3>
-                        <p class="description">${application[1].description}</p>
-                     </div>
-                     <button class="button"></button>`;
+                  obj.innerHTML = `
+                  <div class="icon">
+                     <img src=${application[1].img} />   
+                  </div>
+                  <div class="details">
+                     <h3 class="name">${application[1].name}</h3>
+                     <p class="description">${application[1].description}</p>
+                  </div>
+                  <button class="button"></button>`;
 
-                     const btn = obj.querySelector("button");
-                     btn.addEventListener("click", () => this.buyApplication(applicationName, application));
-                  }
+                  const btn = obj.querySelector("button");
+                  btn.addEventListener("click", () => this.buyApplication(applicationName, application));
                }
 
                this.updateAvailableApplications(applicationName);
@@ -1491,8 +1482,8 @@ const Game = {
                const application = getElement(applicationName);
                application.classList.add("hidden");
 
-               for (const applicationCategory of Object.keys(this.applications)) {
-                  const container = getElement(applicationName).querySelector("." + applicationCategory + "-applications-container");
+               for (const category of this.categories) {
+                  const container = getElement(applicationName).querySelector("." + category + "-applications-container");
                   while (container.children[0]) {
                      container.children[0].remove();
                   }
@@ -1526,15 +1517,13 @@ const Game = {
                getElement("menu-application-shop").querySelector(".title-bar img").addEventListener("click", () => this.close("menu-application-shop"));
 
                // Sets up all minimize buttons
-               for (const applicationCategory of Object.values(this.applications)) {
-                  for (const application of Object.entries(applicationCategory)) {
-                     if (applications[application[1].objID] !== undefined) {
-                        const obj = getElement(application[1].objID);
-                        obj.querySelector(".minimize-button").addEventListener("click", () => {
-                           this.closeApplication(application);
-                           updateApplicationPositions();
-                        });
-                     }
+               for (const application of Object.entries(this.applications)) {
+                  if (applications[application[1].objID] !== undefined) {
+                     const obj = getElement(application[1].objID);
+                     obj.querySelector(".minimize-button").addEventListener("click", () => {
+                        this.closeApplication(application);
+                        updateApplicationPositions();
+                     });
                   }
                }
 
@@ -1545,14 +1534,11 @@ const Game = {
                   const id = taskbarItem.id.substring(8, taskbarItem.id.length);
 
                   let currentApplication;
-                  for (const applicationCategory of Object.values(this.applications)) {
-                     for (const application of Object.entries(applicationCategory)) {
-                        if (application[0] === id) {
-                           currentApplication = application;
-                           break;
-                        }
+                  for (const application of Object.entries(this.applications)) {
+                     if (application[0] === id) {
+                        currentApplication = application;
+                        break;
                      }
-                     if (currentApplication !== undefined) break;
                   }
                   
                   const applicationData = applications[currentApplication[1].objID];
@@ -1585,24 +1571,20 @@ const Game = {
                for (const application of Object.values(applications)) {
                   if (application.isOpened) {
                      let applicationReference;
-                     for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
-                        if (applicationCategory.hasOwnProperty(application.id)) {
-                           applicationReference = applicationCategory[application.id];
+                     for (const currentApplication of Object.entries(this.applications)) {
+                        if (currentApplication[0] === application.id) {
+                           applicationReference = currentApplication;
+                           break;
                         }
                      }
-                     // console.log([application.id, applicationReference]);
-
-                     this.openApplication([application.id, applicationReference]);
+                     this.openApplication(applicationReference);
                   }
                }
             }
          },
          isOpened: function(applicationName) {
             const application = getElement(applicationName);
-            if (application.classList.contains("hidden")) {
-               return false;
-            }
-            return true;
+            return !application.classList.contains("hidden");
          },
          setupAll: function() {
             for (const prop of Object.values(this)) {
@@ -1745,22 +1727,19 @@ const Game = {
          }
       },
       renderApplications: function() {
-         for (const applicationCategory of Object.values(this.applications["menu-application-shop"].applications)) {
-            for (const application of Object.entries(applicationCategory)) {
-               if (!application[1].owned) continue;
+         for (const application of Object.entries(this.applications["menu-application-shop"].applications)) {
+            if (!application[1].owned) continue;
 
-               // Renders the applications on the taskbar.
-               taskbar.createApplication(application[1].name, "images/win95/program2.png", "taskbar-" + application[0]);
+            // Renders the applications on the taskbar.
+            taskbar.createApplication(application[1].name, "images/win95/program2.png", "taskbar-" + application[0]);
 
-               // Renders the applications in the file system.
-               const name = slugCase(application[0]).replace("-", "_");
-               fileSystem.createFile({
-                  name: name,
-                  extension: "exe"
-               });
-            }
+            // Renders the applications in the file system.
+            const name = slugCase(application[0]).replace("-", "_");
+            fileSystem.createFile({
+               name: name,
+               extension: "exe"
+            });
          }
-
       },
       hideMenuOnHoverOut: function() {
          getElement("start-menu").addEventListener("mouseleave", () => {
@@ -1768,10 +1747,7 @@ const Game = {
          });
       },
       startMenuIsVisible: function() {
-         if (getElement("start-menu") === null) {
-            return false;
-         }
-         return true;
+         return getElement("start-menu") !== null;
       },
       hideStartMenu: function() {
          getElement("start-menu").remove();
@@ -2076,7 +2052,6 @@ const terminal = {
                      this.writeLine(['ERROR: ', '#f53527'], [' The command ', '#888'], [`'${rootObject[0]}'`, '#bbb'], [' has no parameter ', '#888'], [`'${args[1]}'`, 'italic', '#bbb'], ['.', '#888']);
                   }
                } else {
-                  console.log('e!');
                   const nextArgs = args.slice();
                   nextArgs.splice(0, 1);
                   this.searchCommand(property[1], nextArgs, rootObject);
@@ -2232,7 +2207,6 @@ class LoremQuota {
    setQuotaProgress() {
       let progress = Game.lorem / this.quota * 100;
       if (progress > 100 && typeof Game.loremQuota !== 'undefined') {
-         console.log('success! ' + progress)
          this.reachQuota();
          progress = Game.lorem / this.quota * 100;
       }
@@ -2348,12 +2322,9 @@ function instantiateClasses() {
    generateClasses("popups", popupNames);
    const semiPopupNames = ["chunkyMessage", "plagueOfChunky", "scourgeOfChunky", "wrathOfChunky", "hexOfChunky", "ad1", "ad2", "ad3", "ad4", "ad5", "loremWarning"];
    generateClasses("semiPopups", semiPopupNames);
-   // const applicationNames = ["loremController", "loremCounter", 'eventViewer'];
-   // generateClasses("applications", applicationNames);
 }
 
 function displayPoints(add) {
-   // const loremCount = formatFloat(Game.lorem);
    const loremCount = formatNum(Game.lorem);
    
    // Update all listed element's text using their ID's
@@ -2499,17 +2470,148 @@ document.addEventListener('DOMContentLoaded', () =>
      getElement("loading-screen").classList.add("hidden");
   }));
 
+
+
+const loadSaveData = () => {
+   let saveData = ReadSaveData();
+   if (saveData === "") saveData = GetDefaultSaveData();
+
+   const sections = saveData.split("|");
+   for (let i = 0; i < sections.length; i++) {
+      const section = sections[i];
+      switch (i) {
+         case 0: {
+            // Lorem count, total lorem earned, packet count
+
+            const parts = section.split("_");
+            for (let j = 0; j < parts.length; j++) {
+               const part = Number(parts[j]);
+               if (j === 0) {
+                  Game.lorem = part;
+               } else if (j === 1) {
+                  Game.stats.loremEarned = part;
+               } else if (j === 2) {
+                  Game.packets = part;
+               }
+            }
+
+            break;
+         } case 1: {
+            // Employees
+
+            const employeeNames = Object.keys(loremCorpData.jobs);
+            const employeeData = section.split("_");
+            for (let j = 0; j < employeeData.length; j++) {
+               Game.loremCorp.workers[employeeNames[j]] = Number(employeeData[j]);
+            }
+
+            break;
+         } case 2: {
+            // Received letters, opened letters, opened rewards
+
+            const parts = section.split("_");
+
+            const dictionary = parts.reduce((previousValue, currentValue) => {
+               return previousValue.concat(Number(currentValue).toString(2));
+            }, []);
+
+            for (let j = 0; j < dictionary.length; j++) {
+               const part = dictionary[j];
+
+               const letterData = part.split("").reverse();
+               for (let k = 0; k < letterData.length; k++) {
+                  const newValue = letterData[k];
+                  if (newValue === "0") continue;
+
+                  const letter = Object.values(letters)[k];
+                  if (j === 0) {
+                     letter.received = true;
+                  } else if (j === 1) {
+                     letter.opened = true;
+                  } else if (j === 2) {
+                     letter.rewards.opened = true;
+                  }
+               }
+            }
+            break;
+         } case 3: {
+            // Settings
+
+            const parts = section.split("_");
+            for (let j = 0; j < parts.length; j++) {
+               const part = Number(parts[j]);
+               const setting = Object.values(Game.settings.list)[j];
+               if (setting.type === "range" || setting.type === "select") {
+                  setting.value = part;
+               } else {
+                  setting.value = part === 1 ? true : false;
+               }
+            }
+
+            break;
+         } case 4: {
+            // Owned applications, opened applications
+
+            const parts = section.split("_");
+            const dictionary = parts.reduce((previousValue, currentValue) => {
+               return previousValue.concat(Number(currentValue).toString(2));
+            }, []);
+
+            for (let j = 0; j < dictionary.length; j++) {
+               const applicationData = dictionary[j].split("");
+               for (let k = 0; k < applicationData.length; k++) {
+                  const application = Object.values(applications)[k];
+                  const applicationReference = Object.values(Game.startMenu.applications["menu-application-shop"].applications)[k];
+
+                  if (applicationData[k] === "1") {
+                     if (j === 0) {
+                        applicationReference.owned = true;
+                     } else if (j === 1) {
+                        application.isOpened = true;
+                     }
+                  } else {
+                     if (j === 0) {
+                        applicationReference.owned = false;
+                     } else if (j === 1) {
+                        application.isOpened = false;
+                     }
+                  }
+               }
+            }
+
+            break;
+         } case 5: {
+            // Achievements
+
+            const parts = Number(section).toString(2).split("").reverse();
+            const achievements = Object.values(Game.achievements.list);
+            for (let j = 0; j < achievements.length; j++) {
+               if (parts[j] === "0") continue;
+               if (parts[j] === undefined) break;
+               
+               const achievement = achievements[j];
+               achievement.unlocked = true;
+            }
+
+            break;
+         }
+      }
+   }
+}
+
 window.onload = () => {
    console.log("Welcome to the console!");
    console.log("If you're trying to modify the game, try clicking the 'Lorem Ipsum Generator' title text :)");
 
    instantiateClasses();
 
+   loadSaveData();
+
    LoadData();
 
-   setupNavBar();
+   setInterval(() => Game.tick(), 1000 / Game.tps);
 
-   Game.setup.setupLorem();
+   setupNavBar();
 
    // Unlock lorem quota. (Has to be done after LoadData because loremQuota doesn't exist until then)
    {
@@ -2520,8 +2622,7 @@ window.onload = () => {
       }
    }
 
-   Game.setup.setupPackets();
-   Game.setup.setupBlackMarket();
+   Game.blackMarket.setup();
    displayPoints(0);
 
    changeViewHeights();
@@ -2533,7 +2634,7 @@ window.onload = () => {
 
    setupMailbox();
 
-   if (getCookie('misc').split("")[0] === "1") letters.invitation.rewards.reward();
+   if (getCookie('misc').split("")[0] === "1") Game.blackMarket.unlockBlackMarket();
 
    // Terminal setup
    getElement('pointer-content').addEventListener('keydown', function(event) {
@@ -2549,11 +2650,10 @@ window.onload = () => {
    });
 
    welcomeScreen.load();
-   const received = getCookie('receivedLetters').split('')[0];
-   if (received === '0') {
-      welcomeScreen.show();
-   } else {
+   if (letters.start.received) {
       welcomeScreen.hide();
+   } else {
+      welcomeScreen.show();
    }
 
    Game.settings.setup();
@@ -2727,7 +2827,6 @@ function showInbox() {
    // Show any selected letters.
    if (selectedMessage >= 0) {
       const newSelectedMessage = Object.values(letters)[selectedMessage];
-      console.log(Object.entries(letters)[selectedMessage]);
 
       changeSelectedLetter(newSelectedMessage);
       switchLetterVisibility(newSelectedMessage);
@@ -2823,9 +2922,7 @@ function showLetter(letterObj) {
    letterEntry.classList.add('opened');
    letterEntry.classList.remove('reward-available');
    
-   // Remember it as opened
    letter.opened = true;
-   cookies.openedLetters.update();
 
    let content = letter.content;
    const textNames = ["Corporate Overview"];
@@ -2897,7 +2994,6 @@ function receiveLetter(letterName) {
 
    letter.received = true;
    createInboxEntry([letterName, letters[letterName]]);
-   cookies.receivedLetters.update();
 
    if (!letter.opened) {
       newLetterAlert(letter);
@@ -2905,8 +3001,6 @@ function receiveLetter(letterName) {
          path: './audio/new-mail.mp3'
       });
    }
-
-   // applications.eventViewer.createEvent(['Received letter ', '#ccc'], [letterName, '#fff']);
 }
 function newLetterAlert(letter) {
    getElement('nav-mail').classList.add('new-mail');
@@ -3131,7 +3225,7 @@ function dataSetup() {
       workerCookies = workerCookies.map(cookie => cookie[0]);
 
       // Reset cookies when the reset button is clicked
-      const otherCookies = ['lorem', 'packets', 'openedLetters', 'openedRewards', 'receivedLetters', 'unlockedMalware', "unlockedShops", "misc", "settings", "applicationPositions", "ownedApplications", "unlockedAchievements"];
+      const otherCookies = ['lorem', 'packets', 'openedLetters', 'openedRewards', 'receivedLetters', 'unlockedMalware', "unlockedShops", "misc", "settings", "applicationPositions", "ownedApplications", "unlockedAchievements", "save1"];
       const allCookies = [...workerCookies, ...otherCookies];
       // Delete cookies
       allCookies.forEach(cookie => document.cookie = cookie +'=; Path=/; Expires=Thu, 01 Jan 1970 00:00:01 GMT;');

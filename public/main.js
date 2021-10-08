@@ -212,8 +212,8 @@ const numToLetter = (num, dpp) => {
    }
 };
 function formatNum(num) {
-   const dpp = Number(Game.settings.list.numerals.decimalPointPrecision.value);
-   const displayType = Number(Game.settings.list.numerals.displayType.value) + 1;
+   const dpp = Number(Game.settings.list.decimalPointPrecision.value);
+   const displayType = Number(Game.settings.list.displayType.value) + 1;
 
    /*
     * (1) Standard: 1.23 million
@@ -247,7 +247,7 @@ class Sound {
    constructor({ path, volume = 1 }) {
       this.audio = new Audio(path);
 
-      const masterVolume = parseFloat(Game.settings.list.audio.masterVolume.value / 100);
+      const masterVolume = parseFloat(Game.settings.list.masterVolume.value / 100);
       this.audio.volume = volume * masterVolume;
 
       this.audio.play();
@@ -329,39 +329,36 @@ class CookieObjectManager {
 const cookies = {};
 const LoadData = () => {
    cookies.unlockedMalware = new CookieObjectManager('unlockedMalware', popupData, 'unlocked');
-   cookies.receivedLetters = new CookieObjectManager('receivedLetters', letters, 'received');
-   cookies.openedLetters = new CookieObjectManager('openedLetters', letters, 'opened');
+   // cookies.receivedLetters = new CookieObjectManager('receivedLetters', letters, 'received');
+   // cookies.openedLetters = new CookieObjectManager('openedLetters', letters, 'opened');
    cookies.unlockedShops = new CookieObjectManager('unlockedShops', blackMarketShops, 'unlocked');
    cookies.unlockedMalware = new CookieObjectManager("unlockedMalware", popupData, "unlocked");
 
-   setSettingsCookie();
+   // setSettingsCookie();
    setMiscCookie();
-   setOpenedRewards();
+   // setOpenedRewards();
    if (typeof Game !== "undefined") {
       setApplicationPositions();
-      setOwnedApplications();
-      setUnlockedAchievements();
+      // setOwnedApplications();
+      // setUnlockedAchievements(`);
    }
 }
 
 function setSettingsCookie() {
    let cookie = getCookie("settings");
    if (cookie === "") {
-      for (const settingsType of Object.values(Game.settings.list)) {
-         for (const setting of Object.values(settingsType)) {
-            if (typeof setting === "string") continue;
+      for (const setting of Object.values(Game.settings.list)) {
+         if (typeof setting === "string") continue;
 
-            let segment = `${setting.id}:`;
-            if (setting.type === "range") {
-               segment += setting.defaultValue;
-            } else if (setting.type === "select") {
-               segment += setting.defaultValue;
-               // segment += Game.settings.getSelectIndex(setting);
-            } else if (setting.type === "checkbox") {
-               segment += setting.defaultValue ? "1" : "0";
-            }
-            cookie += segment + ",";
+         let segment = `${setting.id}:`;
+         if (setting.type === "range") {
+            segment += setting.defaultValue;
+         } else if (setting.type === "select") {
+            segment += setting.defaultValue;
+         } else if (setting.type === "checkbox") {
+            segment += setting.defaultValue ? "1" : "0";
          }
+         cookie += segment + ",";
       }
       cookie = cookie.substring(0, cookie.length - 1);
    }
@@ -374,37 +371,28 @@ function setSettingsCookie() {
       return {...previousValue, [parts[0]]: parts[1]};
    }, {})
    
-   for (const settingsType of Object.values(Game.settings.list)) {
-      for (const setting of Object.values(settingsType)) {
-         if (typeof setting === "string") continue;
-
-         if (setting.type === "select") {
-            setting.value = dictionary[setting.id];
-         } else if (setting.type === "range") {
-            setting.value = dictionary[setting.id];
-         } else if (setting.type === "checkbox") {
-            setting.value = dictionary[setting.id] === 1 ? true : false;
-         }
+   for (const setting of Object.values(Game.settings.list)) {
+      if (setting.type === "select") {
+         setting.value = dictionary[setting.id];
+      } else if (setting.type === "range") {
+         setting.value = dictionary[setting.id];
+      } else if (setting.type === "checkbox") {
+         setting.value = dictionary[setting.id] === 1 ? true : false;
       }
    }
 }
 function updateSettingsCookie() {
-   let newCookie = ""
-   for (const settingsType of Object.values(Game.settings.list)) {
-      for (const setting of Object.values(settingsType)) {
-         if (typeof setting === "string") continue;
-
-         newCookie += setting.id + ":";
-         if (setting.type === "checkbox") {
-            newCookie += setting.value ? "1" : "0";
-         } else if (setting.type === "select") {
-            newCookie += setting.value
-            // newCookie += Game.settings.getSelectIndex(setting);
-         } else if (setting.type === "range") {
-            newCookie += setting.value;
-         }
-         newCookie += ",";
+   let newCookie = "";
+   for (const setting of Object.values(Game.settings.list)) {
+      newCookie += setting.id + ":";
+      if (setting.type === "checkbox") {
+         newCookie += setting.value ? "1" : "0";
+      } else if (setting.type === "select") {
+         newCookie += setting.value;
+      } else if (setting.type === "range") {
+         newCookie += setting.value;
       }
+      newCookie += ",";
    }
    newCookie = newCookie.substring(0, newCookie.length - 1);
    setCookie("settings", newCookie);
@@ -542,9 +530,9 @@ function setApplicationPositions() {
    if (cookie === "") {
       for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
          for (const applicationName of Object.keys(applicationCategory)) {
-            const DEFAULT_VISIBLE_APPLICATIONS = ["loremCounter"];
-            const isVisible = DEFAULT_VISIBLE_APPLICATIONS.includes(applicationName) ? "1" : "0";
-            cookie += `0x0x${isVisible},`
+            // const DEFAULT_VISIBLE_APPLICATIONS = ["loremCounter"];
+            // const isVisible = DEFAULT_VISIBLE_APPLICATIONS.includes(applicationName) ? "1" : "0";
+            cookie += `0x0,`
          }
       }
       cookie = cookie.substring(0, cookie.length - 1);
@@ -552,64 +540,57 @@ function setApplicationPositions() {
 
    const applicationPositions = cookie.split(",");
    let i = 0;
-   for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
-      for (const { objID } of Object.values(applicationCategory)) {
-         if (objID === "") return;
+   for (const { objID } of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
+      if (objID === "") return;
 
-         const applicationPosition = applicationPositions[i];
-         i++;
-         const parts = applicationPosition.split("x");
-         const obj = getElement(objID);
-         const x = parseFloat(parts[0]),
-         y = parseFloat(parts[1]);
-         obj.style.left = `${x}px`;
-         obj.style.top = `${y}px`;
-         
-         const isVisible = parseInt(parts[2]);
-         applications[objID].isOpened = isVisible;
-      }
+      const applicationPosition = applicationPositions[i];
+      i++;
+      const parts = applicationPosition.split("x");
+      const obj = getElement(objID);
+      const x = parseFloat(parts[0]),
+      y = parseFloat(parts[1]);
+      obj.style.left = `${x}px`;
+      obj.style.top = `${y}px`;
+      
+      // const isVisible = parseInt(parts[2]);
+      // applications[objID].isOpened = isVisible === 1 ? true : false;
    }
 }
 function updateApplicationPositions() {
    let previousCookie = getCookie("applicationPositions");
    if (previousCookie === "") {
-      let applicationCount = 0;
-      for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
-         Object.keys(applicationCategory).forEach(() => applicationCount++);
-      }
-      previousCookie = "0x0x0,".repeat(applicationCount);
+      const applicationCount = Object.keys(Game.startMenu.applications["menu-application-shop"].applications).length;
+      previousCookie = "0x0,".repeat(applicationCount);
       previousCookie = previousCookie.substring(0, previousCookie.length - 1);
    }
 
    let newCookie = "";
    let i = 0;
-   for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
-      for (const application of Object.values(applicationCategory)) {
-         const objID = application.objID;
-         if (objID === "") {
-            newCookie += "0x0x0,";
-            continue;
-         }
-
-         const obj = getElement(objID);
-         const bounds = obj.getBoundingClientRect();
-
-         const previousCookieSegment = previousCookie.split(",")[i];
-         
-         if (bounds.y === 0) {
-            const x = previousCookieSegment.split("x")[0];
-            const y = previousCookieSegment.split("x")[1];
-            newCookie += `${x}x${y}x0,`;
-            continue;
-         }
-         
-         const applicationData = applications[objID];
-         const isVisible = applicationData.isOpened ? "1" : "0";
-         const x = Math.max(bounds.x, 0);
-         const y = Math.max(bounds.y - topHeight(), 0);
-         newCookie += `${x}x${y}x${isVisible},`;
-         i++;
+   for (const application of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
+      const objID = application.objID;
+      if (objID === "") {
+         newCookie += "0x0,";
+         continue;
       }
+
+      const obj = getElement(objID);
+      const bounds = obj.getBoundingClientRect();
+
+      const previousCookieSegment = previousCookie.split(",")[i];
+      
+      if (bounds.y === 0) {
+         const x = previousCookieSegment.split("x")[0];
+         const y = previousCookieSegment.split("x")[1];
+         newCookie += `${x}x${y},`;
+         continue;
+      }
+      
+      // const applicationData = applications[objID];
+      // const isVisible = applicationData.isOpened ? "1" : "0";
+      const x = Math.max(bounds.x, 0);
+      const y = Math.max(bounds.y - topHeight(), 0);
+      newCookie += `${x}x${y},`;
+      i++;
    }
    newCookie = newCookie.substring(0, newCookie.length - 1);
    setCookie("applicationPositions", newCookie);
@@ -620,43 +601,34 @@ function setOwnedApplications() {
    if (cookie === "") {
       cookie = 0;
       let num = 0;
-      for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
-         for (const application of Object.values(applicationCategory)) {
-            if (application.isDefaultApplication) cookie += Math.pow(2, num);
-            num++;
-         }
+      for (const application of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
+         if (application.isDefaultApplication) cookie += Math.pow(2, num);
+         num++;
       }
    }
 
    let binary = parseInt(cookie).toString(2);
    
-   let applicationCount = 0;
-   for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
-      Object.values(applicationCategory).forEach(() => applicationCount++);
-   }
+   let applicationCount = Object.keys(Game.startMenu.applications["menu-application-shop"].applications).length;
    while (binary.length < applicationCount) {
       binary = "0" + binary;
    }
 
    let num = 0;
-   for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications).reverse()) {
-      for (const application of Object.values(applicationCategory).reverse()) {
-         if (binary[num++] === "1") {
-            application.owned = true;
-         } else {
-            application.owned = false;
-         }
+   for (const application of Object.values(Game.startMenu.applications["menu-application-shop"].applications).reverse()) {
+      if (binary[num++] === "1") {
+         application.owned = true;
+      } else {
+         application.owned = false;
       }
    }
 }
 function updateOwnedApplications() {
    let decimal = 0;
    let num = 0;
-   for (const applicationCategory of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
-      for (const application of Object.values(applicationCategory)) {
-         if (application.owned) decimal += Math.pow(2, num);
-         num++;
-      }
+   for (const application of Object.values(Game.startMenu.applications["menu-application-shop"].applications)) {
+      if (application.owned) decimal += Math.pow(2, num);
+      num++;
    }
    setCookie("ownedApplications", decimal);
 }
@@ -720,4 +692,163 @@ function getCookie(cname) {
       }
    }
    return '';
+}
+
+
+function updateSave() {
+   const saveName = "save1";
+
+   // Adapted from Cookie Clicker's system: https://cookieclicker.fandom.com/wiki/Save
+
+   // Each save is organised into the sections outlined below.
+   // Each section is seperated by a "|" character.
+
+   // Lorem count, total lorem earned, packet count
+   // Employees
+   // Received letters, opened letters, opened rewards
+   // Settings
+   // Owned applications, opened applications
+   // Achievements
+
+   let saveData = Game.lorem + "_" + Game.stats.loremEarned + "_" + Game.packets + "|";
+
+   const workers = Object.values(Game.loremCorp.workers);
+   for (let i = 0; i < workers.length; i++) {
+      const worker = workers[i];
+      saveData += worker;
+      if (i < workers.length - 1) {
+         saveData += "_";
+      } else {
+         saveData += "|";
+      }
+   }
+
+   const letterData = Object.values(letters);
+   let receivedLettersTotal = 0;
+   let openedLettersTotal = 0;
+   let openedRewardsTotal = 0;
+   for (let i = 0; i < letterData.length; i++) {
+      const letter = letterData[i];
+      if (letter.received) {
+         receivedLettersTotal += Math.pow(2, i);
+
+         if (letter.opened) openedLettersTotal += Math.pow(2, i);
+
+         if (letter.rewards !== undefined) {
+            if (letter.rewards.opened) openedRewardsTotal += Math.pow(2, i);
+         }
+      }
+   }
+   saveData += receivedLettersTotal + "_" + openedLettersTotal + "_" + openedRewardsTotal + "|";
+
+   const settings = Object.values(Game.settings.list);
+   for (let i = 0; i < settings.length; i++) {
+      const setting = settings[i];
+      if (setting.type === "range" || setting.type === "select") {
+         saveData += setting.value;
+      } else if (setting.type === "checkbox") {
+         saveData += setting.value ? "1" : "0";
+      }
+
+      if (i < settings.length - 1) {
+         saveData += "_";
+      } else {
+         saveData += "|";
+      }
+   }
+
+   let ownedApplicationsTotal = 0;
+   let openedApplicationsTotal = 0;
+   const applicationReferences = Object.values(Game.startMenu.applications["menu-application-shop"].applications);
+   for (let i = 0; i < applicationReferences.length; i++) {
+      const application = applicationReferences[i];
+      if (application.owned) ownedApplicationsTotal += Math.pow(2, i);
+      if (applications.hasOwnProperty(application.objID) && applications[application.objID].isOpened) openedApplicationsTotal += Math.pow(2, i);
+   }
+   saveData += ownedApplicationsTotal + "_" + openedApplicationsTotal + "|";
+
+   let unlockedAchievementsTotal = 0
+   const achievements = Game.achievements.getAchievements();
+   for (const achievement of achievements) {
+      if (achievement[1].unlocked) {
+         unlockedAchievementsTotal += Math.pow(2, achievement[1].id - 1);
+      }
+   }
+   saveData += unlockedAchievementsTotal + "|";
+
+   setCookie(saveName, saveData);
+
+   console.log(saveData);
+}
+
+function ReadSaveData() {
+   const saveName = "save1";
+   const saveData = getCookie(saveName);
+   return saveData;
+}
+
+function GetDefaultSaveData() {
+   // Lorem count, total lorem earned, packet count
+   // Employees
+   // Received letters, opened letters, opened rewards
+   // Settings
+   // Owned applications, opened applications
+   // Achievements
+
+   // Lorem count, total lorem earned, packet count
+   let saveData = "0_0_0|";
+
+   // Employees
+   const employeeNames = Object.keys(loremCorpData.jobs);
+   for (let i = 0; i < employeeNames.length; i++) {
+      saveData += "0";
+      if (i < employeeNames.length - 1) {
+         saveData += "_";
+      } else {
+         saveData += "|";
+      }
+   }
+
+   // Received letters, opened letters, opened rewards
+   saveData += "0_0_0|";
+
+   // Settings
+   const settings = Object.values(Game.settings.list);
+   for (let i = 0; i < settings.length; i++) {
+      const setting = settings[i];
+
+      if (setting.type === "range" || setting.type === "select") {
+         saveData += setting.defaultValue;
+      } else if (setting.type === "checkbox") {
+         saveData += setting.defaultValue === true ? "1" : "0";
+      }
+      
+      if (i < settings.length - 1) {
+         saveData += "_";
+      } else {
+         saveData += "|";
+      }
+   }
+
+   // Owned applications, opened applications
+   let ownedApplicationsTotal = 0;
+   let openedApplicationsTotal = 0;
+   const applicationData = Object.entries(Game.startMenu.applications["menu-application-shop"].applications);
+   for (let i = 0; i < applicationData.length; i++) {
+      const application = applicationData[i];
+      if (application[1].isDefaultApplication) {
+         ownedApplicationsTotal += Math.pow(2, i);
+      }
+      
+      const DEFAULT_VISIBLE_APPLICATIONS = ["loremCounter"];
+      if (DEFAULT_VISIBLE_APPLICATIONS.includes(application[0])) {
+         openedApplicationsTotal += Math.pow(2, i);
+      }
+   }
+   saveData += ownedApplicationsTotal + "_" + openedApplicationsTotal + "|";
+
+   // Achievements
+   saveData += "0|";
+
+   return saveData;
 }

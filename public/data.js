@@ -343,8 +343,9 @@ const letters = {
          text: "Black Market",
          img: "images/coin-icon.png",
          opened: false,
-         reward: () => {
+         reward: function() {
             Game.blackMarket.unlockBlackMarket();
+            Game.achievements.unlockAchievement("shadySales");
             updateMiscCookie();
          }
       },
@@ -464,7 +465,7 @@ const blackMarketShops = {
    malware: {
       name: "malware",
       cost: 1,
-      unlocked: false,
+      isUnlocked: false,
       clickEvent: () => {
          window.location = "html/malware-tree.html";
       },
@@ -476,7 +477,7 @@ const blackMarketShops = {
    minigames: {
       name: "minigames",
       cost: 4,
-      unlocked: false,
+      isUnlocked: false,
       clickEvent: () => {
          Game.blackMarket.minigames.open();
       },
@@ -488,7 +489,7 @@ const blackMarketShops = {
    binaries: {
       name: "binaries",
       cost: 10,
-      unlocked: false,
+      isUnlocked: false,
       clickEvent: () => {
          window.location = 'html/binaries.html';
       },
@@ -819,7 +820,7 @@ const loremCorpData = {
          <p>To rise up the Heirarchy, you must mine more lorem.</p>
          <p>Good luck.</p>`,
          displayText: 'Intern',
-         salary: '<span>🤣</span>',
+         salary: '<span>N/A</span>',
          buttonText: 'Interns',
          requirement: 40,
          stats: {
