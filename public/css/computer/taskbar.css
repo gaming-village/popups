@@ -64,7 +64,7 @@
    --size: calc(2rem - 8px);
    width: var(--size);
    height: var(--size);
-   background-image: url(../images/win95/win95-start-icon.png);
+   background-image: url(../../images/win95/win95-start-icon.png);
    background-size: var(--size) var(--size);
    float: left;
 }
@@ -92,7 +92,7 @@
 }
 .taskbar-application.open {
    background-color: #fafafa;
-   background-image: url(../images/win95/button-bg-striped.png);
+   background-image: url(../../images/win95/button-bg-striped.png);
    background-size: 26px 26px;
    border-top-color: #999;
    border-left-color: #999;

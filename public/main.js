@@ -327,8 +327,7 @@ class CookieObjectManager {
 }
 
 const cookies = {};
-const LoadData = () => {
-   cookies.unlockedMalware = new CookieObjectManager('unlockedMalware', popupData, 'unlocked');
+function LoadData() {
    cookies.unlockedShops = new CookieObjectManager('unlockedShops', blackMarketShops, 'unlocked');
    cookies.unlockedMalware = new CookieObjectManager("unlockedMalware", popupData, "unlocked");
 
@@ -565,13 +564,13 @@ function updateSave() {
    let openedRewardsTotal = 0;
    for (let i = 0; i < letterData.length; i++) {
       const letter = letterData[i];
-      if (letter.received) {
+      if (letter.isReceived) {
          receivedLettersTotal += Math.pow(2, i);
 
-         if (letter.opened) openedLettersTotal += Math.pow(2, i);
+         if (letter.isOpened) openedLettersTotal += Math.pow(2, i);
 
          if (letter.rewards !== undefined) {
-            if (letter.rewards.opened) openedRewardsTotal += Math.pow(2, i);
+            if (letter.rewards.isOpened) openedRewardsTotal += Math.pow(2, i);
          }
       }
    }

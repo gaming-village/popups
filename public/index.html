@@ -9,7 +9,7 @@
    <meta property='og:url' content='https://gaming-village.github.io/popups/public/index.html'>
    <title>Lorem Ipsum Generator</title>
 
-   <link type="text/css" rel="stylesheet" href="index.css">
+   <link type="text/css" rel="stylesheet" href="css/index.css">
    <link rel='icon' type='image/png' href='./images/popup-icons/windows.png?v=1' />
    
    <script src="./index.js"></script>
@@ -47,7 +47,7 @@
    </div>
 
    <!-- Terminal (Accessible through Devtools panel) -->
-   <div id='terminal' class='hidden'>
+   <div id="terminal" class='hidden'>
       <h1>The Terminal</h1>
 
       <div id='terminal-container'>
@@ -65,13 +65,7 @@
    <div id="alert-container"></div>
 
    <div id="computer" class="view">
-      <!-- File System -->
-      <div id="file-system">
-         <div id="file-template" class="file hidden">
-            <img />
-            <p></p>
-         </div>
-      </div>
+      <div id="file-system"></div>
 
       <!-- Lorem Quota -->
       <div id='lorem-quota' class='hidden'>
@@ -93,10 +87,6 @@
          <div id='start-icon' class='application-segment'>
             <div class='img'></div>
             <div class='text'>Start</div>
-         </div>
-         <div id='application-template' class='application hidden closed application-segment'>
-            <img class="application-icon" src="images/changelog-icon.png" alt="Application icon">
-            <div class='text'></div>
          </div>
       </div>
 
@@ -883,41 +873,12 @@
 
       <div id="news-main" class="hidden"></div>
 
-      <div id="mail-inbox" class="hidden">
-         <div id="inbox-entry-template" class="inbox-entry hidden">
-            <div class="inbox-entry-title"></div>
-            <div class="inbox-entry-from"></div>
-            <div class="inbox-entry-icon-container">
-               <img class="inbox-entry-icon" src="images/sealed-letter.png" />
-            </div>
-            <div class="inbox-entry-reward-icon">
-
-            </div>
-         </div>
-      </div>
       <div id="open-mail">
          <img src="images/sealed-letter.png">
       </div>
-      <div id="letter">
-         <div class="header">
-            <span>Microsoft Exchange</span>
-         </div>
-         <table>
-            <tr>
-               <td>From:</td>
-               <td class="from"></td>
-            </tr>
-            <tr>
-               <td>To:</td>
-               <td class="to">You</td>
-            </tr>
-            <tr>
-               <td>Subject:</td>
-               <td class="subject text-box"></td>
-            </tr>
-         </table>
-         <div id="paper"></div>
-         <div class="rewards"></div>
+      <div id="mail-container" class="hidden">
+         <div id="mail-inbox"></div>
+         <div id="letter" class="hidden"></div>
       </div>
    </div>
 

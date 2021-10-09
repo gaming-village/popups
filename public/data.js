@@ -295,169 +295,173 @@ const letters = {
    start: {
       title: "A Friendly Introduction",
       from: "Lorem Corp",
-      content: `<p>Greetings employee.</p>
+      body: `<p>Greetings employee.</p>
       <p>If you have received this letter, you have been successfully integrated into Lorem Corp. You will go to the Generator and begin mining.</p>
       <p>If you wish to see your position in the company, see the Corporate Overview tab.</p>`,
-      received: false
+      isReceived: false,
+      isOpened: false
    },
    motivationalLetter: {
       title: "Motivational Letter",
       from: "Lorem Corp",
-      content: `<p>Greetings employees.</p>
+      body: `<p>Greetings employees.</p>
       <p>The Motivation Department of Lorem Corp would like to send a reminder that any suspicious activity will result in your immediate termination.</p>
       <p>We have also implemented a Lorem Quota. Those who meet the quota shall be rewarded.</p>`,
       rewards: {
-         type: "box",
          text: "Lorem Quota",
          img: "images/coin-icon.png",
          reward: () => {
             Game.loremQuota.unlock();
             updateMiscCookie();
-         }
+         },
+         isOpened: false
       },
-      received: false
+      isReceived: false,
+      isOpened: false
    },
    greetings: {
       title: "Greetings",
       from: "0b4m4",
-      content: `<p>Hello.</p>
+      body: `<p>Hello.</p>
       <p>You may or may not be aware of the malicious past of the corporation Lorem Corp.</p>
       <p>To stop things from getting out of hand, a group called the Black Market had to be created. Our connections have told us that recently Lorem Corp. has begun hiring again, and as we have tracked you as one of their new hires you are critical to our operation.</p>
       <p>You will later receive an invitation to our network.</p>
       <p>Good luck.</p>`,
-      received: false
+      isReceived: false,
+      isOpened: false
    },
    rumors: {
       title: "Addressing Rumors",
       from: "Lorem Corp",
-      content: `<p>Greetings employees.</p>
+      body: `<p>Greetings employees.</p>
       <p>It has come to our attention that there have been several fallacious claims of malware-infected computers. Disregard them - our system is perfect and flawless.</p>`,
-      received: false
+      isReceived: false,
+      isOpened: false
    },
    invitation: {
       title: "Invitation",
       from: "blackmarket.org",
-      content: `<p>...</p>`,
+      body: `<p>...</p>`,
       rewards: {
-         type: "box",
          text: "Black Market",
          img: "images/coin-icon.png",
-         opened: false,
          reward: function() {
             Game.blackMarket.unlockBlackMarket();
             Game.achievements.unlockAchievement("shadySales");
             updateMiscCookie();
-         }
+         },
+         isOpened: false,
       },
-      received: false
+      isReceived: false,
+      isOpened: false
    },
    internPromotion: {
       title: 'Promotion',
       from: 'Lorem Corp',
-      content: `<p>Greetings Intern.</p>
+      body: `<p>Greetings Intern.</p>
       <p>It is Lorem Corp's pleasure to announce that you have been promoted from an Intern to an Employee.</p>
       <p>Your annual salary has been increased from $0 to $15.</p>
       <p>You have been given an extra 10 lorem in funding to perhaps acquire an intern in the Corporate Overview tab.</p>`,
       rewards: {
-         type: 'box',
          text: 'Funding',
          img: "images/coin-icon.png",
-         opened: false,
          reward: () => {
             Game.gainLorem(10);
-         }
+         },
+         isOpened: false,
       },
-      received: false
+      isReceived: false,
+      isOpened: false
    },
    employeePromotion: {
       title: 'Promotion',
       from: 'Lorem Corp',
-      content: `<p>Greetings Employee.</p>
+      body: `<p>Greetings Employee.</p>
       <p>It is Lorem Corp's pleasure to announce that you have been promoted from an Employee to a Lorem Technician.</p>
       <p>Your annual salary has been increased from $15 to $200.</p>
       <p>You have been given an extra 1 lorem in funding - use it wisely.</p>`,
       rewards: {
-         type: 'box',
          text: 'Funding',
          img: "images/coin-icon.png",
-         opened: false,
          reward: () => {
             Game.gainLorem(1);
-         }
+         },
+         isOpened: false,
       },
-      received: false
+      isReceived: false,
+      isOpened: false
    },
    technicianPromotion: {
       title: 'Promotion',
       from: 'Lorem Corp',
-      content: `<p>Greetings Technician.</p>
+      body: `<p>Greetings Technician.</p>
       <p>It is Lorem Corp's pleasure to announce that you have been promoted from a Lorem Technician to a Manager.</p>
       <p>Your annual salary has been increased from $200 to $2500.</p>
       <p>You have been given an extra 1 lorem in funding - use it wisely.</p>`,
       rewards: {
-         type: 'box',
          text: 'Funding',
          img: "images/coin-icon.png",
-         opened: false,
          reward: () => {
             Game.gainLorem(1);
-         }
+         },
+         isOpened: false,
       },
-      received: false
+      isReceived: false,
+      isOpened: false
    },
    managerPromotion: {
       title: 'Promotion',
       from: 'Lorem Corp',
-      content: `<p>Greetings Manager.</p>
+      body: `<p>Greetings Manager.</p>
       <p>It is Lorem Corp's pleasure to announce that you have been promoted from a Manager to a Supervisor.</p>
       <p>Your annual salary has been increased from $2500 to $17500.</p>
       <p>You have been given an extra 1 lorem in funding - use it wisely.</p>`,
       rewards: {
-         type: 'box',
          text: 'Funding',
          img: "images/coin-icon.png",
-         opened: false,
          reward: () => {
             Game.gainLorem(1);
-         }
+         },
+         isOpened: false,
       },
-      received: false
+      isReceived: false,
+      isOpened: false
    },
    supervisorPromotion: {
       title: 'Promotion',
       from: 'Lorem Corp',
-      content: `<p>Greetings Supervisor.</p>
+      body: `<p>Greetings Supervisor.</p>
       <p>It is Lorem Corp's pleasure to announce that you have been promoted from a Supervisor to an Executive.</p>
       <p>Your annual salary has been increased from $17500 to $52500.</p>
       <p>You have been given an extra 1 lorem in funding - use it wisely.</p>`,
       rewards: {
-         type: 'box',
          text: 'Funding',
          img: "images/coin-icon.png",
-         opened: false,
          reward: () => {
             Game.gainLorem(1);
-         }
+         },
+         isOpened: false,
       },
-      received: false
+      isReceived: false,
+      isOpened: false
    },
    executivePromotion: {
       title: 'Promotion',
       from: 'Lorem Corp',
-      content: `<p>Greetings Supervisor.</p>
+      body: `<p>Greetings Supervisor.</p>
       <p>It is Lorem Corp's pleasure to announce that you have been promoted from an Executive to a CEO.</p>
       <p>Your annual salary has been increased from $52500 to $215000.</p>
       <p>You have been given an extra 1 lorem in funding - use it wisely.</p>`,
       rewards: {
-         type: 'box',
          text: 'Funding',
          img: "images/coin-icon.png",
-         opened: false,
          reward: () => {
             Game.gainLorem(1);
-         }
+         },
+         isOpened: false,
       },
-      received: false
+      isReceived: false,
+      isOpened: false
    }
 }
 
