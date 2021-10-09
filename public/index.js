@@ -924,7 +924,7 @@ const Game = {
 
             hoverPanel.innerHTML = text;
          });
-         button.addEventListener("mouseout", () => {
+         button.addEventListener("mouseleave", () => {
             hoverPanel.classList.add("hidden");
          })
       },
@@ -1428,7 +1428,8 @@ const Game = {
                const name = slugCase(application[0]).replace("-", "_");
                fileSystem.createFile({
                   name: name,
-                  extension: "exe"
+                  extension: "exe",
+                  clickEvent: this.openApplication(application)
                });
             },
             updateAvailableApplications: function(applicationName) {
@@ -1731,9 +1732,13 @@ const Game = {
 
             // Renders the applications in the file system.
             const name = slugCase(application[0]).replace("-", "_");
+            const clickEvent = () => {
+               this.applications["menu-application-shop"].openApplication(application);
+            }
             fileSystem.createFile({
                name: name,
-               extension: "exe"
+               extension: "exe",
+               clickEvent: clickEvent
             });
          }
       },
@@ -1779,11 +1784,13 @@ const Game = {
       <div class="content">
          ${content}
       </div>`;
+
+      return toolTip;
    }
 };
 
 const fileSystem = {
-   createFile: function({ name, extension, img = "images/win95/program.png" }) {
+   createFile: function({ name, extension, img = "images/win95/program.png", clickEvent }) {
       const file = document.createElement("div");
       file.className = "file";
       getElement("file-system").appendChild(file);
@@ -1791,6 +1798,21 @@ const fileSystem = {
       file.innerHTML = `
       <img src="${img}" />
       <p>${name + "." + extension}</p>`;
+
+      let toolTip;
+      file.addEventListener("mouseover", () => {
+         const bounds = file.getBoundingClientRect();
+         const x = bounds.x + bounds.width / 2 + "px";
+         const y = bounds.y + bounds.height / 2 - topHeight() + "px";
+         toolTip = Game.createToolTip({ x, y }, name, "Double click to open.");
+      });
+      file.addEventListener("mouseout", () => {
+         toolTip.remove();
+      });
+
+      if (clickEvent) {
+         file.addEventListener("dblclick", () => clickEvent());
+      }
    }
 };
 
